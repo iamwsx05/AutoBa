@@ -68,6 +68,8 @@
             this.repositoryItemDateEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.repositoryItemDateEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.repositoryItemCheckEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
+            this.simpleButton1 = new DevExpress.XtraEditors.SimpleButton();
+            this.simpleButton2 = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.pcBackGround)).BeginInit();
             this.pcBackGround.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.marqueeProgressBarControl.Properties)).BeginInit();
@@ -98,6 +100,8 @@
             // 
             // pcBackGround
             // 
+            this.pcBackGround.Controls.Add(this.simpleButton2);
+            this.pcBackGround.Controls.Add(this.simpleButton1);
             this.pcBackGround.Controls.Add(this.txtJZJLH);
             this.pcBackGround.Controls.Add(this.label1);
             this.pcBackGround.Controls.Add(this.txtCardNo);
@@ -111,7 +115,7 @@
             this.pcBackGround.Controls.Add(this.labelControl1);
             this.pcBackGround.Dock = System.Windows.Forms.DockStyle.Top;
             this.pcBackGround.Location = new System.Drawing.Point(0, 0);
-            this.pcBackGround.Size = new System.Drawing.Size(1054, 35);
+            this.pcBackGround.Size = new System.Drawing.Size(1149, 35);
             this.pcBackGround.Visible = true;
             // 
             // defaultLookAndFeel
@@ -268,7 +272,7 @@
             this.repositoryItemDateEdit1,
             this.repositoryItemDateEdit2,
             this.repositoryItemCheckEdit2});
-            this.gcData.Size = new System.Drawing.Size(1054, 530);
+            this.gcData.Size = new System.Drawing.Size(1149, 530);
             this.gcData.TabIndex = 69;
             this.gcData.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvData});
@@ -360,7 +364,7 @@
             this.gridColumn41.FieldName = "FTIMES";
             this.gridColumn41.Name = "gridColumn41";
             this.gridColumn41.Visible = true;
-            this.gridColumn41.VisibleIndex = 4;
+            this.gridColumn41.VisibleIndex = 3;
             this.gridColumn41.Width = 35;
             // 
             // gridColumn18
@@ -373,7 +377,7 @@
             this.gridColumn18.OptionsColumn.AllowEdit = false;
             this.gridColumn18.OptionsColumn.AllowFocus = false;
             this.gridColumn18.Visible = true;
-            this.gridColumn18.VisibleIndex = 5;
+            this.gridColumn18.VisibleIndex = 4;
             // 
             // gridColumn4
             // 
@@ -395,7 +399,7 @@
             this.gridColumn4.OptionsFilter.AllowAutoFilter = false;
             this.gridColumn4.OptionsFilter.AllowFilter = false;
             this.gridColumn4.Visible = true;
-            this.gridColumn4.VisibleIndex = 6;
+            this.gridColumn4.VisibleIndex = 5;
             this.gridColumn4.Width = 68;
             // 
             // gridColumn1
@@ -418,7 +422,7 @@
             this.gridColumn1.OptionsFilter.AllowAutoFilter = false;
             this.gridColumn1.OptionsFilter.AllowFilter = false;
             this.gridColumn1.Visible = true;
-            this.gridColumn1.VisibleIndex = 7;
+            this.gridColumn1.VisibleIndex = 6;
             this.gridColumn1.Width = 69;
             // 
             // gridColumn42
@@ -436,7 +440,7 @@
             this.gridColumn42.OptionsFilter.AllowAutoFilter = false;
             this.gridColumn42.OptionsFilter.AllowFilter = false;
             this.gridColumn42.Visible = true;
-            this.gridColumn42.VisibleIndex = 8;
+            this.gridColumn42.VisibleIndex = 7;
             this.gridColumn42.Width = 35;
             // 
             // gridColumn43
@@ -451,7 +455,7 @@
             this.gridColumn43.OptionsFilter.AllowAutoFilter = false;
             this.gridColumn43.OptionsFilter.AllowFilter = false;
             this.gridColumn43.Visible = true;
-            this.gridColumn43.VisibleIndex = 9;
+            this.gridColumn43.VisibleIndex = 8;
             // 
             // gridColumn7
             // 
@@ -463,7 +467,7 @@
             this.gridColumn7.OptionsColumn.AllowEdit = false;
             this.gridColumn7.OptionsColumn.AllowFocus = false;
             this.gridColumn7.Visible = true;
-            this.gridColumn7.VisibleIndex = 10;
+            this.gridColumn7.VisibleIndex = 9;
             this.gridColumn7.Width = 120;
             // 
             // gridColumn8
@@ -476,7 +480,7 @@
             this.gridColumn8.OptionsColumn.AllowEdit = false;
             this.gridColumn8.OptionsColumn.AllowFocus = false;
             this.gridColumn8.Visible = true;
-            this.gridColumn8.VisibleIndex = 11;
+            this.gridColumn8.VisibleIndex = 10;
             this.gridColumn8.Width = 120;
             // 
             // gridColumn14
@@ -498,7 +502,7 @@
             this.gridColumn14.OptionsFilter.AllowAutoFilter = false;
             this.gridColumn14.OptionsFilter.AllowFilter = false;
             this.gridColumn14.Visible = true;
-            this.gridColumn14.VisibleIndex = 12;
+            this.gridColumn14.VisibleIndex = 11;
             this.gridColumn14.Width = 120;
             // 
             // gridColumn44
@@ -513,7 +517,7 @@
             this.gridColumn44.OptionsFilter.AllowAutoFilter = false;
             this.gridColumn44.OptionsFilter.AllowFilter = false;
             this.gridColumn44.Visible = true;
-            this.gridColumn44.VisibleIndex = 13;
+            this.gridColumn44.VisibleIndex = 12;
             // 
             // gridColumn2
             // 
@@ -525,7 +529,7 @@
             this.gridColumn2.OptionsColumn.AllowEdit = false;
             this.gridColumn2.OptionsColumn.AllowFocus = false;
             this.gridColumn2.Visible = true;
-            this.gridColumn2.VisibleIndex = 14;
+            this.gridColumn2.VisibleIndex = 13;
             // 
             // gridColumn6
             // 
@@ -537,7 +541,7 @@
             this.gridColumn6.OptionsColumn.AllowEdit = false;
             this.gridColumn6.OptionsColumn.AllowFocus = false;
             this.gridColumn6.Visible = true;
-            this.gridColumn6.VisibleIndex = 15;
+            this.gridColumn6.VisibleIndex = 14;
             // 
             // gridColumn3
             // 
@@ -549,7 +553,7 @@
             this.gridColumn3.OptionsColumn.AllowEdit = false;
             this.gridColumn3.OptionsColumn.AllowFocus = false;
             this.gridColumn3.Visible = true;
-            this.gridColumn3.VisibleIndex = 16;
+            this.gridColumn3.VisibleIndex = 15;
             this.gridColumn3.Width = 120;
             // 
             // repositoryItemTimeEdit1
@@ -702,11 +706,33 @@
             this.repositoryItemCheckEdit2.Caption = "Check";
             this.repositoryItemCheckEdit2.Name = "repositoryItemCheckEdit2";
             // 
+            // simpleButton1
+            // 
+            this.simpleButton1.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.simpleButton1.Appearance.Options.UseFont = true;
+            this.simpleButton1.Location = new System.Drawing.Point(974, 5);
+            this.simpleButton1.Name = "simpleButton1";
+            this.simpleButton1.Size = new System.Drawing.Size(75, 23);
+            this.simpleButton1.TabIndex = 963;
+            this.simpleButton1.Text = "导出";
+            this.simpleButton1.Click += new System.EventHandler(this.simpleButton1_Click);
+            // 
+            // simpleButton2
+            // 
+            this.simpleButton2.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.simpleButton2.Appearance.Options.UseFont = true;
+            this.simpleButton2.Location = new System.Drawing.Point(1055, 5);
+            this.simpleButton2.Name = "simpleButton2";
+            this.simpleButton2.Size = new System.Drawing.Size(75, 23);
+            this.simpleButton2.TabIndex = 964;
+            this.simpleButton2.Text = "同步";
+            this.simpleButton2.Click += new System.EventHandler(this.simpleButton2_Click);
+            // 
             // frmUloadBa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1054, 565);
+            this.ClientSize = new System.Drawing.Size(1149, 565);
             this.Controls.Add(this.gcData);
             this.Name = "frmUloadBa";
             this.Text = "frmUloadBa";
@@ -787,5 +813,7 @@
         internal DevExpress.XtraEditors.Repository.RepositoryItemDateEdit repositoryItemDateEdit1;
         internal DevExpress.XtraEditors.Repository.RepositoryItemDateEdit repositoryItemDateEdit2;
         private DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit repositoryItemCheckEdit2;
+        private DevExpress.XtraEditors.SimpleButton simpleButton1;
+        private DevExpress.XtraEditors.SimpleButton simpleButton2;
     }
 }

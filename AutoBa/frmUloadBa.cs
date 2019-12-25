@@ -10,7 +10,6 @@ using DevExpress.XtraEditors;
 using Common.Controls;
 using weCare.Core.Entity;
 using weCare.Core.Utils;
-using Report.Ui;
 
 namespace AutoBa
 {
@@ -35,13 +34,74 @@ namespace AutoBa
         {
             List<EntityParm> dicParm = new List<EntityParm>();
 
+            //string jzjlhStr = "('189576383', '199460220', '202730452', '204125302', '01574135', '203957487', '196880183', '203142067', '202560312')";
+            string jzjlhStr = @"('189576383',
+'199460220',
+'199463489',
+'199596986',
+'200304225',
+'200307830',
+'200547006',
+'202730452',
+'200752087',
+'204732796',
+'203874779',
+'203797551',
+'204125302',
+'203933618',
+'205839905',
+'206626911',
+'208693559',
+'207872778',
+'207958317',
+'207696994',
+'208099307',
+'202560312',
+'208033616',
+'204370663',
+'207255678',
+'203554022',
+'205320816',
+'203142067',
+'197556771',
+'198648310',
+'198362305',
+'198538347',
+'201085521',
+'209368426',
+'207659226',
+'208959995',
+'197608985',
+'205378093',
+'204870057',
+'206555334',
+'209200110',
+'200157170',
+'201574135',
+'202742235',
+'203957487',
+'197757240',
+'209224579',
+'208846076',
+'206303937',
+'196880183',
+'199893779',
+'204252210',
+'206300414',
+'198876721',
+'201656303'
+)";
+
+
+
             if (this.txtCardNo.Text.Trim() != string.Empty)
             {
                 dicParm.Add(Function.GetParm("cardNo", this.txtCardNo.Text.Trim()));
             }
-            if (this.txtJZJLH.Text.Trim() != string.Empty)
+            //if (this.txtJZJLH.Text.Trim() != string.Empty)
             {
-                dicParm.Add(Function.GetParm("JZJLH", this.txtJZJLH.Text.Trim()));
+                //dicParm.Add(Function.GetParm("JZJLH", this.txtJZJLH.Text.Trim()));
+                 dicParm.Add(Function.GetParm("JZJLH1", jzjlhStr));
             }
             if (this.chkSZ.Checked == true)
             {
@@ -52,7 +112,8 @@ namespace AutoBa
                 uiHelper.BeginLoading(this);
 
                 UploadBiz biz = new UploadBiz();
-                dataSource = biz.GetPatList2(dicParm);
+                dataSource = biz.GetPatList(dicParm);
+                
                 this.gcData.DataSource = dataSource;
 
             }
@@ -138,7 +199,7 @@ namespace AutoBa
 
                     lngRes = ctlUploadSbPublic.lngFunSP3_3021(ref dataSource, extraVo, ref strValue);
 
-                    if (biz.SavePatFirstPage(dataSource) >= 0)
+                    if (biz.SavePatFirstPage(dataSource,0) >= 0)
                     {
                         lngRes = 1;
                     }
@@ -177,7 +238,7 @@ namespace AutoBa
                     lngRes = ctlUploadSbPublic.lngFunSP3_3022(ref dataSource, extraVo, ref strValue);
 
                     UploadBiz biz = new UploadBiz();
-                    if (biz.SavePatFirstPage(dataSource) >= 0)
+                    if (biz.SavePatFirstPage(dataSource,1) >= 0)
                     {
                         lngRes = 1;
                     }
@@ -213,5 +274,15 @@ namespace AutoBa
             return data;
         }
         #endregion
+
+        private void simpleButton1_Click(object sender, EventArgs e)
+        {
+            uiHelper.ExportToXls(gvData);
+        }
+
+        private void simpleButton2_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 }
