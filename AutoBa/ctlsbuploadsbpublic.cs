@@ -126,7 +126,12 @@ namespace AutoBa
                     {
                         item.JBR = exVo.JBR;
                         item.Issucess = -1; //-1 上传失败
-
+                        if (item.firstSource == 0)
+                        {
+                            item.firstMsg = "无首页信息";
+                            continue;
+                        }
+                            
                         jzjlh = item.JZJLH;
                         #region 入参
                         string logStr = string.Empty;
@@ -797,6 +802,7 @@ namespace AutoBa
                     {
                         //ExceptionLog.OutPutException("jzjlh-->" + ex);
                         MessageBox.Show("jzjlh-->" + ex);
+                        lngRes = -1;
                     }
                     
                 }
@@ -822,6 +828,12 @@ namespace AutoBa
                     {
                         lstVo[i].Issucess = -1; //-1 上传失败
                         lstVo[i].FailMsg = "就诊记录号:" + lstVo[i].JZJLH + " 住院号：" + lstVo[i].INPATIENTID + "小结为空！";
+                        continue;
+                    }
+                    if (lstVo[i].firstSource == 0)
+                    {
+                        lstVo[i].Issucess = -1; //-1 上传失败
+                        lstVo[i].FailMsg = "无首页信息";
                         continue;
                     }
                     lstVo[i].Issucess = -1;
@@ -903,7 +915,6 @@ namespace AutoBa
                         lstVo[i].JBR = exVo.JBR;
                         lstVo[i].Issucess = 1;//1  上传成功
                         lstVo[i].FailMsg = "";
-
                     }
                 }
                 else

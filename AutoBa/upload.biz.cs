@@ -165,7 +165,7 @@ namespace AutoBa
                                   from t_ins_chargezy_csyb a
                                   left join t_opr_bih_register b
                                     on a.registerid_chr = b.registerid_chr
-                                    inner join t_upload c
+                                    left join t_upload c
                                         on a.registerid_chr = c.registerid 
                                  where (a.createtime between
                                        to_date(?, 'yyyy-mm-dd hh24:mi:ss') and
@@ -671,10 +671,10 @@ namespace AutoBa
                             upVo.xjVo.MZH = MZH;
                             upVo.xjVo.ZYH = ipno;
                             upVo.xjVo.MZZD = upVo.fpVo.FMZZD;//drrBa["FMZZD"].ToString();
-                            if (upVo.xjVo.MZZD.Length > 100)
-                                upVo.xjVo.MZZD = upVo.xjVo.MZZD.Substring(0, 100);
                             if (string.IsNullOrEmpty(upVo.xjVo.MZZD))
                                 upVo.xjVo.MZZD = "-";
+                            if (upVo.xjVo.MZZD.Length > 100)
+                                upVo.xjVo.MZZD = upVo.xjVo.MZZD.Substring(0, 100);
                             upVo.xjVo.RYZD = drXj["inhospitaldiagnose"].ToString().Trim();
                             if (string.IsNullOrEmpty(upVo.xjVo.RYZD))
                                 upVo.xjVo.RYZD = upVo.fpVo.FMZZD;
