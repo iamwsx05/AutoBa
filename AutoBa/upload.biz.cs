@@ -119,7 +119,7 @@ namespace AutoBa
 
                 #region SqlReg  查找住院记录
 
-                SqlReg = @"select t1.registerid_chr,
+                SqlReg = @"select distinct t1.registerid_chr,
                                 t1.patientid_chr as MZH,
                                 d.lastname_vchr as xm,
                                 d.birth_dat as birth,
@@ -139,7 +139,7 @@ namespace AutoBa
                                 rehis.emrinpatientid,
                                 rehis.emrinpatientdate,
                                 ee.lastname_vchr as jbr,
-                                dd.serno,
+                                --dd.serno,
                                 dd.status,
                                 dd.uploaddate
                                 from t_opr_bih_register t1
@@ -161,7 +161,7 @@ namespace AutoBa
                 #endregion
 
                 #region 结算记录
-                SqlJs = @"select a.registerid_chr, a.jzjlh, a.invoiceno_vchr, b.inpatientid_chr,c.status,c.firstSource
+                SqlJs = @"select distinct a.registerid_chr, a.jzjlh, a.invoiceno_vchr, b.inpatientid_chr,c.status,c.firstSource
                                   from t_ins_chargezy_csyb a
                                   left join t_opr_bih_register b
                                     on a.registerid_chr = b.registerid_chr
@@ -171,7 +171,7 @@ namespace AutoBa
                                        to_date(?, 'yyyy-mm-dd hh24:mi:ss') and
                                        to_date(?, 'yyyy-mm-dd hh24:mi:ss'))  ";
 
-                //SqlJs = @"select a.registerid_chr, a.jzjlh, a.invoiceno_vchr, b.inpatientid_chr
+                //SqlJs = @"select a.registerid_chr, a.jzjlh, a.invoiceno_vchr, b.inpatientid_chr,c.status,c.firstSource
                 //                  from t_ins_chargezy_csyb a
                 //                  left join t_opr_bih_register b
                 //                    on a.registerid_chr = b.registerid_chr
@@ -645,7 +645,7 @@ namespace AutoBa
                         upVo.JZJLH = jzjlh;
                         upVo.REGISTERID = drReg["registerid_chr"].ToString();
                         upVo.STATUS = Function.Int(drReg["status"]);
-                        upVo.SERNO = Function.Dec(drReg["serno"]);
+                        //upVo.SERNO = Function.Dec(drReg["serno"]);
                         if (drReg["status"].ToString() == "1")
                             upVo.SZ = "已上传";
                         else
@@ -1435,7 +1435,7 @@ namespace AutoBa
                                     upVo.JZJLH = jzjlh;
                                     upVo.REGISTERID = dr2["registerid_chr"].ToString();
                                     upVo.STATUS = Function.Int(dr2["status"]);
-                                    upVo.SERNO = Function.Dec(dr2["serno"]);
+                                    //upVo.SERNO = Function.Dec(dr2["serno"]);
                                     if (dr2["status"].ToString() == "1")
                                         upVo.SZ = "已上传";
                                     else
@@ -1596,7 +1596,7 @@ namespace AutoBa
                                 rehis.emrinpatientid,
                                 rehis.emrinpatientdate,
                                 ee.lastname_vchr as jbr,
-                                dd.serno,
+                                --dd.serno,
                                 dd.status,
                                 dd.uploaddate
                                 from t_opr_bih_register t1
@@ -4850,7 +4850,7 @@ namespace AutoBa
         /// <summary>
         /// 保存首页上传信息
         /// </summary>
-        /// <param name="lstVo"></param>
+        /// <param name="lstVo"></param> 0 
         /// <returns></returns>
         public int SavePatFirstPage(List<EntityPatUpload> lstVo, int type = 0)
         {
@@ -4951,20 +4951,20 @@ namespace AutoBa
                             }
                             else
                             {
-                                if (CheckSequence(svc, "t_upload") > 0)
-                                    serNo = Function.Dec(GetNextID(svc, "t_upload").ToString());
-                                item.SERNO = serNo;
-                                item.STATUS = 1;
-                                item.UPLOADDATE = DateTime.Now;
-                                item.RECORDDDATE = DateTime.Now;
-                                item.OPERCODE = item.JBR;
-                                if (item.Issucess == -1)
-                                {
-                                    item.first = -1;
-                                    item.firstMsg = item.FailMsg;
-                                }
+                                //if (CheckSequence(svc, "t_upload") > 0)
+                                //    serNo = Function.Dec(GetNextID(svc, "t_upload").ToString());
+                                //item.SERNO = serNo;
+                                //item.STATUS = 1;
+                                //item.UPLOADDATE = DateTime.Now;
+                                //item.RECORDDDATE = DateTime.Now;
+                                //item.OPERCODE = item.JBR;
+                                //if (item.Issucess == -1)
+                                //{
+                                //    item.first = -1;
+                                //    item.firstMsg = item.FailMsg;
+                                //}
 
-                                lstVo1.Add(item);
+                                //lstVo1.Add(item);
                             }
                         }
                     }
