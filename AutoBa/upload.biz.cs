@@ -3385,6 +3385,8 @@ namespace AutoBa
                         vo.FMAZUI = drTemp["Ananame"].ToString();
                         if (string.IsNullOrEmpty(vo.FMAZUI))
                             vo.FMAZUI = "-";
+                        if (vo.FMAZUI.Length > 15)
+                            vo.FMAZUI = vo.FMAZUI.Substring(0,15);
                         vo.FIFFSOP = "1";
                         vo.FOPDOCT1BH = drTemp["firstassistno"].ToString();
                         if (string.IsNullOrEmpty(vo.FOPDOCT1BH))
