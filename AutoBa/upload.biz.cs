@@ -2497,6 +2497,11 @@ namespace AutoBa
                                 upVo.fpVo.FMZZDBH = "-";
                             if (string.IsNullOrEmpty(upVo.fpVo.FMZZD))
                                 upVo.fpVo.FMZZD = "-";
+
+                            if(upVo.fpVo.FMZZD.Length > 50)
+                            {
+                                upVo.fpVo.FMZZD = upVo.fpVo.FMZZD.Substring(0,50);
+                            }
                             #endregion
 
                             #region 门诊医生
