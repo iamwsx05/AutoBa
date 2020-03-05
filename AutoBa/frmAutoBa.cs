@@ -1,5 +1,4 @@
 ﻿using Common.Controls;
-using Report.Ui;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,7 +20,8 @@ namespace AutoBa
         }
 
         #region 变量
-        string timePoint = " 13:17:00";
+        string timePoint = " 01:17:00";
+        List<string> timePointList = new List<string> { "01:17" , "18:17" };
         static bool isExecing { get; set; }
         EntityDGExtra exVo = null;
         List<EntityPatUpload> dataSource = null;
@@ -58,10 +58,16 @@ namespace AutoBa
             exVo.JBR = ctlUploadSbPublic.strReadXML("DGCSZYYB", "JBR", "AnyOne"); ;// 操作员工号
             string strPwd = ctlUploadSbPublic.strReadXML("DGCSZYYB", "PASSWORDZY", "AnyOne");
             //this.Query();
+            this.QueryFail();
         }
         #endregion
 
         #region Exec
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dteStart"></param>
+        /// <param name="dteEnd"></param>
         private void Exec(string dteStart, string dteEnd)
         {
             List<EntityParm> dicParm = new List<EntityParm>();
@@ -85,7 +91,6 @@ namespace AutoBa
             if (dicParm.Count > 0)
             {
                 this.lblInfo.Visible = true;
-
 
                 #region 病案首页
                 UploadBiz biz = new UploadBiz();
@@ -130,7 +135,8 @@ namespace AutoBa
                 this.gcData.DataSource = dataSource;
             }
 
-
+            this.Query();
+            this.QueryFail();
             this.lblInfo.Visible = false;
         }
         #endregion
@@ -187,6 +193,69 @@ namespace AutoBa
         }
         #endregion
 
+
+        #region QueryBa
+        private void QueryBa()
+        {
+            List<EntityParm> dicParm = new List<EntityParm>();
+            string beginDate = string.Empty;
+            string endDate = string.Empty;
+            beginDate = dteStart.Text.Trim();
+            endDate = dteEnd.Text.Trim();
+
+            if (beginDate != string.Empty && endDate != string.Empty)
+            {
+                if (Function.Datetime(beginDate + " 00:00:00") > Function.Datetime(endDate + " 00:00:00"))
+                {
+                    DialogBox.Msg("开始时间不能大于结束时间。");
+                    return;
+                }
+                dicParm.Add(Function.GetParm("queryDate", beginDate + "|" + endDate));
+            }
+
+            if (this.txtCardNo.Text.Trim() != string.Empty)
+            {
+                dicParm.Add(Function.GetParm("cardNo", this.txtCardNo.Text.Trim()));
+            }
+            if (this.txtJZJLH.Text.Trim() != string.Empty)
+            {
+                dicParm.Add(Function.GetParm("JZJLH", this.txtJZJLH.Text.Trim()));
+            }
+            if (this.chkSZ.Checked == true)
+            {
+                dicParm.Add(Function.GetParm("chkStat", this.chkSZ.CheckState.ToString()));
+            }
+            try
+            {
+                uiHelper.BeginLoading(this);
+                if (dicParm.Count > 0)
+                {
+                    UploadBiz biz = new UploadBiz();
+                    dataSource = biz.GetPatList(dicParm);
+                    this.gcData.DataSource = dataSource;
+                }
+                else
+                {
+                    DialogBox.Msg("请输入查询条件。");
+                }
+            }
+            finally
+            {
+                uiHelper.CloseLoading(this);
+            }
+        }
+        #endregion
+
+        #region QueryFail
+        /// <summary>
+        /// 获取上传失败信息
+        /// </summary>
+        internal void   QueryFail()
+        {
+            this.gcFailData.DataSource = new UploadBiz().GetFailPatList();
+        }
+        #endregion
+
         #region 首页数据上传
         /// <summary>
         /// 数据上传
@@ -213,7 +282,7 @@ namespace AutoBa
                     dataSource = biz.GetPatFirstInfo(dataSource);
 
                     lngRes = ctlUploadSbPublic.lngFunSP3_3021(ref dataSource, extraVo, ref strValue);
-                    if (biz.SavePatFirstPage(dataSource) >= 0)
+                    if (biz.SavePatFirstPage(dataSource,0) >= 0)
                     {
                         lngRes = 1;
                     }
@@ -251,7 +320,7 @@ namespace AutoBa
                     lngRes = ctlUploadSbPublic.lngFunSP3_3022(ref dataSource, extraVo, ref strValue);
 
                     UploadBiz biz = new UploadBiz();
-                    if (biz.SavePatFirstPage(dataSource) >= 0)
+                    if (biz.SavePatFirstPage(dataSource,1) >= 0)
                     {
                         lngRes = 1;
                     }
@@ -272,11 +341,16 @@ namespace AutoBa
         #region 事件
 
         #region timer_Tick
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void timer_Tick(object sender, EventArgs e)
         {
             DateTime dateTime = DateTime.Now;
 
-            if (timePoint.IndexOf(DateTime.Now.ToString("HH:mm:ss")) >= 0)
+            if (timePointList.Contains(DateTime.Now.ToString("HH:mm")))
             {
                 try
                 {
@@ -284,7 +358,7 @@ namespace AutoBa
                         return;
 
                     isExecing = true;
-                    this.Exec(dateTime.AddDays(-60).ToString("yyyy-MM-dd"), dateTime.ToString("yyyy-MM-dd"));
+                    this.Exec(dateTime.AddDays(-30).ToString("yyyy-MM-dd"), dateTime.ToString("yyyy-MM-dd"));
                 }
                 catch (Exception ex)
                 {
@@ -356,14 +430,21 @@ namespace AutoBa
         #region btnQuery_Click
         private void btnQuery_Click(object sender, EventArgs e)
         {
+            this.tabControl1.SelectedIndex = 1;
             this.Query();
         }
         #endregion
 
         #region btnUpload_Click
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnUpload_Click(object sender, EventArgs e)
         {
             #region 病案首页
+            this.tabControl1.SelectedIndex = 1;
             this.lblInfo.Visible = true;
             string msg = string.Empty;
             string msg2 = string.Empty;
@@ -411,6 +492,7 @@ namespace AutoBa
             this.lblInfo.Visible = false;
 
             this.Query();
+            this.QueryFail();
         }
         #endregion
 
@@ -456,7 +538,25 @@ namespace AutoBa
 
         #endregion
 
+        private void btnQueryBa_Click(object sender, EventArgs e)
+        {
+            List<EntityQueryBa> dataBa = new List<EntityQueryBa>();
+            List<EntityQueryBa> dataIcare = new List<EntityQueryBa>();
+            string parm = txtJzjlh2.Text;
+            string beginDate = dteStart.Text;
+            string endDate = dteEnd.Text;
+            if (beginDate != string.Empty && endDate != string.Empty)
+            {
+                if (Function.Datetime(beginDate + " 00:00:00") > Function.Datetime(endDate + " 00:00:00"))
+                {
+                    DialogBox.Msg("开始时间不能大于结束时间。");
+                    return;
+                }
+            }
+            new UploadBiz().GetQuerypat(beginDate,endDate,parm, out dataIcare, out dataBa);
 
-
+            this.gcBa.DataSource = dataBa;
+            this.gcIcare.DataSource = dataIcare;
+        }
     }
 }
