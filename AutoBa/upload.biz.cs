@@ -352,6 +352,8 @@ namespace AutoBa
                                     if (string.IsNullOrEmpty(upVo.fpVo.FIDCard))
                                         upVo.fpVo.FIDCard = "无";
                                     upVo.fpVo.FJOB = drrBa["FJOB"].ToString();
+                                    if (string.IsNullOrEmpty(upVo.fpVo.FJOB))
+                                        upVo.fpVo.FJOB = "其他";
                                     upVo.fpVo.FSTATUS = drrBa["FSTATUS"].ToString().Trim();
                                     if (upVo.fpVo.FSTATUS == "已婚")
                                         upVo.fpVo.FSTATUSBH = "2";
@@ -587,6 +589,8 @@ namespace AutoBa
 
                                     upVo.fpVo.FZKTIME = Function.Datetime(upVo.fpVo.FZKDATE + " " + upVo.fpVo.FZKTIME).ToString("yyyyMMddHHmmss");
                                     upVo.fpVo.FJOBBH = drrBa["FJOBBH"].ToString();
+                                    if (string.IsNullOrEmpty(upVo.fpVo.FJOBBH))
+                                        upVo.fpVo.FJOBBH = "90";
                                     upVo.fpVo.FZHFWLYLF01 = Function.Dec(drrBa["FZHFWLYLF01"]);
                                     upVo.fpVo.FZHFWLYLF02 = Function.Dec(drrBa["FZHFWLYLF02"]);
                                     upVo.fpVo.FZYLZDF = Function.Dec(drrBa["FZYLZDF"]);
@@ -1079,6 +1083,8 @@ namespace AutoBa
                                     if (string.IsNullOrEmpty(upVo.fpVo.FIDCard))
                                         upVo.fpVo.FIDCard = "无";
                                     upVo.fpVo.FJOB = drrBa["FJOB"].ToString();
+                                    if (string.IsNullOrEmpty(upVo.fpVo.FJOB))
+                                        upVo.fpVo.FJOB = "其他";
                                     upVo.fpVo.FSTATUS = drrBa["FSTATUS"].ToString().Trim();
                                     if (upVo.fpVo.FSTATUS == "已婚")
                                         upVo.fpVo.FSTATUSBH = "2";
@@ -1314,6 +1320,8 @@ namespace AutoBa
 
                                     upVo.fpVo.FZKTIME = Function.Datetime(upVo.fpVo.FZKDATE + " " + upVo.fpVo.FZKTIME).ToString("yyyyMMddHHmmss");
                                     upVo.fpVo.FJOBBH = drrBa["FJOBBH"].ToString();
+                                    if (string.IsNullOrEmpty(upVo.fpVo.FJOBBH))
+                                        upVo.fpVo.FJOBBH = "90";
                                     upVo.fpVo.FZHFWLYLF01 = Function.Dec(drrBa["FZHFWLYLF01"]);
                                     upVo.fpVo.FZHFWLYLF02 = Function.Dec(drrBa["FZHFWLYLF02"]);
                                     upVo.fpVo.FZYLZDF = Function.Dec(drrBa["FZYLZDF"]);
@@ -2327,10 +2335,12 @@ namespace AutoBa
                             #endregion
 
                             #region 职业
-                            upVo.fpVo.FJOB = drPatient["fjob"].ToString();
+                            upVo.fpVo.FJOB = drPatient["fjob"].ToString().Trim();
+                            if (string.IsNullOrEmpty(upVo.fpVo.FJOB))
+                                upVo.fpVo.FJOB = "其他";
                             #endregion
 
-                            #region 婚姻状况
+                                #region 婚姻状况
                             upVo.fpVo.FSTATUS = drPatient["fstatus"].ToString();
                             if (drPatient["fstatus"].ToString() == "未婚")
                             {
@@ -2902,11 +2912,9 @@ namespace AutoBa
                                     upVo.fpVo.FJOBBH = drD[0]["FBH"].ToString();
                                 }
                             }
-                            if (string.IsNullOrEmpty(upVo.fpVo.FJOBBH))
-                                upVo.fpVo.FJOBBH = "-";
 
                             if (string.IsNullOrEmpty(upVo.fpVo.FJOBBH))
-                                upVo.fpVo.FJOBBH = "-";
+                                upVo.fpVo.FJOBBH = "90";
                             #endregion
 
                             #region 中医类
