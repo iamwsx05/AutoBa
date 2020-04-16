@@ -114,16 +114,17 @@ namespace AutoBa
             {
                 foreach (EntityPatUpload item in lstVo)
                 {
-                    intH = CreateInstace();
-                    
-                    if (intH > 0)
+                    try
                     {
-                        intRet = SetParam(intH, "FN", "SP3_3021");
-                        intRet = SetParam(intH, "JBR", exVo.JBR);
-                        intRet = SetParam(intH, "YYBH", exVo.YYBH);
-                    }
-                    try 
-                    {
+                        #region 入参
+                        intH = CreateInstace();
+                        if (intH > 0)
+                        {
+                            intRet = SetParam(intH, "FN", "SP3_3021");
+                            intRet = SetParam(intH, "JBR", exVo.JBR);
+                            intRet = SetParam(intH, "YYBH", exVo.YYBH);
+                        }
+
                         item.JBR = exVo.JBR;
                         item.Issucess = -1; //-1 上传失败
                         if (item.firstSource == 0)
@@ -131,175 +132,173 @@ namespace AutoBa
                             item.firstMsg = "无首页信息";
                             continue;
                         }
-                            
                         jzjlh = item.JZJLH;
-                        #region 入参
                         string logStr = string.Empty;
-                        logStr+= "JZJLH:" + item.fpVo.JZJLH.ToString().Trim() + Environment.NewLine;//
-                        logStr+= "FWSJGDM:" + exVo.FWSJGDM + Environment.NewLine;//
-                        logStr+= "FFBBHNEW:" + item.fpVo.FFBBHNEW.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FFBNEW:" + item.fpVo.FFBNEW.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FASCARD1:" + item.fpVo.FASCARD1.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FTIMES:" + item.fpVo.FTIMES.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FPRN:" + item.fpVo.FPRN.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FNAME:" + item.fpVo.FNAME.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FSEXBH:" + item.fpVo.FSEXBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "nFSEX:" + item.fpVo.FSEX.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FBIRTHDAY:" + item.fpVo.FBIRTHDAY.ToString() + Environment.NewLine;//
-                        logStr+= "FAGE:" + item.fpVo.FAGE.ToString()  + Environment.NewLine;//
-                        logStr+= "fcountrybh:" + item.fpVo.fcountrybh.ToString()  + Environment.NewLine;//
-                        logStr+= "fcountry:" + item.fpVo.fcountry.ToString()  + Environment.NewLine;//
-                        logStr+= "fnationalitybh:" + item.fpVo.fnationalitybh.ToString()  + Environment.NewLine;//
-                        logStr+= "fnationality:" + item.fpVo.fnationality.ToString()  + Environment.NewLine;//
-                        logStr+= "FCSTZ:" + (Function.Dec(item.fpVo.FCSTZ) / 1000).ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FRYTZ:" + (Function.Dec(item.fpVo.FRYTZ) / 1000).ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FBIRTHPLACE:" + item.fpVo.FBIRTHPLACE.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FNATIVE:" + item.fpVo.FNATIVE.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FIDCard:" + item.fpVo.FIDCard.ToString() + Environment.NewLine;//
-                        logStr+= "FJOB:" + item.fpVo.FJOB.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FSTATUSBH:" + item.fpVo.FSTATUSBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FSTATUS:" + item.fpVo.FSTATUS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FCURRADDR:" + item.fpVo.FCURRADDR.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FCURRTELE:" + item.fpVo.FCURRTELE.ToString() + Environment.NewLine;//
-                        logStr+= "FCURRPOST:" + item.fpVo.FCURRPOST.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FHKADDR:" + item.fpVo.FHKADDR.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FHKPOST:" + item.fpVo.FHKPOST.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FDWNAME:" + item.fpVo.FDWNAME.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FDWADDR:" + item.fpVo.FDWADDR.ToString()  + Environment.NewLine;//
-                        logStr+= "FDWTELE:" + item.fpVo.FDWTELE.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FDWPOST:" + item.fpVo.FDWPOST.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FLXNAME:" + item.fpVo.FLXNAME.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRELATE:" + item.fpVo.FRELATE.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FLXADDR:" + item.fpVo.FLXADDR.ToString() + Environment.NewLine;//
-                        logStr+= "FLXTELE:" + item.fpVo.FLXTELE.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYTJBH:" + item.fpVo.FRYTJBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYTJ:" + item.fpVo.FRYTJ.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYDATE:" + item.fpVo.FRYDATE.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYTIME:" + item.fpVo.FRYTIME.ToString()  + Environment.NewLine;//
-                        logStr+= "FRYTYKH:" + item.fpVo.FRYTYKH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYDEPT:" + item.fpVo.FRYDEPT.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYBS:" + item.fpVo.FRYBS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZKTYKH:" + item.fpVo.FZKTYKH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZKDEPT:" + item.fpVo.FZKDEPT.ToString()  + Environment.NewLine;//
-                        logStr+= "FZKTIME:" + item.fpVo.FZKTIME.ToString()  + Environment.NewLine;//
-                        logStr+= "FCYDATE:" + item.fpVo.FCYDATE.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FCYTIME:" + item.fpVo.FCYTIME.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FCYTYKH:" + item.fpVo.FCYTYKH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FCYDEPT:" + item.fpVo.FCYDEPT.ToString() + Environment.NewLine;//
-                        logStr+= "FCYBS:" + item.fpVo.FCYBS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FDAYS:" + item.fpVo.FDAYS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FMZZDBH:" + item.fpVo.FMZZDBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FMZZD:" + item.fpVo.FMZZD.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FMZDOCTBH:" + item.fpVo.FMZDOCTBH + Environment.NewLine;//
-                        logStr+= "FMZDOCT:" + item.fpVo.FMZDOCT.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FJBFXBH:" + item.fpVo.FJBFXBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FJBFX:" + item.fpVo.FJBFX.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FYCLJBH:" + item.fpVo.FYCLJBH.ToString() + Environment.NewLine;//
-                        logStr+= "FYCLJ:" + item.fpVo.FYCLJ.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FQJTIMES:" + item.fpVo.FQJTIMES.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FQJSUCTIMES:" + item.fpVo.FQJSUCTIMES.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FPHZD:" + item.fpVo.FPHZD.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FPHZDNUM:" + item.fpVo.FPHZDNUM.ToString() + Environment.NewLine;//
-                        logStr+= "FPHZDBH:" + item.fpVo.FPHZDBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FIFGMYWBH:" + item.fpVo.FIFGMYWBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FIFGMYW:" + item.fpVo.FIFGMYW.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FGMYW:" + item.fpVo.FGMYW.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FBODYBH:" + item.fpVo.FBODYBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FBODY:" + item.fpVo.FBODY.ToString() + Environment.NewLine;//
-                        logStr+= "FBLOODBH:" + item.fpVo.FBLOODBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FBLOOD:" + item.fpVo.FBLOOD.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRHBH:" + item.fpVo.FRHBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRH:" + item.fpVo.FRH.ToString() + Environment.NewLine;//
-                        logStr+= "FKZRBH:" + item.fpVo.FKZRBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FKZR:" + item.fpVo.FKZR.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZRDOCTBH:" + item.fpVo.FZRDOCTBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZRDOCTOR:" + item.fpVo.FZRDOCTOR.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZZDOCTBH:" + item.fpVo.FZZDOCTBH.ToString() + Environment.NewLine;//
-                        logStr+= "FZZDOCT:" + item.fpVo.FZZDOCT.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZYDOCTBH:" + item.fpVo.FZYDOCTBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZYDOCT:" + item.fpVo.FZYDOCT.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FNURSEBH:" + item.fpVo.FNURSEBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FNURSE:" + item.fpVo.FNURSE.ToString() + Environment.NewLine;//
-                        logStr+= "FJXDOCTBH:" + item.fpVo.FJXDOCTBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FJXDOCT:" + item.fpVo.FJXDOCT.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FSXDOCTBH:" + item.fpVo.FSXDOCTBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FSXDOCT:" + item.fpVo.FSXDOCT.ToString() + Environment.NewLine;//
-                        logStr+= "FBMYBH:" + item.fpVo.FBMYBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FBMY:" + item.fpVo.FBMY.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FQUALITYBH:" + item.fpVo.FQUALITYBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FQUALITY:" + item.fpVo.FQUALITY.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZKDOCTBH:" + item.fpVo.FZKDOCTBH.ToString() + Environment.NewLine;//
-                        logStr+= "FZKDOCT:" + item.fpVo.FZKDOCT.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZKNURSEBH:" + item.fpVo.FZKNURSEBH.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZKNURSE:" + item.fpVo.FZKNURSE.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FZKRQ:" + item.fpVo.FZKRQ.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FLYFSBH:" + item.fpVo.FLYFSBH.ToString() + Environment.NewLine;//
-                        logStr+= "FLYFS:" + item.fpVo.FLYFS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FYZOUTHOSTITAL:" + item.fpVo.FYZOUTHOSTITAL.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "nFSQOUTHOSTITAL:" + item.fpVo.FSQOUTHOSTITAL.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FISAGAINRYBH:" + item.fpVo.FISAGAINRYBH.ToString()  + Environment.NewLine;//
-                        logStr+= "FISAGAINRY:" + item.fpVo.FISAGAINRY.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FISAGAINRYMD:" + item.fpVo.FISAGAINRYMD.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYQHMDAYS:" + item.fpVo.FRYQHMDAYS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYQHMHOURS:" + item.fpVo.FRYQHMHOURS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYQHMMINS:" + item.fpVo.FRYQHMMINS.ToString()  + Environment.NewLine;//
-                        logStr+= "FRYQHMCOUNTS:" + item.fpVo.FRYQHMCOUNTS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYHMDAYS:" + item.fpVo.FRYHMDAYS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYHMHOURS:" + item.fpVo.FRYHMHOURS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYHMMINS:" + item.fpVo.FRYHMMINS.ToString().Trim()  + Environment.NewLine;//
-                        logStr+= "FRYHMCOUNTS:" + item.fpVo.FRYHMCOUNTS.ToString()  + Environment.NewLine;//
-                        logStr+= "FSUM1:" + item.fpVo.FSUM1.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZFJE:" + item.fpVo.FZFJE.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZHFWLYLF:" + item.fpVo.FZHFWLYLF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZHFWLCZF:" + item.fpVo.FZHFWLCZF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZHFWLHLF:" + item.fpVo.FZHFWLHLF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZHFWLQTF:" + item.fpVo.FZHFWLQTF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZDLBLF:" + item.fpVo.FZDLBLF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZDLSSSF:" + item.fpVo.FZDLSSSF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZDLYXF:" + item.fpVo.FZDLYXF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZDLLCF:" + item.fpVo.FZDLLCF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZLLFFSSF:" + item.fpVo.FZLLFFSSF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZLLFWLZWLF:" + item.fpVo.FZLLFWLZWLF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZLLFSSF:" + item.fpVo.FZLLFSSF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZLLFMZF:" + item.fpVo.FZLLFMZF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZLLFSSZLF:" + item.fpVo.FZLLFSSZLF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FKFLKFF:" + item.fpVo.FKFLKFF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZYLZF:" + item.fpVo.FZYLZF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FXYF:" + item.fpVo.FXYF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FXYLGJF:" + item.fpVo.FXYLGJF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZCHYF:" + item.fpVo.FZCHYF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZCYF:" + item.fpVo.FZCYF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FXYLXF:" + item.fpVo.FXYLXF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FXYLBQBF:" + item.fpVo.FXYLBQBF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FXYLQDBF:" + item.fpVo.FXYLQDBF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FXYLYXYZF:" + item.fpVo.FXYLYXYZF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FXYLXBYZF:" + item.fpVo.FXYLXBYZF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FHCLCJF:" + item.fpVo.FHCLCJF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FHCLZLF:" + item.fpVo.FHCLZLF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FHCLSSF:" + item.fpVo.FHCLSSF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FQTF:" + item.fpVo.FQTF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FBGLX:" + item.fpVo.FBGLX.ToString() + Environment.NewLine;//
-                        logStr+= "GMSFHM:" + item.fpVo.GMSFHM.ToString() + Environment.NewLine;//
-                        logStr+= "YYBH:" + exVo.YYBH.ToString() + Environment.NewLine;//
-                        logStr+= "FZYF:" + item.fpVo.FZYF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZKDATE:" + item.fpVo.FZKDATE.ToString()  + Environment.NewLine;//
-                        logStr+= "FJOBBH:" + item.fpVo.FJOBBH.ToString()  + Environment.NewLine;//
-                        logStr+= "FZHFWLYLF01:" + item.fpVo.FZHFWLYLF01.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZHFWLYLF02:" + item.fpVo.FZHFWLYLF02.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZYLZDF:" + item.fpVo.FZYLZDF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZYLZLF:" + item.fpVo.FZYLZLF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZYLZLF01:" + item.fpVo.FZYLZLF01.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZYLZLF02:" + item.fpVo.FZYLZLF02.ToString("0.00") + Environment.NewLine;//
-                        logStr+= "FZYLZLF03:" + item.fpVo.FZYLZLF03.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZYLZLF04:" + item.fpVo.FZYLZLF04.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZYLZLF05:" + item.fpVo.FZYLZLF05.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZYLZLF06:" + item.fpVo.FZYLZLF06.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZYLQTF:" + item.fpVo.FZYLQTF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZCLJGZJF:" + item.fpVo.FZCLJGZJF.ToString("0.00")  + Environment.NewLine;//
-                        logStr+= "FZYLQTF01:" + item.fpVo.FZYLQTF01.ToString("0.00") + Environment.NewLine;//
-                        logStr+= "FZYLQTF02:" + item.fpVo.FZYLQTF02.ToString("0.00") + Environment.NewLine;//
-                        logStr+= "ZYH:" + item.fpVo.ZYH.ToString() + Environment.NewLine;//
-                        logStr+= "FPHM:" + item.fpVo.FPHM.ToString() + Environment.NewLine;//
+                        logStr += "JZJLH:" + item.fpVo.JZJLH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FWSJGDM:" + exVo.FWSJGDM + Environment.NewLine;//
+                        logStr += "FFBBHNEW:" + item.fpVo.FFBBHNEW.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FFBNEW:" + item.fpVo.FFBNEW.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FASCARD1:" + item.fpVo.FASCARD1.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FTIMES:" + item.fpVo.FTIMES.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FPRN:" + item.fpVo.FPRN.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FNAME:" + item.fpVo.FNAME.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FSEXBH:" + item.fpVo.FSEXBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "nFSEX:" + item.fpVo.FSEX.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FBIRTHDAY:" + item.fpVo.FBIRTHDAY.ToString() + Environment.NewLine;//
+                        logStr += "FAGE:" + item.fpVo.FAGE.ToString() + Environment.NewLine;//
+                        logStr += "fcountrybh:" + item.fpVo.fcountrybh.ToString() + Environment.NewLine;//
+                        logStr += "fcountry:" + item.fpVo.fcountry.ToString() + Environment.NewLine;//
+                        logStr += "fnationalitybh:" + item.fpVo.fnationalitybh.ToString() + Environment.NewLine;//
+                        logStr += "fnationality:" + item.fpVo.fnationality.ToString() + Environment.NewLine;//
+                        logStr += "FCSTZ:" + (Function.Dec(item.fpVo.FCSTZ) / 1000).ToString("0.00") + Environment.NewLine;//
+                        logStr += "FRYTZ:" + (Function.Dec(item.fpVo.FRYTZ) / 1000).ToString("0.00") + Environment.NewLine;//
+                        logStr += "FBIRTHPLACE:" + item.fpVo.FBIRTHPLACE.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FNATIVE:" + item.fpVo.FNATIVE.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FIDCard:" + item.fpVo.FIDCard.ToString() + Environment.NewLine;//
+                        logStr += "FJOB:" + item.fpVo.FJOB.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FSTATUSBH:" + item.fpVo.FSTATUSBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FSTATUS:" + item.fpVo.FSTATUS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FCURRADDR:" + item.fpVo.FCURRADDR.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FCURRTELE:" + item.fpVo.FCURRTELE.ToString() + Environment.NewLine;//
+                        logStr += "FCURRPOST:" + item.fpVo.FCURRPOST.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FHKADDR:" + item.fpVo.FHKADDR.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FHKPOST:" + item.fpVo.FHKPOST.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FDWNAME:" + item.fpVo.FDWNAME.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FDWADDR:" + item.fpVo.FDWADDR.ToString() + Environment.NewLine;//
+                        logStr += "FDWTELE:" + item.fpVo.FDWTELE.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FDWPOST:" + item.fpVo.FDWPOST.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FLXNAME:" + item.fpVo.FLXNAME.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRELATE:" + item.fpVo.FRELATE.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FLXADDR:" + item.fpVo.FLXADDR.ToString() + Environment.NewLine;//
+                        logStr += "FLXTELE:" + item.fpVo.FLXTELE.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYTJBH:" + item.fpVo.FRYTJBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYTJ:" + item.fpVo.FRYTJ.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYDATE:" + item.fpVo.FRYDATE.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYTIME:" + item.fpVo.FRYTIME.ToString() + Environment.NewLine;//
+                        logStr += "FRYTYKH:" + item.fpVo.FRYTYKH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYDEPT:" + item.fpVo.FRYDEPT.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYBS:" + item.fpVo.FRYBS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZKTYKH:" + item.fpVo.FZKTYKH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZKDEPT:" + item.fpVo.FZKDEPT.ToString() + Environment.NewLine;//
+                        logStr += "FZKTIME:" + item.fpVo.FZKTIME.ToString() + Environment.NewLine;//
+                        logStr += "FCYDATE:" + item.fpVo.FCYDATE.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FCYTIME:" + item.fpVo.FCYTIME.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FCYTYKH:" + item.fpVo.FCYTYKH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FCYDEPT:" + item.fpVo.FCYDEPT.ToString() + Environment.NewLine;//
+                        logStr += "FCYBS:" + item.fpVo.FCYBS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FDAYS:" + item.fpVo.FDAYS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FMZZDBH:" + item.fpVo.FMZZDBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FMZZD:" + item.fpVo.FMZZD.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FMZDOCTBH:" + item.fpVo.FMZDOCTBH + Environment.NewLine;//
+                        logStr += "FMZDOCT:" + item.fpVo.FMZDOCT.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FJBFXBH:" + item.fpVo.FJBFXBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FJBFX:" + item.fpVo.FJBFX.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FYCLJBH:" + item.fpVo.FYCLJBH.ToString() + Environment.NewLine;//
+                        logStr += "FYCLJ:" + item.fpVo.FYCLJ.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FQJTIMES:" + item.fpVo.FQJTIMES.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FQJSUCTIMES:" + item.fpVo.FQJSUCTIMES.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FPHZD:" + item.fpVo.FPHZD.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FPHZDNUM:" + item.fpVo.FPHZDNUM.ToString() + Environment.NewLine;//
+                        logStr += "FPHZDBH:" + item.fpVo.FPHZDBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FIFGMYWBH:" + item.fpVo.FIFGMYWBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FIFGMYW:" + item.fpVo.FIFGMYW.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FGMYW:" + item.fpVo.FGMYW.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FBODYBH:" + item.fpVo.FBODYBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FBODY:" + item.fpVo.FBODY.ToString() + Environment.NewLine;//
+                        logStr += "FBLOODBH:" + item.fpVo.FBLOODBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FBLOOD:" + item.fpVo.FBLOOD.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRHBH:" + item.fpVo.FRHBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRH:" + item.fpVo.FRH.ToString() + Environment.NewLine;//
+                        logStr += "FKZRBH:" + item.fpVo.FKZRBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FKZR:" + item.fpVo.FKZR.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZRDOCTBH:" + item.fpVo.FZRDOCTBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZRDOCTOR:" + item.fpVo.FZRDOCTOR.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZZDOCTBH:" + item.fpVo.FZZDOCTBH.ToString() + Environment.NewLine;//
+                        logStr += "FZZDOCT:" + item.fpVo.FZZDOCT.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZYDOCTBH:" + item.fpVo.FZYDOCTBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZYDOCT:" + item.fpVo.FZYDOCT.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FNURSEBH:" + item.fpVo.FNURSEBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FNURSE:" + item.fpVo.FNURSE.ToString() + Environment.NewLine;//
+                        logStr += "FJXDOCTBH:" + item.fpVo.FJXDOCTBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FJXDOCT:" + item.fpVo.FJXDOCT.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FSXDOCTBH:" + item.fpVo.FSXDOCTBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FSXDOCT:" + item.fpVo.FSXDOCT.ToString() + Environment.NewLine;//
+                        logStr += "FBMYBH:" + item.fpVo.FBMYBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FBMY:" + item.fpVo.FBMY.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FQUALITYBH:" + item.fpVo.FQUALITYBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FQUALITY:" + item.fpVo.FQUALITY.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZKDOCTBH:" + item.fpVo.FZKDOCTBH.ToString() + Environment.NewLine;//
+                        logStr += "FZKDOCT:" + item.fpVo.FZKDOCT.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZKNURSEBH:" + item.fpVo.FZKNURSEBH.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZKNURSE:" + item.fpVo.FZKNURSE.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FZKRQ:" + item.fpVo.FZKRQ.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FLYFSBH:" + item.fpVo.FLYFSBH.ToString() + Environment.NewLine;//
+                        logStr += "FLYFS:" + item.fpVo.FLYFS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FYZOUTHOSTITAL:" + item.fpVo.FYZOUTHOSTITAL.ToString().Trim() + Environment.NewLine;//
+                        logStr += "nFSQOUTHOSTITAL:" + item.fpVo.FSQOUTHOSTITAL.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FISAGAINRYBH:" + item.fpVo.FISAGAINRYBH.ToString() + Environment.NewLine;//
+                        logStr += "FISAGAINRY:" + item.fpVo.FISAGAINRY.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FISAGAINRYMD:" + item.fpVo.FISAGAINRYMD.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYQHMDAYS:" + item.fpVo.FRYQHMDAYS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYQHMHOURS:" + item.fpVo.FRYQHMHOURS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYQHMMINS:" + item.fpVo.FRYQHMMINS.ToString() + Environment.NewLine;//
+                        logStr += "FRYQHMCOUNTS:" + item.fpVo.FRYQHMCOUNTS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYHMDAYS:" + item.fpVo.FRYHMDAYS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYHMHOURS:" + item.fpVo.FRYHMHOURS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYHMMINS:" + item.fpVo.FRYHMMINS.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FRYHMCOUNTS:" + item.fpVo.FRYHMCOUNTS.ToString() + Environment.NewLine;//
+                        logStr += "FSUM1:" + item.fpVo.FSUM1.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZFJE:" + item.fpVo.FZFJE.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZHFWLYLF:" + item.fpVo.FZHFWLYLF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZHFWLCZF:" + item.fpVo.FZHFWLCZF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZHFWLHLF:" + item.fpVo.FZHFWLHLF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZHFWLQTF:" + item.fpVo.FZHFWLQTF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZDLBLF:" + item.fpVo.FZDLBLF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZDLSSSF:" + item.fpVo.FZDLSSSF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZDLYXF:" + item.fpVo.FZDLYXF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZDLLCF:" + item.fpVo.FZDLLCF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZLLFFSSF:" + item.fpVo.FZLLFFSSF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZLLFWLZWLF:" + item.fpVo.FZLLFWLZWLF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZLLFSSF:" + item.fpVo.FZLLFSSF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZLLFMZF:" + item.fpVo.FZLLFMZF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZLLFSSZLF:" + item.fpVo.FZLLFSSZLF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FKFLKFF:" + item.fpVo.FKFLKFF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLZF:" + item.fpVo.FZYLZF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FXYF:" + item.fpVo.FXYF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FXYLGJF:" + item.fpVo.FXYLGJF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZCHYF:" + item.fpVo.FZCHYF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZCYF:" + item.fpVo.FZCYF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FXYLXF:" + item.fpVo.FXYLXF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FXYLBQBF:" + item.fpVo.FXYLBQBF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FXYLQDBF:" + item.fpVo.FXYLQDBF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FXYLYXYZF:" + item.fpVo.FXYLYXYZF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FXYLXBYZF:" + item.fpVo.FXYLXBYZF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FHCLCJF:" + item.fpVo.FHCLCJF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FHCLZLF:" + item.fpVo.FHCLZLF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FHCLSSF:" + item.fpVo.FHCLSSF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FQTF:" + item.fpVo.FQTF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FBGLX:" + item.fpVo.FBGLX.ToString() + Environment.NewLine;//
+                        logStr += "GMSFHM:" + item.fpVo.GMSFHM.ToString() + Environment.NewLine;//
+                        logStr += "YYBH:" + exVo.YYBH.ToString() + Environment.NewLine;//
+                        logStr += "FZYF:" + item.fpVo.FZYF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZKDATE:" + item.fpVo.FZKDATE.ToString() + Environment.NewLine;//
+                        logStr += "FJOBBH:" + item.fpVo.FJOBBH.ToString() + Environment.NewLine;//
+                        logStr += "FZHFWLYLF01:" + item.fpVo.FZHFWLYLF01.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZHFWLYLF02:" + item.fpVo.FZHFWLYLF02.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLZDF:" + item.fpVo.FZYLZDF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLZLF:" + item.fpVo.FZYLZLF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLZLF01:" + item.fpVo.FZYLZLF01.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLZLF02:" + item.fpVo.FZYLZLF02.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLZLF03:" + item.fpVo.FZYLZLF03.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLZLF04:" + item.fpVo.FZYLZLF04.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLZLF05:" + item.fpVo.FZYLZLF05.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLZLF06:" + item.fpVo.FZYLZLF06.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLQTF:" + item.fpVo.FZYLQTF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZCLJGZJF:" + item.fpVo.FZCLJGZJF.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLQTF01:" + item.fpVo.FZYLQTF01.ToString("0.00") + Environment.NewLine;//
+                        logStr += "FZYLQTF02:" + item.fpVo.FZYLQTF02.ToString("0.00") + Environment.NewLine;//
+                        logStr += "ZYH:" + item.fpVo.ZYH.ToString() + Environment.NewLine;//
+                        logStr += "FPHM:" + item.fpVo.FPHM.ToString() + Environment.NewLine;//
                         Log.Output(logStr);
 
                         if (item.firstSource == 1 || item.firstSource == 2)
@@ -480,7 +479,7 @@ namespace AutoBa
 
                         intRet = SetParam(intH, "ZYH", item.fpVo.ZYH);
                         intRet = SetParam(intH, "FPHM", item.fpVo.FPHM);
-                        
+
                         ++j;
                         #endregion
 
@@ -648,32 +647,32 @@ namespace AutoBa
 
                                 logStr1 += "数据集（肿瘤卡）：" + Environment.NewLine;
 
-                                logStr1 += "FFLFSBH" +  item.fpVo.lstZlVo[i].FFLFSBH+ Environment.NewLine;
-                                logStr1 += "FFLFS" +  item.fpVo.lstZlVo[i].FFLFS+ Environment.NewLine;
-                                logStr1 += "FFLCXBH"+ item.fpVo.lstZlVo[i].FFLCXBH+ Environment.NewLine;
-                                logStr1 += "FFLCX" + item.fpVo.lstZlVo[i].FFLCX+ Environment.NewLine;
-                                logStr1 += "FFLZZBH" + item.fpVo.lstZlVo[i].FFLZZBH+ Environment.NewLine;
-                                logStr1 += "FFLZZ" + item.fpVo.lstZlVo[i].FFLZZ+ Environment.NewLine;
-                                logStr1 += "FYJY" + item.fpVo.lstZlVo[i].FYJY+ Environment.NewLine;
-                                logStr1 += "FYCS" + item.fpVo.lstZlVo[i].FYCS+ Environment.NewLine;
-                                logStr1 += "FYTS" + item.fpVo.lstZlVo[i].FYTS+ Environment.NewLine;
-                                logStr1 += "FYRQ1" + item.fpVo.lstZlVo[i].FYRQ1+ Environment.NewLine;
-                                logStr1 += "FYRQ2" + item.fpVo.lstZlVo[i].FYRQ2+ Environment.NewLine;
-                                logStr1 += "FQJY" + item.fpVo.lstZlVo[i].FQJY+ Environment.NewLine;
-                                logStr1 += "FQCS" + item.fpVo.lstZlVo[i].FQCS+ Environment.NewLine;
-                                logStr1 += "FQTS" + item.fpVo.lstZlVo[i].FQTS+ Environment.NewLine;
-                                logStr1 += "FQRQ1" + item.fpVo.lstZlVo[i].FQRQ1+ Environment.NewLine;
-                                logStr1 += "FQRQ2" + item.fpVo.lstZlVo[i].FQRQ2+ Environment.NewLine;
-                                logStr1 +=  "FZNAME" + item.fpVo.lstZlVo[i].FZNAME+ Environment.NewLine;
-                                logStr1 += "FZJY" + item.fpVo.lstZlVo[i].FZJY+ Environment.NewLine;
-                                logStr1 += "FZCS" + item.fpVo.lstZlVo[i].FZCS+ Environment.NewLine;
-                                logStr1 += "FZTS" + item.fpVo.lstZlVo[i].FZTS+ Environment.NewLine;
-                                logStr1 += "FZRQ1" + item.fpVo.lstZlVo[i].FZRQ1+ Environment.NewLine;
-                                logStr1 += "FZRQ2" + item.fpVo.lstZlVo[i].FZRQ2+ Environment.NewLine;
-                                logStr1 += "FHLFSBH" + item.fpVo.lstZlVo[i].FHLFSBH+ Environment.NewLine;
-                                logStr1 += "FHLFS" + item.fpVo.lstZlVo[i].FHLFS+ Environment.NewLine;
-                                logStr1 += "FHLFFBH" + item.fpVo.lstZlVo[i].FHLFFBH+ Environment.NewLine;
-                                logStr1 += "FHLFF" + item.fpVo.lstZlVo[i].FHLFF+ Environment.NewLine;
+                                logStr1 += "FFLFSBH" + item.fpVo.lstZlVo[i].FFLFSBH + Environment.NewLine;
+                                logStr1 += "FFLFS" + item.fpVo.lstZlVo[i].FFLFS + Environment.NewLine;
+                                logStr1 += "FFLCXBH" + item.fpVo.lstZlVo[i].FFLCXBH + Environment.NewLine;
+                                logStr1 += "FFLCX" + item.fpVo.lstZlVo[i].FFLCX + Environment.NewLine;
+                                logStr1 += "FFLZZBH" + item.fpVo.lstZlVo[i].FFLZZBH + Environment.NewLine;
+                                logStr1 += "FFLZZ" + item.fpVo.lstZlVo[i].FFLZZ + Environment.NewLine;
+                                logStr1 += "FYJY" + item.fpVo.lstZlVo[i].FYJY + Environment.NewLine;
+                                logStr1 += "FYCS" + item.fpVo.lstZlVo[i].FYCS + Environment.NewLine;
+                                logStr1 += "FYTS" + item.fpVo.lstZlVo[i].FYTS + Environment.NewLine;
+                                logStr1 += "FYRQ1" + item.fpVo.lstZlVo[i].FYRQ1 + Environment.NewLine;
+                                logStr1 += "FYRQ2" + item.fpVo.lstZlVo[i].FYRQ2 + Environment.NewLine;
+                                logStr1 += "FQJY" + item.fpVo.lstZlVo[i].FQJY + Environment.NewLine;
+                                logStr1 += "FQCS" + item.fpVo.lstZlVo[i].FQCS + Environment.NewLine;
+                                logStr1 += "FQTS" + item.fpVo.lstZlVo[i].FQTS + Environment.NewLine;
+                                logStr1 += "FQRQ1" + item.fpVo.lstZlVo[i].FQRQ1 + Environment.NewLine;
+                                logStr1 += "FQRQ2" + item.fpVo.lstZlVo[i].FQRQ2 + Environment.NewLine;
+                                logStr1 += "FZNAME" + item.fpVo.lstZlVo[i].FZNAME + Environment.NewLine;
+                                logStr1 += "FZJY" + item.fpVo.lstZlVo[i].FZJY + Environment.NewLine;
+                                logStr1 += "FZCS" + item.fpVo.lstZlVo[i].FZCS + Environment.NewLine;
+                                logStr1 += "FZTS" + item.fpVo.lstZlVo[i].FZTS + Environment.NewLine;
+                                logStr1 += "FZRQ1" + item.fpVo.lstZlVo[i].FZRQ1 + Environment.NewLine;
+                                logStr1 += "FZRQ2" + item.fpVo.lstZlVo[i].FZRQ2 + Environment.NewLine;
+                                logStr1 += "FHLFSBH" + item.fpVo.lstZlVo[i].FHLFSBH + Environment.NewLine;
+                                logStr1 += "FHLFS" + item.fpVo.lstZlVo[i].FHLFS + Environment.NewLine;
+                                logStr1 += "FHLFFBH" + item.fpVo.lstZlVo[i].FHLFFBH + Environment.NewLine;
+                                logStr1 += "FHLFF" + item.fpVo.lstZlVo[i].FHLFF + Environment.NewLine;
                                 logStr1 += "FPRN" + item.fpVo.lstZlVo[i].FPRN + Environment.NewLine;
 
                                 Log.Output(logStr1);
@@ -705,7 +704,7 @@ namespace AutoBa
                                 logStr2 += "FHLDRUG" + item.fpVo.lstHlVo[i].FHLDRUG + Environment.NewLine;
                                 logStr2 += "FHLPROC" + item.fpVo.lstHlVo[i].FHLPROC + Environment.NewLine;
                                 logStr2 += "FHLLXBH" + item.fpVo.lstHlVo[i].FHLLXBH + Environment.NewLine;
-                                logStr2 +="FHLLX" + item.fpVo.lstHlVo[i].FHLLX + Environment.NewLine;
+                                logStr2 += "FHLLX" + item.fpVo.lstHlVo[i].FHLLX + Environment.NewLine;
                                 logStr2 += "FPRN" + item.fpVo.lstHlVo[i].FPRN + Environment.NewLine;
                                 Log.Output(logStr);
 
@@ -772,6 +771,8 @@ namespace AutoBa
 
                         #endregion
 
+                        #region 上传
+
                         intRet = Run(intH);
                         strValue = new StringBuilder(1024);
                         intRet = GetParam(intH, "FHZ", strValue, 1024);
@@ -797,18 +798,17 @@ namespace AutoBa
                                 item.Issucess = -1; //-1 上传失败
                             item.FailMsg = strValue.ToString();
                         }
+                        DestroyInstance(intH);
+                        #endregion
                     }
                     catch (Exception ex)
                     {
-                        //ExceptionLog.OutPutException("jzjlh-->" + ex);
-                        MessageBox.Show("jzjlh-->" + ex);
+                        ExceptionLog.OutPutException("jzjlh-->" + ex);
+                        //MessageBox.Show("jzjlh-->" + ex);
                         lngRes = -1;
                     }
-                    
-                }
-                DestroyInstance(intH);
+                }  
             }
-           
             return lngRes;
         }
         #endregion
@@ -821,114 +821,127 @@ namespace AutoBa
             string logStr = string.Empty;
             for (int i = 0; i < lstVo.Count;i++ )
             {
-                int intH = CreateInstace();
-                if (intH > 0)
+                try
                 {
-                    if (lstVo[i].xjVo == null)
+                    int intH = CreateInstace();
+                    if (intH > 0)
                     {
+                        if (lstVo[i].xjVo == null)
+                        {
+                            lstVo[i].Issucess = -1; //-1 上传失败
+                            lstVo[i].FailMsg = "就诊记录号:" + lstVo[i].JZJLH + " 住院号：" + lstVo[i].INPATIENTID + "小结为空！";
+                            continue;
+                        }
+                        if (lstVo[i].firstSource == 0)
+                        {
+                            lstVo[i].Issucess = -1; //-1 上传失败
+                            lstVo[i].FailMsg = "无首页信息";
+                            continue;
+                        }
+                        lstVo[i].Issucess = -1;
+
+                        #region log
+                        logStr = string.Empty;
+                        logStr += "出院小结数据上传：" + Environment.NewLine;
+                        logStr += "FN:" + "SP3_3022" + Environment.NewLine;
+                        logStr += "JBR:" + exVo.JBR + Environment.NewLine;
+                        logStr += "YYBH:" + exVo.YYBH + Environment.NewLine;
+                        logStr += "JZJLH:" + lstVo[i].xjVo.JZJLH + Environment.NewLine;
+                        logStr += "MZH:" + lstVo[i].xjVo.MZH + Environment.NewLine;
+                        logStr += "ZYH:" + lstVo[i].xjVo.ZYH + Environment.NewLine;
+                        logStr += "MZZD:" + lstVo[i].xjVo.MZZD + Environment.NewLine;
+                        logStr += "RYZD:" + lstVo[i].xjVo.RYZD + Environment.NewLine;
+                        logStr += "CYZD:" + lstVo[i].xjVo.CYZD + Environment.NewLine;
+                        logStr += "XM:" + lstVo[i].xjVo.XM + Environment.NewLine;
+                        logStr += "XB:" + lstVo[i].xjVo.XB + Environment.NewLine;
+                        logStr += "NL:" + lstVo[i].xjVo.NL + Environment.NewLine;
+                        logStr += "ZY:" + lstVo[i].xjVo.ZY + Environment.NewLine;
+                        logStr += "JG:" + lstVo[i].xjVo.JG + Environment.NewLine;
+                        logStr += "RYRQ:" + lstVo[i].xjVo.RYRQ + Environment.NewLine;
+                        logStr += "CYRQ:" + lstVo[i].xjVo.CYRQ + Environment.NewLine;
+                        logStr += "ZYTS:" + lstVo[i].xjVo.ZYTS + Environment.NewLine;
+                        logStr += "YJDZ:" + lstVo[i].xjVo.YJDZ + Environment.NewLine;
+                        logStr += "ZLJG:" + lstVo[i].xjVo.ZLJG + Environment.NewLine;
+                        logStr += "YSQM:" + lstVo[i].xjVo.YSQM + Environment.NewLine;
+                        logStr += "RYQK:" + lstVo[i].xjVo.RYQK + Environment.NewLine;
+                        logStr += "RYHCLGC:" + lstVo[i].xjVo.RYHCLGC + Environment.NewLine;
+                        logStr += "CYSQK:" + lstVo[i].xjVo.CYSQK + Environment.NewLine;
+                        logStr += "GMSFHM:" + lstVo[i].xjVo.GMSFHM + Environment.NewLine;
+                        logStr += "FTIMES:" + lstVo[i].xjVo.FTIMES + Environment.NewLine;
+                        logStr += "FSUM1:" + lstVo[i].xjVo.FSUM1.ToString("0.00") + Environment.NewLine;
+                        logStr += "FPHM:" + lstVo[i].xjVo.FPHM + Environment.NewLine;
+
+
+                        Log.Output(logStr);
+                        #endregion
+
+                        #region 入参
+                        intRet = SetParam(intH, "FN", "SP3_3022");
+                        intRet = SetParam(intH, "JBR", exVo.JBR);
+                        intRet = SetParam(intH, "YYBH", exVo.YYBH);
+                        intRet = SetParam(intH, "JZJLH", lstVo[i].xjVo.JZJLH);//
+                        intRet = SetParam(intH, "MZH", lstVo[i].xjVo.MZH);//
+                        intRet = SetParam(intH, "ZYH", lstVo[i].xjVo.ZYH);//
+                        intRet = SetParam(intH, "MZZD", lstVo[i].xjVo.MZZD);
+                        intRet = SetParam(intH, "RYZD", lstVo[i].xjVo.RYZD);
+                        intRet = SetParam(intH, "CYZD", lstVo[i].xjVo.CYZD);
+                        intRet = SetParam(intH, "XM", lstVo[i].xjVo.XM);
+                        intRet = SetParam(intH, "XB", lstVo[i].xjVo.XB);
+                        intRet = SetParam(intH, "NL", lstVo[i].xjVo.NL);
+                        intRet = SetParam(intH, "ZY", lstVo[i].xjVo.ZY);
+                        intRet = SetParam(intH, "JG", lstVo[i].xjVo.JG);
+                        intRet = SetParam(intH, "RYRQ", lstVo[i].xjVo.RYRQ);
+                        intRet = SetParam(intH, "CYRQ", lstVo[i].xjVo.CYRQ);
+                        intRet = SetParam(intH, "ZYTS", lstVo[i].xjVo.ZYTS);
+                        intRet = SetParam(intH, "YJDZ", lstVo[i].xjVo.YJDZ);
+                        intRet = SetParam(intH, "ZLJG", lstVo[i].xjVo.ZLJG);
+                        intRet = SetParam(intH, "CYYZ", lstVo[i].xjVo.CYYZ);
+                        intRet = SetParam(intH, "YSQM", lstVo[i].xjVo.YSQM);
+                        intRet = SetParam(intH, "RYQK", lstVo[i].xjVo.RYQK);
+                        intRet = SetParam(intH, "RYHCLGC", lstVo[i].xjVo.RYHCLGC);
+                        intRet = SetParam(intH, "CYSQK", lstVo[i].xjVo.CYSQK);
+                        intRet = SetParam(intH, "GMSFHM", lstVo[i].xjVo.GMSFHM);
+
+                        intRet = SetParam(intH, "FTIMES", lstVo[i].xjVo.FTIMES);
+                        intRet = SetParam(intH, "FSUM1", lstVo[i].xjVo.FSUM1.ToString("0.00"));
+                        intRet = SetParam(intH, "FPHM", lstVo[i].xjVo.FPHM);
+
+                        intRet = Run(intH);
+                        #endregion
+                    }
+
+                    #region 上传
+                    strValue = new StringBuilder(1024);
+                    intRet = GetParam(intH, "FHZ", strValue, 1024);
+                    if (strValue.ToString() == "1")
+                    {
+                        StringBuilder sbValue = new StringBuilder(1024);
+                        intRet = GetParam(intH, "MSG", sbValue, 1024);
+                        string strCGBZ = sbValue.ToString().Trim();//原因
+                        if (strCGBZ == "执行成功！" || strCGBZ == "1")
+                        {
+                            lngRes = 1;
+                            lstVo[i].JBR = exVo.JBR;
+                            lstVo[i].Issucess = 1;//1  上传成功
+                            lstVo[i].FailMsg = "";
+                        }
+                    }
+                    else
+                    {
+                        lngRes = -1;
+                        intRet = GetParam(intH, "MSG", strValue, 1024);
+                        ExceptionLog.OutPutException(lstVo[i].JZJLH + "-" + lstVo[i].INPATIENTID + ":" + strValue.ToString());
                         lstVo[i].Issucess = -1; //-1 上传失败
-                        lstVo[i].FailMsg = "就诊记录号:" + lstVo[i].JZJLH + " 住院号：" + lstVo[i].INPATIENTID + "小结为空！";
-                        continue;
+                        lstVo[i].FailMsg = strValue.ToString();
                     }
-                    if (lstVo[i].firstSource == 0)
-                    {
-                        lstVo[i].Issucess = -1; //-1 上传失败
-                        lstVo[i].FailMsg = "无首页信息";
-                        continue;
-                    }
-                    lstVo[i].Issucess = -1;
-                    logStr = string.Empty;
-                    logStr += "出院小结数据上传：" + Environment.NewLine;
-                    logStr +=  "FN:" + "SP3_3022"+ Environment.NewLine;
-                    logStr +=  "JBR:" + exVo.JBR+ Environment.NewLine;
-                    logStr +=  "YYBH:" + exVo.YYBH+ Environment.NewLine;
-                    logStr +=  "JZJLH:" + lstVo[i].xjVo.JZJLH+ Environment.NewLine;
-                    logStr +=  "MZH:" + lstVo[i].xjVo.MZH+ Environment.NewLine;
-                    logStr +=  "ZYH:" + lstVo[i].xjVo.ZYH+ Environment.NewLine;
-                    logStr +=  "MZZD:" + lstVo[i].xjVo.MZZD+ Environment.NewLine;
-                    logStr +=  "RYZD:" + lstVo[i].xjVo.RYZD+ Environment.NewLine;
-                    logStr +=  "CYZD:" + lstVo[i].xjVo.CYZD+ Environment.NewLine;
-                    logStr +=  "XM:" + lstVo[i].xjVo.XM+ Environment.NewLine;
-                    logStr +=  "XB:" + lstVo[i].xjVo.XB+ Environment.NewLine;
-                    logStr +=  "NL:" + lstVo[i].xjVo.NL+ Environment.NewLine;
-                    logStr +=  "ZY:" + lstVo[i].xjVo.ZY+ Environment.NewLine;
-                    logStr +=  "JG:" + lstVo[i].xjVo.JG+ Environment.NewLine;
-                    logStr +=  "RYRQ:" + lstVo[i].xjVo.RYRQ+ Environment.NewLine;
-                    logStr +=  "CYRQ:" + lstVo[i].xjVo.CYRQ+ Environment.NewLine;
-                    logStr +=  "ZYTS:" + lstVo[i].xjVo.ZYTS+ Environment.NewLine;
-                    logStr +=  "YJDZ:" + lstVo[i].xjVo.YJDZ+ Environment.NewLine;
-                    logStr +=  "ZLJG:" + lstVo[i].xjVo.ZLJG+ Environment.NewLine;
-                    logStr +=  "YSQM:" + lstVo[i].xjVo.YSQM+ Environment.NewLine;
-                    logStr +=  "RYQK:" + lstVo[i].xjVo.RYQK+ Environment.NewLine;
-                    logStr +=  "RYHCLGC:" + lstVo[i].xjVo.RYHCLGC+ Environment.NewLine;
-                    logStr +=  "CYSQK:" + lstVo[i].xjVo.CYSQK+ Environment.NewLine;
-                    logStr += "GMSFHM:" + lstVo[i].xjVo.GMSFHM + Environment.NewLine;
-                    logStr += "FTIMES:" + lstVo[i].xjVo.FTIMES + Environment.NewLine;
-                    logStr += "FSUM1:" + lstVo[i].xjVo.FSUM1.ToString("0.00") + Environment.NewLine;
-                    logStr += "FPHM:" + lstVo[i].xjVo.FPHM + Environment.NewLine;
-
-
-                    Log.Output(logStr);
-
-                    intRet = SetParam(intH, "FN", "SP3_3022");
-                    intRet = SetParam(intH, "JBR", exVo.JBR);
-                    intRet = SetParam(intH, "YYBH", exVo.YYBH);
-                    intRet = SetParam(intH, "JZJLH", lstVo[i].xjVo.JZJLH);//
-                    intRet = SetParam(intH, "MZH", lstVo[i].xjVo.MZH);//
-                    intRet = SetParam(intH, "ZYH", lstVo[i].xjVo.ZYH);//
-                    intRet = SetParam(intH, "MZZD", lstVo[i].xjVo.MZZD);
-                    intRet = SetParam(intH, "RYZD", lstVo[i].xjVo.RYZD);
-                    intRet = SetParam(intH, "CYZD", lstVo[i].xjVo.CYZD);
-                    intRet = SetParam(intH, "XM", lstVo[i].xjVo.XM);
-                    intRet = SetParam(intH, "XB", lstVo[i].xjVo.XB);
-                    intRet = SetParam(intH, "NL", lstVo[i].xjVo.NL);
-                    intRet = SetParam(intH, "ZY", lstVo[i].xjVo.ZY);
-                    intRet = SetParam(intH, "JG", lstVo[i].xjVo.JG);
-                    intRet = SetParam(intH, "RYRQ", lstVo[i].xjVo.RYRQ);
-                    intRet = SetParam(intH, "CYRQ", lstVo[i].xjVo.CYRQ);
-                    intRet = SetParam(intH, "ZYTS", lstVo[i].xjVo.ZYTS);
-                    intRet = SetParam(intH, "YJDZ", lstVo[i].xjVo.YJDZ);
-                    intRet = SetParam(intH, "ZLJG", lstVo[i].xjVo.ZLJG);
-                    intRet = SetParam(intH, "CYYZ", lstVo[i].xjVo.CYYZ);
-                    intRet = SetParam(intH, "YSQM", lstVo[i].xjVo.YSQM);
-                    intRet = SetParam(intH, "RYQK", lstVo[i].xjVo.RYQK);
-                    intRet = SetParam(intH, "RYHCLGC", lstVo[i].xjVo.RYHCLGC);
-                    intRet = SetParam(intH, "CYSQK", lstVo[i].xjVo.CYSQK);
-                    intRet = SetParam(intH, "GMSFHM", lstVo[i].xjVo.GMSFHM);
-
-                    intRet = SetParam(intH, "FTIMES", lstVo[i].xjVo.FTIMES);
-                    intRet = SetParam(intH, "FSUM1", lstVo[i].xjVo.FSUM1.ToString("0.00"));
-                    intRet = SetParam(intH, "FPHM", lstVo[i].xjVo.FPHM);
-
-                    intRet = Run(intH);
+                    DestroyInstance(intH);
+                    #endregion
                 }
-                strValue = new StringBuilder(1024);
-                intRet = GetParam(intH, "FHZ", strValue, 1024);
-                if (strValue.ToString() == "1")
+                catch (Exception ex)
                 {
-                    StringBuilder sbValue = new StringBuilder(1024);
-                    intRet = GetParam(intH, "MSG", sbValue, 1024);
-                    string strCGBZ = sbValue.ToString().Trim();//原因
-                    if (strCGBZ == "执行成功！" || strCGBZ == "1")
-                    {
-                        lngRes = 1;
-                        lstVo[i].JBR = exVo.JBR;
-                        lstVo[i].Issucess = 1;//1  上传成功
-                        lstVo[i].FailMsg = "";
-                    }
+                    ExceptionLog.OutPutException(ex);
                 }
-                else
-                {
-                    lngRes = -1;
-                    intRet = GetParam(intH, "MSG", strValue, 1024);
-                    ExceptionLog.OutPutException(lstVo[i].JZJLH + "-" + lstVo[i].INPATIENTID + ":" + strValue.ToString());
-                    lstVo[i].Issucess = -1; //-1 上传失败
-                    lstVo[i].FailMsg =  strValue.ToString() ;
-                }
-
-                DestroyInstance(intH);
             }
-            
             return lngRes;
         }
         #endregion
@@ -1110,69 +1123,77 @@ namespace AutoBa
         /// <returns></returns>
         public static long lngUserLoin(string strUser, string strPwd, bool Blxml)
         {
-            //初始化
-            lngInitialize();
-            int intPtr = CreateInstace();
-            string strHosCode = strUser;
-            if (Blxml)
+            try
             {
-                strUser = strReadXML("DGCSMZYB", "USERNAMEMZ", "AnyOne");//need modify 需要传进来
-                strPwd = strReadXML("DGCSMZYB", "PASSWORDMZ", "AnyOne");
-                strHosCode = strReadXML("DGCSMZYB", "YYBHMZ", "AnyOne");
-            }
-            int intRet;
-            StringBuilder sbPwd = new StringBuilder(32);
-            if (intPtr > 0)
-            {
-                intRet = EncryptWithCipher(intPtr, strPwd, sbPwd, 32);
-                if (intRet < 0)
+                //初始化
+                lngInitialize();
+                int intPtr = CreateInstace();
+                string strHosCode = strUser;
+                if (Blxml)
                 {
-                    MessageBox.Show("明文密码加密失败！", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                    strUser = strReadXML("DGCSMZYB", "USERNAMEMZ", "AnyOne");//need modify 需要传进来
+                    strPwd = strReadXML("DGCSMZYB", "PASSWORDMZ", "AnyOne");
+                    strHosCode = strReadXML("DGCSMZYB", "YYBHMZ", "AnyOne");
+                }
+                int intRet;
+                StringBuilder sbPwd = new StringBuilder(32);
+                if (intPtr > 0)
+                {
+                    intRet = EncryptWithCipher(intPtr, strPwd, sbPwd, 32);
+                    if (intRet < 0)
+                    {
+                        MessageBox.Show("明文密码加密失败！", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                        DestroyInstance(intPtr);
+                        return -1;
+                    }
+                    string strNewPwd = sbPwd.ToString();
+                    //医院登录
+                    intRet = SetParam(intPtr, "FN", "1");
+                    intRet = SetParam(intPtr, "YYBH", strHosCode);
+                    intRet = SetParam(intPtr, "USERID", strUser);
+                    intRet = SetParam(intPtr, "PWD", strNewPwd);
+                    intRet = SetParam(intPtr, "JBRLX", "1");
+                    intRet = SetParam(intPtr, "CLIENTTYPE", "HIS");
+                    intRet = SetParam(intPtr, "JBR", "001");
+                    intRet = Run(intPtr);
+                    if (intRet < 0)
+                    {
+                        StringBuilder strRetValue1 = new StringBuilder(32);
+                        intRet = GetSysMessage(intPtr, strRetValue1, 66);
+                        MessageBox.Show(strRetValue1.ToString(), "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                        DestroyInstance(intPtr);
+                        return -1;
+                    }
+                    StringBuilder strRetValue = new StringBuilder(32);
+                    StringBuilder strRetMessage = new StringBuilder(1024);
+                    intRet = GetParam(intPtr, "FHZ", strRetValue, 32);
+                    intRet = GetParam(intPtr, "MSG", strRetMessage, 1024);
+                    if (strRetValue.ToString() == "EHIS9700")
+                    {
+                        ExceptionLog.OutPutException("返回值：EHIS9700 \r\n" + "社保系统登录故障，请稍后重新登录.");
+                        MessageBox.Show("社保系统登录故障，请稍后重新登录！", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                        DestroyInstance(intPtr);
+                        return -1;
+                    }
+                    else if (strRetValue.ToString() != "1")
+                    {
+                        ExceptionLog.OutPutException(strRetMessage.ToString());
+                        MessageBox.Show(strRetMessage.ToString(), "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                        DestroyInstance(intPtr);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("创建实例失败！", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
                     DestroyInstance(intPtr);
                     return -1;
                 }
-                string strNewPwd = sbPwd.ToString();
-                //医院登录
-                intRet = SetParam(intPtr, "FN", "1");
-                intRet = SetParam(intPtr, "YYBH", strHosCode);
-                intRet = SetParam(intPtr, "USERID", strUser);
-                intRet = SetParam(intPtr, "PWD", strNewPwd);
-                intRet = SetParam(intPtr, "JBRLX", "1");
-                intRet = SetParam(intPtr, "CLIENTTYPE", "HIS");
-                intRet = SetParam(intPtr, "JBR", "001");
-                intRet = Run(intPtr);
-                if (intRet < 0)
-                {
-                    StringBuilder strRetValue1 = new StringBuilder(32);
-                    intRet = GetSysMessage(intPtr, strRetValue1, 66);
-                    MessageBox.Show(strRetValue1.ToString(), "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
-                    DestroyInstance(intPtr);
-                    return -1;
-                }
-                StringBuilder strRetValue = new StringBuilder(32);
-                StringBuilder strRetMessage = new StringBuilder(1024);
-                intRet = GetParam(intPtr, "FHZ", strRetValue, 32);
-                intRet = GetParam(intPtr, "MSG", strRetMessage, 1024);
-                if (strRetValue.ToString() == "EHIS9700")
-                {
-                    ExceptionLog.OutPutException("返回值：EHIS9700 \r\n" + "社保系统登录故障，请稍后重新登录.");
-                    MessageBox.Show("社保系统登录故障，请稍后重新登录！", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
-                    DestroyInstance(intPtr);
-                    return -1;
-                }
-                else if (strRetValue.ToString() != "1")
-                {
-                    ExceptionLog.OutPutException(strRetMessage.ToString());
-                    MessageBox.Show(strRetMessage.ToString(), "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
-                    DestroyInstance(intPtr);
-                }
             }
-            else
+            catch (Exception ex )
             {
-                MessageBox.Show("创建实例失败！", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
-                DestroyInstance(intPtr);
-                return -1;
+                ExceptionLog.OutPutException(ex);
             }
+            
             return 1;
         }
         #endregion
@@ -1184,20 +1205,29 @@ namespace AutoBa
         /// <returns></returns>
         public static long lngInitialize()
         {
-            string svrIP = strReadXML("DGCSMZYB", "svrIPMZ", "AnyOne");
-            string svrPort = strReadXML("DGCSMZYB", "svrPortMZ", "AnyOne");
-            short shPort = 0;
-            short.TryParse(svrPort, out shPort);
-            string SndBufSize = strReadXML("DGCSMZYB", "SndBufSizeMZ", "AnyOne");
-            string RecvBufSize = strReadXML("DGCSMZYB", "RecvBufSizeMZ", "AnyOne");
-            int intSize = 0, intSize2 = 0;
-            int.TryParse(SndBufSize, out intSize);
-            int.TryParse(RecvBufSize, out intSize2);
-            int intPtr = Initialize(svrIP, shPort, intSize, intSize2);
-            if (intPtr < 0)
+            int intPtr = -1;
+            try
             {
-                MessageBox.Show("初始化失败！", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
-                return -1;
+                string svrIP = strReadXML("DGCSMZYB", "svrIPMZ", "AnyOne");
+                string svrPort = strReadXML("DGCSMZYB", "svrPortMZ", "AnyOne");
+                short shPort = 0;
+                short.TryParse(svrPort, out shPort);
+                string SndBufSize = strReadXML("DGCSMZYB", "SndBufSizeMZ", "AnyOne");
+                string RecvBufSize = strReadXML("DGCSMZYB", "RecvBufSizeMZ", "AnyOne");
+                int intSize = 0, intSize2 = 0;
+                int.TryParse(SndBufSize, out intSize);
+                int.TryParse(RecvBufSize, out intSize2);
+                intPtr = Initialize(svrIP, shPort, intSize, intSize2);
+                if (intPtr < 0)
+                {
+                    MessageBox.Show("初始化失败！", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                    return -1;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                ExceptionLog.OutPutException(ex);
             }
             return intPtr;
         }
