@@ -242,7 +242,7 @@ namespace AutoBa
                         //未上传，来源icaren也属于未上传
                         if(isUploadparm)
                         {
-                            if (uploadStatus == 1 && firstSource == 1)
+                            if (uploadStatus == 1 && firstSource == 1 && firstSource == 3)//1 病案  3 嘉禾
                                 continue;
                         }
 
@@ -388,8 +388,7 @@ namespace AutoBa
                                         upVo.fpVo.FRYTJ = "-";
                                     upVo.fpVo.FRYDATE = Function.Datetime(drrBa["FRYDATE"]).ToString("yyyy-MM-dd");
                                     upVo.fpVo.FRYTIME = drrBa["FRYTIME"].ToString();
-                                    if (upVo.fpVo.FRYTIME.Trim().Length < 4)
-                                        upVo.fpVo.FRYTIME = Function.Datetime(drrBa["FRYTIME"].ToString() + ":00:00").ToString("HH:mm:ss");
+                                    upVo.fpVo.FRYTIME = Function.Datetime(drrBa["FRYTIME"].ToString()).ToString("HH:mm:ss");
                                     upVo.fpVo.FRYTYKH = drrBa["FRYTYKH"].ToString();
                                     upVo.fpVo.FRYDEPT = drrBa["FRYDEPT"].ToString();
                                     upVo.fpVo.FRYBS = drrBa["FRYBS"].ToString().Trim();
@@ -398,13 +397,11 @@ namespace AutoBa
                                     upVo.fpVo.FZKTYKH = drrBa["FZKTYKH"].ToString();
                                     upVo.fpVo.FZKDEPT = drrBa["FZKDEPT"].ToString();
                                     upVo.fpVo.FZKTIME = drrBa["FZKTIME"].ToString();
-                                    if (upVo.fpVo.FZKTIME.Length < 4)
-                                        upVo.fpVo.FZKTIME = Function.Datetime(drrBa["FZKTIME"].ToString() + ":00:00").ToString("HH:MM:ss");
+                                    upVo.fpVo.FZKTIME = Function.Datetime(drrBa["FZKTIME"].ToString()).ToString("HH:MM:ss");
                                     upVo.fpVo.FCYDATE = Function.Datetime(drrBa["FCYDATE"]).ToString("yyyy-MM-dd");
 
                                     upVo.fpVo.FCYTIME = drrBa["FCYTIME"].ToString();
-                                    if (upVo.fpVo.FCYTIME.Length < 4)
-                                        upVo.fpVo.FCYTIME = Function.Datetime(drrBa["FCYTIME"].ToString() + ":00:00").ToString("HH:MM:ss");
+                                    upVo.fpVo.FCYTIME = Function.Datetime(drrBa["FCYTIME"].ToString()).ToString("HH:MM:ss");
                                     upVo.fpVo.FCYTYKH = drrBa["FCYTYKH"].ToString();
                                     upVo.fpVo.FCYDEPT = drrBa["FCYDEPT"].ToString();
                                     upVo.fpVo.FCYBS = drrBa["FCYBS"].ToString().Trim();
@@ -4904,7 +4901,7 @@ namespace AutoBa
                                 }
                                 else if (item.Issucess == -1)
                                 {
-                                    if (item.STATUS == 1&& item.first == 1)
+                                    if (item.STATUS == 1 && item.first == 1)
                                         continue;
                                     IDataParameter[] parm = svc.CreateParm(6);
                                     parm[0].Value = "";
@@ -4963,23 +4960,6 @@ namespace AutoBa
                                     parm[3].Value = item.JZJLH;
                                     lstParm.Add(svc.GetDacParm(EnumExecType.ExecSql, Sql, parm));
                                 }
-                            }
-                            else
-                            {
-                                //if (CheckSequence(svc, "t_upload") > 0)
-                                //    serNo = Function.Dec(GetNextID(svc, "t_upload").ToString());
-                                //item.SERNO = serNo;
-                                //item.STATUS = 1;
-                                //item.UPLOADDATE = DateTime.Now;
-                                //item.RECORDDDATE = DateTime.Now;
-                                //item.OPERCODE = item.JBR;
-                                //if (item.Issucess == -1)
-                                //{
-                                //    item.first = -1;
-                                //    item.firstMsg = item.FailMsg;
-                                //}
-
-                                //lstVo1.Add(item);
                             }
                         }
                     }

@@ -776,6 +776,7 @@ namespace AutoBa
                         intRet = Run(intH);
                         strValue = new StringBuilder(1024);
                         intRet = GetParam(intH, "FHZ", strValue, 1024);
+                        item.FailMsg = "";
                         if (strValue.ToString() == "1")
                         {
                             StringBuilder sbValue = new StringBuilder(1024);
@@ -818,12 +819,13 @@ namespace AutoBa
         {
             long lngRes = -1;
             int intRet;
+            int intH = -1;
             string logStr = string.Empty;
             for (int i = 0; i < lstVo.Count;i++ )
             {
                 try
                 {
-                    int intH = CreateInstace();
+                    intH = CreateInstace();
                     if (intH > 0)
                     {
                         if (lstVo[i].xjVo == null)
@@ -911,6 +913,7 @@ namespace AutoBa
                     }
 
                     #region 上传
+                    lstVo[i].FailMsg = "";
                     strValue = new StringBuilder(1024);
                     intRet = GetParam(intH, "FHZ", strValue, 1024);
                     if (strValue.ToString() == "1")
@@ -1123,11 +1126,12 @@ namespace AutoBa
         /// <returns></returns>
         public static long lngUserLoin(string strUser, string strPwd, bool Blxml)
         {
+            int intPtr = 0;
             try
             {
                 //初始化
                 lngInitialize();
-                int intPtr = CreateInstace();
+                intPtr = CreateInstace();
                 string strHosCode = strUser;
                 if (Blxml)
                 {
@@ -1193,7 +1197,11 @@ namespace AutoBa
             {
                 ExceptionLog.OutPutException(ex);
             }
-            
+            finally
+            {
+                DestroyInstance(intPtr);
+            }
+
             return 1;
         }
         #endregion
