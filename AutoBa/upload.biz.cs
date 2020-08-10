@@ -139,7 +139,6 @@ namespace AutoBa
                                 rehis.emrinpatientid,
                                 rehis.emrinpatientdate,
                                 ee.lastname_vchr as jbr,
-                                --dd.serno,
                                 dd.status,
                                 dd.uploaddate
                                 from t_opr_bih_register t1
@@ -161,23 +160,33 @@ namespace AutoBa
                 #endregion
 
                 #region 结算记录
-                SqlJs = @"select distinct a.registerid_chr, a.jzjlh, a.invoiceno_vchr, b.inpatientid_chr,c.status,c.firstSource
-                                  from t_ins_chargezy_csyb a
-                                  left join t_opr_bih_register b
-                                    on a.registerid_chr = b.registerid_chr
-                                    left join t_upload c
-                                        on a.registerid_chr = c.registerid 
-                                 where (a.createtime between
-                                       to_date(?, 'yyyy-mm-dd hh24:mi:ss') and
-                                       to_date(?, 'yyyy-mm-dd hh24:mi:ss'))  ";
-
-                //SqlJs = @"select a.registerid_chr, a.jzjlh, a.invoiceno_vchr, b.inpatientid_chr,c.status,c.firstSource
+                //SqlJs = @"select distinct a.registerid_chr, a.jzjlh, a.invoiceno_vchr, b.inpatientid_chr,c.status,c.firstSource
                 //                  from t_ins_chargezy_csyb a
                 //                  left join t_opr_bih_register b
                 //                    on a.registerid_chr = b.registerid_chr
                 //                    left join t_upload c
                 //                        on a.registerid_chr = c.registerid 
-                //                 where  ";
+                //                 where(a.createtime between to_date(?, 'yyyy-mm-dd hh24:mi:ss') 
+                //                    and to_date(?, 'yyyy-mm-dd hh24:mi:ss'))  ";
+
+                SqlJs = @"select distinct a.registerid_chr,
+                                            e.jzjlh,
+                                            d.invoiceno_vchr,
+                                            b.inpatientid_chr,
+                                            c.status,
+                                            c.firstSource
+                              from  t_opr_bih_charge a
+                              left join t_opr_bih_register b
+                                on a.registerid_chr = b.registerid_chr
+                                left join t_opr_bih_chargedefinv d
+                                on a.chargeno_chr = d.chargeno_chr
+                                left join t_ins_chargezy_csyb e
+                                on a.registerid_chr = e.registerid_chr
+                              left join t_upload c
+                                on a.registerid_chr = c.registerid
+                            where a.class_int = 2
+                             and (a.operdate_dat between to_date(?, 'yyyy-mm-dd hh24:mi:ss') and
+                                  to_date(?, 'yyyy-mm-dd hh24:mi:ss'))";
                 #endregion
 
                 #region 条件
@@ -198,16 +207,15 @@ namespace AutoBa
                             lstParm.Add(parm2);
                             break;
                         case "cardNo":
-                            strSubJs += " and b.inpatientid_chr = " + keyValue + "";
+                            strSubJs += " and b.inpatientid_chr = '" + keyValue + "'";
                             break;
                         case "JZJLH":
-                            strSubJs += " and a.jzjlh = '" + keyValue + "'";
+                            strSubJs += " and e.jzjlh = '" + keyValue + "'";
                             break;
                         case "JZJLH1":
-                            strSubJs += "  a.jzjlh in " + keyValue;
+                            strSubJs += "  e.jzjlh in " + keyValue;
                             break;
                         case "chkStat":
-                            //strSubJs += " (and c.status is null or c.status = 0) ";
                             isUploadparm = true;
                             break;
                         default:
@@ -242,7 +250,7 @@ namespace AutoBa
                         //未上传，来源icaren也属于未上传
                         if(isUploadparm)
                         {
-                            if (uploadStatus == 1 && firstSource == 1)
+                            if (uploadStatus == 1 && firstSource == 1 && firstSource == 3)//uploadStatus 1 已上传 1 病案  3 嘉禾
                                 continue;
                         }
 
@@ -283,8 +291,10 @@ namespace AutoBa
                         string rydate = Function.Datetime(drReg["rysj"]).ToString("yyyy-MM-dd");
                         string rydate1 = Function.Datetime(drReg["rysj"]).AddDays(-1).ToString("yyyy-MM-dd");
                         string rydate2 = Function.Datetime(drReg["rysj"]).AddDays(1).ToString("yyyy-MM-dd");
+                        string uploadStatus = drReg["status"].ToString();
                         string jzjlh = string.Empty;
                         string FPHM = string.Empty;
+                        EntityPatUpload upVo = null;
 
                         #region 查找发票号
                         DataRow[] drrFPHM = dtJs.Select("registerid_chr = '" + registerid + "'");
@@ -302,9 +312,7 @@ namespace AutoBa
                         }
                         #endregion
 
-                        EntityPatUpload upVo = new EntityPatUpload();
-                        upVo.fpVo = new EntityFirstPage();
-
+                        #region 首页信息
                         DataRow[] drr = dtBa.Select("fprn =  '" + ipno + "' or fzyid = '" + ipno + "'");
                         if (drr.Length > 0)
                         {
@@ -316,6 +324,8 @@ namespace AutoBa
 
                                 if (cydate == fcydate || cydate1 == fcydate || cydate2 == fcydate || rydate == frydate || rydate1 == frydate || rydate2 == frydate)
                                 {
+                                    upVo = new EntityPatUpload();
+                                    upVo.fpVo = new EntityFirstPage();
                                     isExisitBa = true;
 
                                     #region 首页信息  来源病案
@@ -388,8 +398,7 @@ namespace AutoBa
                                         upVo.fpVo.FRYTJ = "-";
                                     upVo.fpVo.FRYDATE = Function.Datetime(drrBa["FRYDATE"]).ToString("yyyy-MM-dd");
                                     upVo.fpVo.FRYTIME = drrBa["FRYTIME"].ToString();
-                                    if (upVo.fpVo.FRYTIME.Trim().Length < 4)
-                                        upVo.fpVo.FRYTIME = Function.Datetime(drrBa["FRYTIME"].ToString() + ":00:00").ToString("HH:mm:ss");
+                                    upVo.fpVo.FRYTIME = Function.Datetime(drrBa["FRYTIME"].ToString()).ToString("HH:mm:ss");
                                     upVo.fpVo.FRYTYKH = drrBa["FRYTYKH"].ToString();
                                     upVo.fpVo.FRYDEPT = drrBa["FRYDEPT"].ToString();
                                     upVo.fpVo.FRYBS = drrBa["FRYBS"].ToString().Trim();
@@ -398,19 +407,21 @@ namespace AutoBa
                                     upVo.fpVo.FZKTYKH = drrBa["FZKTYKH"].ToString();
                                     upVo.fpVo.FZKDEPT = drrBa["FZKDEPT"].ToString();
                                     upVo.fpVo.FZKTIME = drrBa["FZKTIME"].ToString();
-                                    if (upVo.fpVo.FZKTIME.Length < 4)
-                                        upVo.fpVo.FZKTIME = Function.Datetime(drrBa["FZKTIME"].ToString() + ":00:00").ToString("HH:MM:ss");
+                                    upVo.fpVo.FZKTIME = Function.Datetime(drrBa["FZKTIME"].ToString()).ToString("HH:MM:ss");
                                     upVo.fpVo.FCYDATE = Function.Datetime(drrBa["FCYDATE"]).ToString("yyyy-MM-dd");
 
                                     upVo.fpVo.FCYTIME = drrBa["FCYTIME"].ToString();
-                                    if (upVo.fpVo.FCYTIME.Length < 4)
-                                        upVo.fpVo.FCYTIME = Function.Datetime(drrBa["FCYTIME"].ToString() + ":00:00").ToString("HH:MM:ss");
+                                    upVo.fpVo.FCYTIME = Function.Datetime(drrBa["FCYTIME"].ToString()).ToString("HH:MM:ss");
                                     upVo.fpVo.FCYTYKH = drrBa["FCYTYKH"].ToString();
                                     upVo.fpVo.FCYDEPT = drrBa["FCYDEPT"].ToString();
                                     upVo.fpVo.FCYBS = drrBa["FCYBS"].ToString().Trim();
                                     if (upVo.fpVo.FCYBS == "")
                                         upVo.fpVo.FCYBS = upVo.fpVo.FCYDEPT;
-                                    upVo.fpVo.FDAYS = drrBa["FDAYS"].ToString();
+                                    TimeSpan ts = Function.Datetime(upVo.fpVo.FCYDATE) - Function.Datetime(upVo.fpVo.FRYDATE);
+                                    upVo.fpVo.FDAYS = ts.Days.ToString();
+                                    if (upVo.fpVo.FDAYS == "0")
+                                        upVo.fpVo.FDAYS = "1";
+                                   // upVo.fpVo.FDAYS = drrBa["FDAYS"].ToString();
                                     upVo.fpVo.FMZZDBH = drrBa["FMZZDBH"].ToString();
                                     upVo.fpVo.FMZZD = drrBa["FMZZD"].ToString();
                                     upVo.fpVo.FMZDOCTBH = drrBa["FMZDOCTBH"].ToString();
@@ -620,6 +631,8 @@ namespace AutoBa
                             EntityPatUpload vo = GetPatBaFromIcare(ipno, registerid, emrinpatientdate);
                             if (vo != null)
                             {
+                                upVo = new EntityPatUpload();
+                                upVo.fpVo = new EntityFirstPage();
                                 vo.fpVo.FPHM = FPHM;
                                 upVo.fpVo = vo.fpVo;
                                 upVo.fpVo.JZJLH = jzjlh;
@@ -628,40 +641,11 @@ namespace AutoBa
                             }
                         }
 
-                        #region  显示列表
-                        upVo.XH = ++n;
-                        upVo.UPLOADTYPE = 1;
-                        upVo.PATNAME = drReg["xm"].ToString();
-                        upVo.PATSEX = drReg["sex"].ToString();
-                        upVo.IDCARD = drReg["idcard_chr"].ToString();
-                        upVo.INPATIENTID = drReg["ipno"].ToString();
-                        upVo.INDEPTCODE = drReg["rydeptid"].ToString();
-                        upVo.INPATIENTDATE = Function.Datetime(Function.Datetime(drReg["rysj"]).ToString("yyyy-MM-dd"));
-                        upVo.OUTHOSPITALDATE = Function.Datetime(Function.Datetime(drReg["cysj"]).ToString("yyyy-MM-dd"));
-                        upVo.RYSJ = Function.Datetime(drReg["rysj"]).ToString("yyyy-MM-dd HH:mm");
-                        upVo.CYSJ = Function.Datetime(drReg["cysj"]).ToString("yyyy-MM-dd HH:mm");
-                        upVo.FPRN = upVo.fpVo.FPRN;
-                        upVo.FTIMES = drReg["rycs"].ToString();
-                        upVo.BIRTH = Function.Datetime(drReg["birth"]).ToString("yyyy-mm-dd");
-                        upVo.InDeptName = drReg["ryks"].ToString();
-                        upVo.OutDeptName = drReg["cyks"].ToString();
-                        upVo.OUTDEPTCODE = drReg["cydeptid"].ToString();
-                        upVo.JZJLH = jzjlh;
-                        upVo.REGISTERID = drReg["registerid_chr"].ToString();
-                        upVo.STATUS = Function.Int(drReg["status"]);
-                        //upVo.SERNO = Function.Dec(drReg["serno"]);
-                        if (drReg["status"].ToString() == "1")
-                            upVo.SZ = "已上传";
-                        else
-                            upVo.SZ = "未上传";
-
-                        if (drReg["jbr"] != DBNull.Value)
-                            upVo.JBRXM = drReg["jbr"].ToString();
-                        if (drReg["uploaddate"] != DBNull.Value)
-                            upVo.UPLOADDATE = Function.Datetime(drReg["uploaddate"]);
+                        if(upVo == null)
+                            continue;
                         #endregion
 
-                        #region 上传信息 出院小结
+                        #region  出院小结信息
                         if (emrinpatientid != ipno)
                             Log.Output("D:\\log.txt", emrinpatientid + " --" + ipno);
                         DataTable dtXj = GetPatCyxjList2(emrinpatientid, emrinpatientdate);
@@ -736,6 +720,42 @@ namespace AutoBa
                             upVo.xjVo.FPHM = FPHM;
                             #endregion
                         }
+                        #endregion
+
+                        #region  显示列表
+                        upVo.XH = ++n;
+                        upVo.UPLOADTYPE = 1;
+                        upVo.PATNAME = drReg["xm"].ToString();
+                        upVo.PATSEX = drReg["sex"].ToString();
+                        upVo.IDCARD = drReg["idcard_chr"].ToString();
+                        upVo.INPATIENTID = drReg["ipno"].ToString();
+                        upVo.INDEPTCODE = drReg["rydeptid"].ToString();
+                        upVo.INPATIENTDATE = Function.Datetime(Function.Datetime(drReg["rysj"]).ToString("yyyy-MM-dd"));
+                        upVo.OUTHOSPITALDATE = Function.Datetime(Function.Datetime(drReg["cysj"]).ToString("yyyy-MM-dd"));
+                        upVo.RYSJ = Function.Datetime(drReg["rysj"]).ToString("yyyy-MM-dd HH:mm");
+                        upVo.CYSJ = Function.Datetime(drReg["cysj"]).ToString("yyyy-MM-dd HH:mm");
+                        upVo.FPRN = upVo.fpVo.FPRN;
+                        upVo.FTIMES = drReg["rycs"].ToString();
+                        upVo.BIRTH = Function.Datetime(drReg["birth"]).ToString("yyyy-mm-dd");
+                        upVo.InDeptName = drReg["ryks"].ToString();
+                        upVo.OutDeptName = drReg["cyks"].ToString();
+                        upVo.OUTDEPTCODE = drReg["cydeptid"].ToString();
+                        upVo.JZJLH = jzjlh;
+                        upVo.REGISTERID = drReg["registerid_chr"].ToString();
+                        upVo.STATUS = Function.Int(drReg["status"]);
+                        if (drReg["status"].ToString() == "1")
+                            upVo.SZ = "已上传";
+                        else
+                            upVo.SZ = "未上传";
+
+                        if (drReg["jbr"] != DBNull.Value)
+                            upVo.JBRXM = drReg["jbr"].ToString();
+                        if (drReg["uploaddate"] != DBNull.Value)
+                        {
+                            upVo.UPLOADDATE = Function.Datetime(drReg["uploaddate"]);
+                            upVo.uploadDateStr = Function.Datetime(drReg["uploaddate"]).ToString("yyyy-MM-dd HH:mm");
+                        }
+                            
                         #endregion
 
                         data.Add(upVo);
@@ -1909,8 +1929,6 @@ namespace AutoBa
                                and t.status = 0";
 
                 #endregion
-
-
 
                 if (!string.IsNullOrEmpty(ipno) && !string.IsNullOrEmpty(emrinpatientdate))
                 {
@@ -4904,7 +4922,7 @@ namespace AutoBa
                                 }
                                 else if (item.Issucess == -1)
                                 {
-                                    if (item.STATUS == 1&& item.first == 1)
+                                    if (item.STATUS == 1 && item.first == 1)
                                         continue;
                                     IDataParameter[] parm = svc.CreateParm(6);
                                     parm[0].Value = "";
@@ -4964,23 +4982,6 @@ namespace AutoBa
                                     lstParm.Add(svc.GetDacParm(EnumExecType.ExecSql, Sql, parm));
                                 }
                             }
-                            else
-                            {
-                                //if (CheckSequence(svc, "t_upload") > 0)
-                                //    serNo = Function.Dec(GetNextID(svc, "t_upload").ToString());
-                                //item.SERNO = serNo;
-                                //item.STATUS = 1;
-                                //item.UPLOADDATE = DateTime.Now;
-                                //item.RECORDDDATE = DateTime.Now;
-                                //item.OPERCODE = item.JBR;
-                                //if (item.Issucess == -1)
-                                //{
-                                //    item.first = -1;
-                                //    item.firstMsg = item.FailMsg;
-                                //}
-
-                                //lstVo1.Add(item);
-                            }
                         }
                     }
                     if (lstVo1.Count > 0)
@@ -5030,10 +5031,11 @@ namespace AutoBa
                                         INPATIENTID,
                                         PATSEX,
                                         PATNAME,
+                                        firstsource,
                                         first,
                                         xj,
                                         firstMsg,
-                                        xjMsg from t_upload where first = -1 or xj= -1 ";
+                                        xjMsg from t_upload where (first = -1 or xj= -1) ";
                 DataTable dt = svc.GetDataTable(Sql1);
 
                 if (dt != null && dt.Rows.Count > 0)
@@ -5047,8 +5049,13 @@ namespace AutoBa
                         vo.PATSEX = dr["PATSEX"].ToString();
                         vo.RYSJ = dr["INPATIENTDATE"].ToString();
                         vo.CYSJ = dr["OUTHOSPITALDATE"].ToString();
+
+                        vo.INPATIENTDATE = Function.Datetime(Function.Datetime(dr["INPATIENTDATE"]).ToString("yyyy-MM-dd"));
+                        vo.OUTHOSPITALDATE = Function.Datetime(Function.Datetime(dr["OUTHOSPITALDATE"]).ToString("yyyy-MM-dd"));
+
                         vo.firstMsg = dr["firstMsg"].ToString();
                         vo.xjMsg = dr["xjMsg"].ToString();
+                        vo.firstSource = Function.Int(dr["firstSource"]);
                         data.Add(vo);
                     }
                 }

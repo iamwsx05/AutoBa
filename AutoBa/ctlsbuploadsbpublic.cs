@@ -116,7 +116,7 @@ namespace AutoBa
                 {
                     try
                     {
-                        #region 入参
+                        #region 初始化
                         intH = CreateInstace();
                         if (intH > 0)
                         {
@@ -127,12 +127,32 @@ namespace AutoBa
 
                         item.JBR = exVo.JBR;
                         item.Issucess = -1; //-1 上传失败
+                        item.firstMsg = "";
                         if (item.firstSource == 0)
                         {
                             item.firstMsg = "无首页信息";
                             continue;
                         }
+                        if (item.firstSource == 1 || item.firstSource == 2)
+                        {
+
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+                        ///首页来源icare 已传 不再传
+                        if (item.firstSource == 2 && item.STATUS == 1)
+                        {
+                            item.Issucess = 0;
+                            continue;
+                        }
+                           
                         jzjlh = item.JZJLH;
+                        #endregion
+
+                        #region log
                         string logStr = string.Empty;
                         logStr += "JZJLH:" + item.fpVo.JZJLH.ToString().Trim() + Environment.NewLine;//
                         logStr += "FWSJGDM:" + exVo.FWSJGDM + Environment.NewLine;//
@@ -300,15 +320,9 @@ namespace AutoBa
                         logStr += "ZYH:" + item.fpVo.ZYH.ToString() + Environment.NewLine;//
                         logStr += "FPHM:" + item.fpVo.FPHM.ToString() + Environment.NewLine;//
                         Log.Output(logStr);
+                        #endregion
 
-                        if (item.firstSource == 1 || item.firstSource == 2)
-                        {
-
-                        }
-                        else
-                        {
-                            continue;
-                        }
+                        #region 入参
                         intRet = SetParam(intH, "JZJLH", item.fpVo.JZJLH.ToString().Trim());//
                         intRet = SetParam(intH, "FWSJGDM", exVo.FWSJGDM);
                         intRet = SetParam(intH, "FFBBHNEW", item.fpVo.FFBBHNEW.ToString().Trim());//
@@ -479,10 +493,10 @@ namespace AutoBa
 
                         intRet = SetParam(intH, "ZYH", item.fpVo.ZYH);
                         intRet = SetParam(intH, "FPHM", item.fpVo.FPHM);
-
-                        ++j;
                         #endregion
 
+                        ++j;
+                       
                         #region 数据集(病人转科情况)：BRZKQKSJJ
                         if (item.fpVo.lstZkVo != null && item.fpVo.lstZkVo.Count > 0)
                         {
@@ -776,6 +790,7 @@ namespace AutoBa
                         intRet = Run(intH);
                         strValue = new StringBuilder(1024);
                         intRet = GetParam(intH, "FHZ", strValue, 1024);
+                        item.FailMsg = "";
                         if (strValue.ToString() == "1")
                         {
                             StringBuilder sbValue = new StringBuilder(1024);
@@ -804,7 +819,6 @@ namespace AutoBa
                     catch (Exception ex)
                     {
                         ExceptionLog.OutPutException("jzjlh-->" + ex);
-                        //MessageBox.Show("jzjlh-->" + ex);
                         lngRes = -1;
                     }
                 }  
@@ -818,14 +832,17 @@ namespace AutoBa
         {
             long lngRes = -1;
             int intRet;
+            int intH = -1;
             string logStr = string.Empty;
             for (int i = 0; i < lstVo.Count;i++ )
             {
                 try
                 {
-                    int intH = CreateInstace();
+                    intH = CreateInstace();
                     if (intH > 0)
                     {
+                        lstVo[i].Issucess = -1;
+                        lstVo[i].FailMsg = "";
                         if (lstVo[i].xjVo == null)
                         {
                             lstVo[i].Issucess = -1; //-1 上传失败
@@ -839,6 +856,13 @@ namespace AutoBa
                             continue;
                         }
                         lstVo[i].Issucess = -1;
+
+                        //首页来源icare 并已上传不再传
+                        if (lstVo[i].firstSource == 2 && lstVo[i].STATUS == 1)
+                        {
+                            lstVo[i].Issucess = 0;
+                            continue;
+                        }
 
                         #region log
                         logStr = string.Empty;
@@ -870,7 +894,6 @@ namespace AutoBa
                         logStr += "FTIMES:" + lstVo[i].xjVo.FTIMES + Environment.NewLine;
                         logStr += "FSUM1:" + lstVo[i].xjVo.FSUM1.ToString("0.00") + Environment.NewLine;
                         logStr += "FPHM:" + lstVo[i].xjVo.FPHM + Environment.NewLine;
-
 
                         Log.Output(logStr);
                         #endregion
@@ -911,6 +934,7 @@ namespace AutoBa
                     }
 
                     #region 上传
+                    lstVo[i].FailMsg = "";
                     strValue = new StringBuilder(1024);
                     intRet = GetParam(intH, "FHZ", strValue, 1024);
                     if (strValue.ToString() == "1")
@@ -1123,11 +1147,12 @@ namespace AutoBa
         /// <returns></returns>
         public static long lngUserLoin(string strUser, string strPwd, bool Blxml)
         {
+            int intPtr = 0;
             try
             {
                 //初始化
                 lngInitialize();
-                int intPtr = CreateInstace();
+                intPtr = CreateInstace();
                 string strHosCode = strUser;
                 if (Blxml)
                 {
@@ -1193,7 +1218,11 @@ namespace AutoBa
             {
                 ExceptionLog.OutPutException(ex);
             }
-            
+            finally
+            {
+                DestroyInstance(intPtr);
+            }
+
             return 1;
         }
         #endregion

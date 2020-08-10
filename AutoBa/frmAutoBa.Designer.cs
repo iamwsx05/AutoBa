@@ -116,6 +116,7 @@ namespace AutoBa
             this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
             this.gcBa = new DevExpress.XtraGrid.GridControl();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumn36 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn10 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn14 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn17 = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -169,7 +170,7 @@ namespace AutoBa
             this.txtJzjlh2 = new DevExpress.XtraEditors.TextEdit();
             this.label2 = new System.Windows.Forms.Label();
             this.btnQueryBa = new DevExpress.XtraEditors.SimpleButton();
-            this.gridColumn36 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn37 = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.pcBackGround)).BeginInit();
             this.pcBackGround.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.marqueeProgressBarControl.Properties)).BeginInit();
@@ -519,7 +520,7 @@ namespace AutoBa
             this.tabPage2.Location = new System.Drawing.Point(4, 23);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(646, 323);
+            this.tabPage2.Size = new System.Drawing.Size(1358, 448);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "病案信息上传";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -544,7 +545,7 @@ namespace AutoBa
             this.repositoryItemDateEdit3,
             this.repositoryItemDateEdit4,
             this.repositoryItemCheckEdit4});
-            this.gcData.Size = new System.Drawing.Size(640, 317);
+            this.gcData.Size = new System.Drawing.Size(1352, 442);
             this.gcData.TabIndex = 70;
             this.gcData.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvData});
@@ -704,6 +705,12 @@ namespace AutoBa
             // 
             this.gridColumn19.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gridColumn19.AppearanceCell.Options.UseFont = true;
+            this.gridColumn19.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn19.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn19.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.gridColumn19.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn19.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn19.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.gridColumn19.Caption = "入院时间";
             this.gridColumn19.FieldName = "RYSJ";
             this.gridColumn19.Name = "gridColumn19";
@@ -717,6 +724,12 @@ namespace AutoBa
             // 
             this.gridColumn20.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gridColumn20.AppearanceCell.Options.UseFont = true;
+            this.gridColumn20.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn20.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn20.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.gridColumn20.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn20.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn20.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.gridColumn20.Caption = "出院时间";
             this.gridColumn20.FieldName = "CYSJ";
             this.gridColumn20.Name = "gridColumn20";
@@ -731,6 +744,7 @@ namespace AutoBa
             this.gridColumn21.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F);
             this.gridColumn21.AppearanceCell.Options.UseFont = true;
             this.gridColumn21.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn21.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.gridColumn21.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.gridColumn21.AppearanceHeader.Font = new System.Drawing.Font("宋体", 9F);
             this.gridColumn21.AppearanceHeader.Options.UseFont = true;
@@ -752,6 +766,12 @@ namespace AutoBa
             // 
             this.gridColumn22.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gridColumn22.AppearanceCell.Options.UseFont = true;
+            this.gridColumn22.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn22.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn22.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.gridColumn22.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn22.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn22.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.gridColumn22.Caption = "出院科室";
             this.gridColumn22.FieldName = "OutDeptName";
             this.gridColumn22.Name = "gridColumn22";
@@ -766,6 +786,9 @@ namespace AutoBa
             // 
             this.gridColumn5.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gridColumn5.AppearanceCell.Options.UseFont = true;
+            this.gridColumn5.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn5.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn5.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.gridColumn5.AppearanceHeader.Options.UseTextOptions = true;
             this.gridColumn5.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.gridColumn5.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
@@ -784,6 +807,12 @@ namespace AutoBa
             // 
             this.gridColumn23.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gridColumn23.AppearanceCell.Options.UseFont = true;
+            this.gridColumn23.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn23.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn23.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.gridColumn23.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn23.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn23.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.gridColumn23.Caption = "上传";
             this.gridColumn23.FieldName = "SZ";
             this.gridColumn23.Name = "gridColumn23";
@@ -796,8 +825,14 @@ namespace AutoBa
             // 
             this.gridColumn25.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gridColumn25.AppearanceCell.Options.UseFont = true;
+            this.gridColumn25.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn25.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn25.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.gridColumn25.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn25.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn25.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.gridColumn25.Caption = "上传时间";
-            this.gridColumn25.FieldName = "UPLOADDATE";
+            this.gridColumn25.FieldName = "uploadDateStr";
             this.gridColumn25.Name = "gridColumn25";
             this.gridColumn25.OptionsColumn.AllowEdit = false;
             this.gridColumn25.OptionsColumn.AllowFocus = false;
@@ -1012,6 +1047,7 @@ namespace AutoBa
             this.gridColumn42,
             this.gridColumn7,
             this.gridColumn8,
+            this.gridColumn37,
             this.gridColumn2,
             this.gridColumn3});
             this.gvFailData.GridControl = this.gcFailData;
@@ -1099,14 +1135,18 @@ namespace AutoBa
             this.gridColumn42.OptionsFilter.AllowFilter = false;
             this.gridColumn42.Visible = true;
             this.gridColumn42.VisibleIndex = 3;
-            this.gridColumn42.Width = 35;
+            this.gridColumn42.Width = 40;
             // 
             // gridColumn7
             // 
             this.gridColumn7.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gridColumn7.AppearanceCell.Options.UseFont = true;
+            this.gridColumn7.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn7.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn7.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn7.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.gridColumn7.Caption = "入院时间";
-            this.gridColumn7.FieldName = "RYSJ";
+            this.gridColumn7.FieldName = "INPATIENTDATE";
             this.gridColumn7.Name = "gridColumn7";
             this.gridColumn7.OptionsColumn.AllowEdit = false;
             this.gridColumn7.OptionsColumn.AllowFocus = false;
@@ -1118,8 +1158,12 @@ namespace AutoBa
             // 
             this.gridColumn8.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gridColumn8.AppearanceCell.Options.UseFont = true;
+            this.gridColumn8.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn8.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn8.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn8.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.gridColumn8.Caption = "出院时间";
-            this.gridColumn8.FieldName = "CYSJ";
+            this.gridColumn8.FieldName = "OUTHOSPITALDATE";
             this.gridColumn8.Name = "gridColumn8";
             this.gridColumn8.OptionsColumn.AllowEdit = false;
             this.gridColumn8.OptionsColumn.AllowFocus = false;
@@ -1141,8 +1185,8 @@ namespace AutoBa
             this.gridColumn2.OptionsFilter.AllowAutoFilter = false;
             this.gridColumn2.OptionsFilter.AllowFilter = false;
             this.gridColumn2.Visible = true;
-            this.gridColumn2.VisibleIndex = 6;
-            this.gridColumn2.Width = 371;
+            this.gridColumn2.VisibleIndex = 7;
+            this.gridColumn2.Width = 327;
             // 
             // repositoryItemMemoEdit1
             // 
@@ -1158,7 +1202,7 @@ namespace AutoBa
             this.gridColumn3.FieldName = "xjMsg";
             this.gridColumn3.Name = "gridColumn3";
             this.gridColumn3.Visible = true;
-            this.gridColumn3.VisibleIndex = 7;
+            this.gridColumn3.VisibleIndex = 8;
             this.gridColumn3.Width = 529;
             // 
             // repositoryItemMemoEdit2
@@ -1339,7 +1383,7 @@ namespace AutoBa
             this.tabPage3.Location = new System.Drawing.Point(4, 23);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1358, 448);
+            this.tabPage3.Size = new System.Drawing.Size(646, 323);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "查询对应病案";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -1350,7 +1394,7 @@ namespace AutoBa
             this.panelControl3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelControl3.Location = new System.Drawing.Point(3, 46);
             this.panelControl3.Name = "panelControl3";
-            this.panelControl3.Size = new System.Drawing.Size(1352, 399);
+            this.panelControl3.Size = new System.Drawing.Size(640, 274);
             this.panelControl3.TabIndex = 1;
             // 
             // splitContainerControl1
@@ -1362,7 +1406,7 @@ namespace AutoBa
             this.splitContainerControl1.Panel1.Text = "Panel1";
             this.splitContainerControl1.Panel2.Controls.Add(this.gcIcare);
             this.splitContainerControl1.Panel2.Text = "Panel2";
-            this.splitContainerControl1.Size = new System.Drawing.Size(1348, 395);
+            this.splitContainerControl1.Size = new System.Drawing.Size(636, 270);
             this.splitContainerControl1.SplitterPosition = 659;
             this.splitContainerControl1.TabIndex = 0;
             this.splitContainerControl1.Text = "splitContainerControl1";
@@ -1389,7 +1433,7 @@ namespace AutoBa
             this.repositoryItemCheckEdit6,
             this.repositoryItemMemoEdit3,
             this.repositoryItemMemoEdit4});
-            this.gcBa.Size = new System.Drawing.Size(659, 395);
+            this.gcBa.Size = new System.Drawing.Size(630, 270);
             this.gcBa.TabIndex = 71;
             this.gcBa.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1,
@@ -1425,6 +1469,16 @@ namespace AutoBa
             this.gridView1.OptionsView.ShowGroupExpandCollapseButtons = false;
             this.gridView1.OptionsView.ShowGroupPanel = false;
             this.gridView1.RowHeight = 25;
+            // 
+            // gridColumn36
+            // 
+            this.gridColumn36.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gridColumn36.AppearanceCell.Options.UseFont = true;
+            this.gridColumn36.Caption = "病案号";
+            this.gridColumn36.FieldName = "fprn";
+            this.gridColumn36.Name = "gridColumn36";
+            this.gridColumn36.Visible = true;
+            this.gridColumn36.VisibleIndex = 0;
             // 
             // gridColumn10
             // 
@@ -1734,7 +1788,7 @@ namespace AutoBa
             this.repositoryItemCheckEdit8,
             this.repositoryItemMemoEdit5,
             this.repositoryItemMemoEdit6});
-            this.gcIcare.Size = new System.Drawing.Size(683, 395);
+            this.gcIcare.Size = new System.Drawing.Size(0, 0);
             this.gcIcare.TabIndex = 71;
             this.gcIcare.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView5,
@@ -2075,7 +2129,7 @@ namespace AutoBa
             this.panelControl2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl2.Location = new System.Drawing.Point(3, 3);
             this.panelControl2.Name = "panelControl2";
-            this.panelControl2.Size = new System.Drawing.Size(1352, 43);
+            this.panelControl2.Size = new System.Drawing.Size(640, 43);
             this.panelControl2.TabIndex = 0;
             // 
             // txtIPno
@@ -2132,15 +2186,21 @@ namespace AutoBa
             this.btnQueryBa.Text = "查询";
             this.btnQueryBa.Click += new System.EventHandler(this.btnQueryBa_Click);
             // 
-            // gridColumn36
+            // gridColumn37
             // 
-            this.gridColumn36.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gridColumn36.AppearanceCell.Options.UseFont = true;
-            this.gridColumn36.Caption = "病案号";
-            this.gridColumn36.FieldName = "fprn";
-            this.gridColumn36.Name = "gridColumn36";
-            this.gridColumn36.Visible = true;
-            this.gridColumn36.VisibleIndex = 0;
+            this.gridColumn37.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn37.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn37.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn37.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn37.Caption = "首页来源";
+            this.gridColumn37.FieldName = "firstSourceStr";
+            this.gridColumn37.Name = "gridColumn37";
+            this.gridColumn37.OptionsColumn.AllowEdit = false;
+            this.gridColumn37.OptionsColumn.AllowFocus = false;
+            this.gridColumn37.OptionsFilter.AllowAutoFilter = false;
+            this.gridColumn37.OptionsFilter.AllowFilter = false;
+            this.gridColumn37.Visible = true;
+            this.gridColumn37.VisibleIndex = 6;
             // 
             // frmAutoBa
             // 
@@ -2397,6 +2457,7 @@ namespace AutoBa
         internal Label label2;
         private SimpleButton btnQueryBa;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn36;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn37;
     }
 }
 

@@ -112,6 +112,8 @@ namespace AutoBa
         [DataMember]
         [Entity(FieldName = "firstSource", DbType = DbType.Int16, IsPK = false, IsSeq = false, SerNo = 23)]
         public int firstSource { get; set; }
+        [DataMember]
+        public string uploadDateStr { get; set; }
 
         public string firstSourceStr {
             get
