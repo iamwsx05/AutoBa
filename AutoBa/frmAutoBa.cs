@@ -21,7 +21,7 @@ namespace AutoBa
 
         #region 变量
         string timePoint = " 01:17:00";
-        List<string> timePointList = new List<string> { "01:17" , "20:17" };
+        List<string> timePointList = new List<string> { "05:17" , "20:17" };
         static bool isExecing { get; set; }
         EntityDGExtra exVo = null;
         List<EntityPatUpload> dataSource = null;
@@ -358,6 +358,7 @@ namespace AutoBa
 
                     isExecing = true;
                     this.Exec(dateTime.AddDays(-15).ToString("yyyy-MM-dd"), dateTime.ToString("yyyy-MM-dd"));
+                    Init();
                 }
                 catch (Exception ex)
                 {
