@@ -736,7 +736,9 @@ namespace AutoBa
                             upVo.xjVo = lstXj.Find(r=> r.ZYH == upVo.emrinpatientId && r.emrinpatientDate == upVo.emrinpatientDate);
                             if(upVo.xjVo != null)
                             {
+
                                 upVo.xjVo.JZJLH = upVo.JZJLH;
+                                upVo.xjVo.ZYH = upVo.INPATIENTID;
                                 upVo.xjVo.MZH = upVo.MZH;
                                 upVo.xjVo.MZZD = upVo.fpVo.FMZZD;
                                 if (string.IsNullOrEmpty(upVo.xjVo.MZZD))
