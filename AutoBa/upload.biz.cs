@@ -429,7 +429,7 @@ namespace AutoBa
                                             upVo.fpVo.FRYTJ = "-";
                                         upVo.fpVo.FRYDATE = Function.Datetime(drrBa["FRYDATE"]).ToString("yyyy-MM-dd");
                                         upVo.fpVo.FRYTIME = drrBa["FRYTIME"].ToString();
-                                        upVo.fpVo.FRYTIME = Function.Datetime(drrBa["FRYTIME"].ToString()).ToString("HH:mm:ss");
+                                        upVo.fpVo.FRYTIME = Function.Datetime(drrBa["FRYTIME"]).ToString("HH:mm:ss");
                                         upVo.fpVo.FRYTYKH = drrBa["FRYTYKH"].ToString();
                                         upVo.fpVo.FRYDEPT = drrBa["FRYDEPT"].ToString();
                                         upVo.fpVo.FRYBS = drrBa["FRYBS"].ToString().Trim();
@@ -438,11 +438,11 @@ namespace AutoBa
                                         upVo.fpVo.FZKTYKH = drrBa["FZKTYKH"].ToString();
                                         upVo.fpVo.FZKDEPT = drrBa["FZKDEPT"].ToString();
                                         upVo.fpVo.FZKTIME = drrBa["FZKTIME"].ToString();
-                                        upVo.fpVo.FZKTIME = Function.Datetime(drrBa["FZKTIME"].ToString()).ToString("HH:MM:ss");
+                                        upVo.fpVo.FZKTIME = Function.Datetime(drrBa["FZKTIME"]).ToString("HH:mm:ss");
                                         upVo.fpVo.FCYDATE = Function.Datetime(drrBa["FCYDATE"]).ToString("yyyy-MM-dd");
 
                                         upVo.fpVo.FCYTIME = drrBa["FCYTIME"].ToString();
-                                        upVo.fpVo.FCYTIME = Function.Datetime(drrBa["FCYTIME"].ToString()).ToString("HH:MM:ss");
+                                        upVo.fpVo.FCYTIME = Function.Datetime(drrBa["FCYTIME"]).ToString("HH:mm:ss");
                                         upVo.fpVo.FCYTYKH = drrBa["FCYTYKH"].ToString();
                                         upVo.fpVo.FCYDEPT = drrBa["FCYDEPT"].ToString();
                                         upVo.fpVo.FCYBS = drrBa["FCYBS"].ToString().Trim();
@@ -452,7 +452,6 @@ namespace AutoBa
                                         upVo.fpVo.FDAYS = ts.Days.ToString();
                                         if (upVo.fpVo.FDAYS == "0")
                                             upVo.fpVo.FDAYS = "1";
-                                        // upVo.fpVo.FDAYS = drrBa["FDAYS"].ToString();
                                         upVo.fpVo.FMZZDBH = drrBa["FMZZDBH"].ToString();
                                         upVo.fpVo.FMZZD = drrBa["FMZZD"].ToString();
                                         upVo.fpVo.FMZDOCTBH = drrBa["FMZDOCTBH"].ToString();
@@ -683,6 +682,7 @@ namespace AutoBa
                             upVo.PATSEX = drReg["sex"].ToString();
                             upVo.IDCARD = drReg["idcard_chr"].ToString();
                             upVo.INPATIENTID = drReg["ipno"].ToString();
+                            upVo.emrinpatientId = drReg["emrinpatientid"].ToString();
                             upVo.INDEPTCODE = drReg["rydeptid"].ToString();
                             upVo.INPATIENTDATE = Function.Datetime(Function.Datetime(drReg["rysj"]).ToString("yyyy-MM-dd"));
                             upVo.OUTHOSPITALDATE = Function.Datetime(Function.Datetime(drReg["cysj"]).ToString("yyyy-MM-dd"));
@@ -733,7 +733,7 @@ namespace AutoBa
 
                         foreach(var upVo in data)
                         {
-                            upVo.xjVo = lstXj.Find(r=> r.ZYH == upVo.INPATIENTID && r.emrinpatientDate == upVo.emrinpatientDate);
+                            upVo.xjVo = lstXj.Find(r=> r.ZYH == upVo.emrinpatientId && r.emrinpatientDate == upVo.emrinpatientDate);
                             if(upVo.xjVo != null)
                             {
                                 upVo.xjVo.JZJLH = upVo.JZJLH;

@@ -131,6 +131,7 @@ namespace AutoBa
         }
 
         public string emrinpatientDate { get; set; }
+        public string emrinpatientId { get; set; }
 
         public string RYRQ { get; set; }
         public string CYRQ { get; set; }
