@@ -30,6 +30,7 @@ namespace AutoBa
             SqlHelper svc = null;
             bool isExisitBa = false;
             bool isUploadparm = false;
+            bool isFromIcare = false;
             try
             {
                 #region Sql 首页信息
@@ -140,6 +141,8 @@ namespace AutoBa
                                 rehis.emrinpatientdate,
                                 ee.lastname_vchr as jbr,
                                 dd.status,
+                                dd.first,
+                                dd.xj,
                                 dd.uploaddate
                                 from t_opr_bih_register t1
                                 left join t_bse_deptdesc t11
@@ -168,6 +171,25 @@ namespace AutoBa
                 //                        on a.registerid_chr = c.registerid 
                 //                 where(a.createtime between to_date(?, 'yyyy-mm-dd hh24:mi:ss') 
                 //                    and to_date(?, 'yyyy-mm-dd hh24:mi:ss'))  ";
+
+                //SqlJs = @"select distinct a.registerid_chr,
+                //                            e.jzjlh,
+                //                            d.invoiceno_vchr,
+                //                            b.inpatientid_chr,
+                //                            c.status,
+                //                            c.firstSource
+                //              from  t_opr_bih_charge a
+                //              left join t_opr_bih_register b
+                //                on a.registerid_chr = b.registerid_chr
+                //                left join t_opr_bih_chargedefinv d
+                //                on a.chargeno_chr = d.chargeno_chr
+                //                left join t_ins_chargezy_csyb e
+                //                on a.registerid_chr = e.registerid_chr
+                //              left join t_upload c
+                //                on a.registerid_chr = c.registerid
+                //            where a.class_int = 2
+                //             and (a.operdate_dat between to_date(?, 'yyyy-mm-dd hh24:mi:ss') and
+                //                  to_date(?, 'yyyy-mm-dd hh24:mi:ss'))";
 
                 SqlJs = @"select distinct a.registerid_chr,
                                             e.jzjlh,
@@ -213,10 +235,16 @@ namespace AutoBa
                             strSubJs += " and e.jzjlh = '" + keyValue + "'";
                             break;
                         case "JZJLH1":
-                            strSubJs += "  e.jzjlh in " + keyValue;
+                            strSubJs += " and e.jzjlh in " + keyValue;
                             break;
                         case "chkStat":
                             isUploadparm = true;
+                            break;
+                        case "chkShowYb":
+                            strSubJs += " and (e.jzjlh is not null or e.jzjlh <> '') ";
+                            break;
+                        case "isFromIcare":
+                            isFromIcare = true;
                             break;
                         default:
                             break;
@@ -239,6 +267,7 @@ namespace AutoBa
                     string registeridStr = string.Empty;
                     List<string> lstReg = new List<string>();
                     List<string> lstIpno = new List<string>();
+                    List<EntityFirstPage> lstFpJh = new List<EntityFirstPage>();
                     DataTable dtBa = null;
                     DataTable dtReg = null;
                     foreach (DataRow drJs in dtJs.Rows)
@@ -250,13 +279,9 @@ namespace AutoBa
                         //未上传，来源icare也属于未上传
                         if (isUploadparm)
                         {
-                            if (uploadStatus == 1 && firstSource == 1 && firstSource == 3)//uploadStatus 1 已上传 1 病案  3 嘉禾
+                            if (uploadStatus == 1 && firstSource == 1)//uploadStatus 1 已上传 1 病案 
                                 continue;
                         }
-
-                        //不显示来自JH数据
-                        if (firstSource == 3)
-                            continue;
 
                         if (lstReg.Contains(registerid))
                             continue;
@@ -278,14 +303,17 @@ namespace AutoBa
 
                         SqlReg += "and t1.registerid_chr in (" + registeridStr + ")" + Environment.NewLine + " order by emrinpatientdate";
                         dtReg = svc.GetDataTable(SqlReg);
+                        lstFpJh = GetPatBaFromJH(registeridStr);
                     }
                     string emrIpnoStr = string.Empty;
                     string beginEmrDate = string.Empty;
                     string endEmrDate = string.Empty;
-                    if(dtReg != null && dtReg.Rows.Count > 0)
+                    if (dtReg != null && dtReg.Rows.Count > 0)
                     {
                         beginEmrDate = Function.Datetime(dtReg.Rows[0]["emrinpatientdate"]).ToString("yyyy-MM-dd HH:mm:ss");
                         endEmrDate = Function.Datetime(dtReg.Rows[dtReg.Rows.Count - 1]["emrinpatientdate"]).ToString("yyyy-MM-dd HH:mm:ss");
+
+
                         foreach (DataRow drReg in dtReg.Rows)
                         {
                             isExisitBa = false;
@@ -301,6 +329,8 @@ namespace AutoBa
                             string rydate = Function.Datetime(drReg["rysj"]).ToString("yyyy-MM-dd");
                             string rydate1 = Function.Datetime(drReg["rysj"]).AddDays(-1).ToString("yyyy-MM-dd");
                             string rydate2 = Function.Datetime(drReg["rysj"]).AddDays(1).ToString("yyyy-MM-dd");
+                            TimeSpan ts = Function.Datetime(cydate) - Function.Datetime(rydate);
+                            string FDAYS = ts.Days.ToString();
                             string uploadStatus = drReg["status"].ToString();
                             string jzjlh = string.Empty;
                             string FPHM = string.Empty;
@@ -436,7 +466,11 @@ namespace AutoBa
                                         if (upVo.fpVo.FRYBS == "")
                                             upVo.fpVo.FRYBS = upVo.fpVo.FRYDEPT;
                                         upVo.fpVo.FZKTYKH = drrBa["FZKTYKH"].ToString();
+                                        if (string.IsNullOrEmpty(upVo.fpVo.FZKTYKH))
+                                            upVo.fpVo.FZKTYKH = "-";
                                         upVo.fpVo.FZKDEPT = drrBa["FZKDEPT"].ToString();
+                                        if (string.IsNullOrEmpty(upVo.fpVo.FZKDEPT))
+                                            upVo.fpVo.FZKDEPT = "-";
                                         upVo.fpVo.FZKTIME = drrBa["FZKTIME"].ToString();
                                         upVo.fpVo.FZKTIME = Function.Datetime(drrBa["FZKTIME"]).ToString("HH:mm:ss");
                                         upVo.fpVo.FCYDATE = Function.Datetime(drrBa["FCYDATE"]).ToString("yyyy-MM-dd");
@@ -448,12 +482,16 @@ namespace AutoBa
                                         upVo.fpVo.FCYBS = drrBa["FCYBS"].ToString().Trim();
                                         if (upVo.fpVo.FCYBS == "")
                                             upVo.fpVo.FCYBS = upVo.fpVo.FCYDEPT;
-                                        TimeSpan ts = Function.Datetime(upVo.fpVo.FCYDATE) - Function.Datetime(upVo.fpVo.FRYDATE);
-                                        upVo.fpVo.FDAYS = ts.Days.ToString();
+                                        TimeSpan tsDay = Function.Datetime(upVo.fpVo.FCYDATE) - Function.Datetime(upVo.fpVo.FRYDATE);
+                                        upVo.fpVo.FDAYS = tsDay.Days.ToString();
                                         if (upVo.fpVo.FDAYS == "0")
                                             upVo.fpVo.FDAYS = "1";
                                         upVo.fpVo.FMZZDBH = drrBa["FMZZDBH"].ToString();
+                                        if (string.IsNullOrEmpty(upVo.fpVo.FMZZDBH))
+                                            upVo.fpVo.FMZZDBH = "-";
                                         upVo.fpVo.FMZZD = drrBa["FMZZD"].ToString();
+                                        if (string.IsNullOrEmpty(upVo.fpVo.FMZZD))
+                                            upVo.fpVo.FMZZD = "-";
                                         upVo.fpVo.FMZDOCTBH = drrBa["FMZDOCTBH"].ToString();
                                         if (string.IsNullOrEmpty(upVo.fpVo.FMZDOCTBH))
                                             upVo.fpVo.FMZDOCTBH = "无";
@@ -517,8 +555,13 @@ namespace AutoBa
                                         upVo.fpVo.FRH = drrBa["FRH"].ToString();
                                         if (string.IsNullOrEmpty(upVo.fpVo.FRH))
                                             upVo.fpVo.FRH = "未查";
+
                                         upVo.fpVo.FKZRBH = drrBa["FKZRBH"].ToString();
+                                        if (string.IsNullOrEmpty(upVo.fpVo.FKZRBH))
+                                            upVo.fpVo.FKZRBH = "-";
                                         upVo.fpVo.FKZR = drrBa["FKZR"].ToString();
+                                        if (string.IsNullOrEmpty(upVo.fpVo.FKZR))
+                                            upVo.fpVo.FKZR = "-";
                                         upVo.fpVo.FZRDOCTBH = drrBa["FZRDOCTBH"].ToString();
                                         if (string.IsNullOrEmpty(upVo.fpVo.FZRDOCTBH))
                                             upVo.fpVo.FZRDOCTBH = "-";
@@ -658,25 +701,67 @@ namespace AutoBa
 
                             if (!isExisitBa)
                             {
-                                EntityPatUpload vo = GetPatBaFromIcare(ipno, registerid, emrinpatientdate);
-                                if (vo != null)
+                                EntityPatUpload vo = null;
+                                EntityFirstPage firstVo = null;
+                                if (lstFpJh != null)
+                                {
+                                    firstVo = lstFpJh.Find(r => r.registerId == registerid);
+                                    //首页信息不全
+                                    if (string.IsNullOrEmpty(firstVo.FKZR))
+                                        firstVo = null;
+                                    //勾选 首页来源icare
+                                    if (isFromIcare)
+                                        firstVo = null;
+                                }
+                                    
+                                if (firstVo != null)
                                 {
                                     upVo = new EntityPatUpload();
                                     upVo.fpVo = new EntityFirstPage();
-                                    vo.fpVo.FPHM = FPHM;
-                                    upVo.fpVo = vo.fpVo;
+                                    upVo.fpVo = firstVo;
+                                    if( string.IsNullOrEmpty(upVo.fpVo.FIDCard))
+                                        upVo.fpVo.FIDCard = drReg["idcard_chr"].ToString();
+                                    if( string.IsNullOrEmpty(upVo.fpVo.GMSFHM))
+                                        upVo.fpVo.GMSFHM = drReg["idcard_chr"].ToString();
+                                    if (Function.Int(upVo.fpVo.FDAYS) < 0)
+                                        upVo.fpVo.FDAYS = FDAYS;
+                                    upVo.fpVo.ZYH = emrinpatientid;
+                                    upVo.fpVo.FPHM = FPHM;
                                     upVo.fpVo.JZJLH = jzjlh;
                                     upVo.fpVo.FWSJGDM = "12441900457226325L";
-                                    upVo.firstSource = 2;
+                                    upVo.firstSource = 3;
+                                }
+                                else
+                                {
+                                    vo = GetPatBaFromIcare(ipno, registerid, emrinpatientdate);
+                                    if (vo != null)
+                                    {
+                                        upVo = new EntityPatUpload();
+                                        upVo.fpVo = new EntityFirstPage();
+                                        upVo.fpVo = vo.fpVo;
+                                        upVo.fpVo.ZYH = emrinpatientid;
+                                        if (Function.Int(upVo.fpVo.FDAYS) < 0)
+                                            upVo.fpVo.FDAYS = FDAYS;
+                                        upVo.fpVo.FPHM = FPHM;
+                                        upVo.fpVo.JZJLH = jzjlh;
+                                        upVo.fpVo.FWSJGDM = "12441900457226325L";
+                                        upVo.firstSource = 2;
+                                    }
                                 }
                             }
 
                             if (upVo == null)
-                                continue;
+                            {
+                                upVo = new EntityPatUpload();
+                                upVo.fpVo = new EntityFirstPage();
+                                upVo.firstSource = -1;
+                            }
                             #endregion
-
+                            
                             #region  显示列表
+
                             upVo.XH = ++n;
+                            upVo.MZH = MZH;
                             upVo.UPLOADTYPE = 1;
                             upVo.PATNAME = drReg["xm"].ToString();
                             upVo.PATSEX = drReg["sex"].ToString();
@@ -697,10 +782,23 @@ namespace AutoBa
                             upVo.JZJLH = jzjlh;
                             upVo.REGISTERID = drReg["registerid_chr"].ToString();
                             upVo.STATUS = Function.Int(drReg["status"]);
-                            if (drReg["status"].ToString() == "1")
-                                upVo.SZ = "已上传";
+                            if (drReg["first"].ToString() == "0")
+                                upVo.firstSz = "已上传";
                             else
+                                upVo.firstSz = "未上传";
+                            if (drReg["xj"].ToString() == "0")
+                                upVo.xjSz = "已上传";
+                            else
+                                upVo.xjSz = "未上传";
+
+                            if (drReg["first"].ToString() == "0" && drReg["xj"].ToString() == "0")
+                            {
+                                upVo.SZ = "已上传";
+                            }
+                            else
+                            {
                                 upVo.SZ = "未上传";
+                            }
 
                             if (drReg["jbr"] != DBNull.Value)
                                 upVo.JBRXM = drReg["jbr"].ToString();
@@ -725,60 +823,97 @@ namespace AutoBa
                     }
                     if (!string.IsNullOrEmpty(emrIpnoStr))
                         emrIpnoStr = "(" + emrIpnoStr.TrimEnd(',') + ")";
-             
+
                     #region 出院小结
                     if (data != null)
                     {
-                        List<EntityCyxj> lstXj = GetPatCyxjList2(emrIpnoStr, beginEmrDate, endEmrDate);
+                        List<EntityCyxj> lstXjJH = new List<EntityCyxj>();
+                        List<EntityCyxj> lstXj = new List<EntityCyxj>();
 
-                        foreach(var upVo in data)
+                        #region JH小结
+                        lstXjJH = GetPatCyxjFromJH(registeridStr);
+
+                        if (lstXjJH != null)
                         {
-                            upVo.xjVo = lstXj.Find(r=> r.ZYH == upVo.emrinpatientId && r.emrinpatientDate == upVo.emrinpatientDate);
-                            if(upVo.xjVo != null)
+                            foreach (var upVo in data)
                             {
-
-                                upVo.xjVo.JZJLH = upVo.JZJLH;
-                                upVo.xjVo.ZYH = upVo.INPATIENTID;
-                                upVo.xjVo.MZH = upVo.MZH;
-                                upVo.xjVo.MZZD = upVo.fpVo.FMZZD;
-                                if (string.IsNullOrEmpty(upVo.xjVo.MZZD))
-                                    upVo.xjVo.MZZD = "-";
-                                if (upVo.xjVo.MZZD.Length > 100)
-                                    upVo.xjVo.MZZD = upVo.xjVo.MZZD.Substring(0, 100);
-
-                                if (string.IsNullOrEmpty(upVo.xjVo.RYZD))
-                                    upVo.xjVo.RYZD = upVo.fpVo.FMZZD;
-                                if (string.IsNullOrEmpty(upVo.xjVo.RYZD))
-                                    upVo.xjVo.RYZD = "-";
-                                upVo.xjVo.XM = upVo.fpVo.FNAME;
-                                upVo.xjVo.XB = upVo.fpVo.FSEX;
-                                if (upVo.xjVo.XB == "男")
-                                    upVo.xjVo.XB = "1";
-                                else if (upVo.xjVo.XB == "女")
-                                    upVo.xjVo.XB = "2";
-                                else upVo.xjVo.XB = "9";
-                                upVo.xjVo.NL = upVo.fpVo.FAGE;
-                                if (!string.IsNullOrEmpty(upVo.fpVo.FIDCard))
-                                    upVo.xjVo.GMSFHM = upVo.fpVo.FIDCard;
-                                else
-                                    upVo.xjVo.GMSFHM = upVo.idCard;
-                                upVo.xjVo.RYRQ = upVo.RYRQ;
-                                upVo.xjVo.CYRQ = upVo.CYRQ;
-                                upVo.xjVo.RYSJ = upVo.RYSJ1;
-                                upVo.xjVo.CYSJ = upVo.CYSJ1;
-                                upVo.xjVo.ZYTS = upVo.fpVo.FDAYS;
-                                upVo.xjVo.ZY = upVo.fpVo.FJOB;
-                                upVo.xjVo.JG = upVo.fpVo.FNATIVE;
-                                if (string.IsNullOrEmpty(upVo.xjVo.JG))
-                                    upVo.xjVo.JG = "无";
-                                upVo.xjVo.YJDZ = upVo.YJDZ;
-                                if (string.IsNullOrEmpty(upVo.xjVo.YJDZ))
-                                    upVo.xjVo.YJDZ = "-";
-                                upVo.xjVo.FTIMES = upVo.fpVo.FTIMES.ToString();
-                                upVo.xjVo.FSUM1 = upVo.fpVo.FSUM1; 
-                                upVo.xjVo.FPHM = upVo.fpVo.FPHM;
+                                EntityCyxj xjVo = lstXjJH.Find(r => r.registerId == upVo.REGISTERID);
+                                if (xjVo != null)
+                                {
+                                    upVo.xjVo = new EntityCyxj();
+                                    upVo.xjVo = xjVo;
+                                    upVo.xjVo.MZH = upVo.MZH;
+                                    upVo.xjVo.JZJLH = upVo.JZJLH;
+                                    if (upVo.fpVo.FTIMES > 0)
+                                        upVo.xjVo.FTIMES = upVo.FTIMES.ToString(); 
+                                    upVo.xjVo.FSUM1 = Function.Dec(upVo.fpVo.FSUM1);
+                                    upVo.xjVo.FPHM = upVo.fpVo.FPHM;
+                                    if (!string.IsNullOrEmpty(upVo.fpVo.FIDCard))
+                                        upVo.xjVo.GMSFHM = upVo.fpVo.FIDCard;
+                                    upVo.xjVo.ZY = upVo.fpVo.FJOB;
+                                    upVo.xjSource = 2;
+                                }
                             }
                         }
+                        #endregion
+
+                        #region icare小结
+                        lstXj = GetPatCyxjList2(emrIpnoStr, beginEmrDate, endEmrDate);
+                        if (lstXj != null)
+                        {
+                            foreach (var upVo in data)
+                            {
+                                if (upVo.xjSource == 2)
+                                    continue;
+
+                                upVo.xjVo = lstXj.Find(r => r.ZYH == upVo.emrinpatientId && r.emrinpatientDate == upVo.emrinpatientDate);
+                                if (upVo.xjVo != null)
+                                {
+                                    upVo.xjSource = 1;
+                                    upVo.xjVo.JZJLH = upVo.JZJLH;
+                                    upVo.xjVo.ZYH = upVo.INPATIENTID;
+                                    upVo.xjVo.MZH = upVo.MZH;
+                                    upVo.xjVo.MZZD = upVo.fpVo.FMZZD;
+                                    if (string.IsNullOrEmpty(upVo.xjVo.MZZD))
+                                        upVo.xjVo.MZZD = "-";
+                                    if (upVo.xjVo.MZZD.Length > 100)
+                                        upVo.xjVo.MZZD = upVo.xjVo.MZZD.Substring(0, 100);
+
+                                    if (string.IsNullOrEmpty(upVo.xjVo.RYZD))
+                                        upVo.xjVo.RYZD = upVo.fpVo.FMZZD;
+                                    if (string.IsNullOrEmpty(upVo.xjVo.RYZD))
+                                        upVo.xjVo.RYZD = "-";
+                                    upVo.xjVo.XM = upVo.fpVo.FNAME;
+                                    upVo.xjVo.XB = upVo.fpVo.FSEX;
+                                    if (upVo.xjVo.XB == "男")
+                                        upVo.xjVo.XB = "1";
+                                    else if (upVo.xjVo.XB == "女")
+                                        upVo.xjVo.XB = "2";
+                                    else upVo.xjVo.XB = "9";
+                                    upVo.xjVo.NL = upVo.fpVo.FAGE;
+                                    if (!string.IsNullOrEmpty(upVo.fpVo.FIDCard))
+                                        upVo.xjVo.GMSFHM = upVo.fpVo.FIDCard;
+                                    else
+                                        upVo.xjVo.GMSFHM = upVo.idCard;
+                                    upVo.xjVo.RYRQ = upVo.RYRQ;
+                                    upVo.xjVo.CYRQ = upVo.CYRQ;
+                                    upVo.xjVo.RYSJ = upVo.RYSJ1;
+                                    upVo.xjVo.CYSJ = upVo.CYSJ1;
+                                    upVo.xjVo.ZYTS = upVo.fpVo.FDAYS;
+                                    upVo.xjVo.ZY = upVo.fpVo.FJOB;
+                                    upVo.xjVo.JG = upVo.fpVo.FNATIVE;
+                                    if (string.IsNullOrEmpty(upVo.xjVo.JG))
+                                        upVo.xjVo.JG = "无";
+                                    upVo.xjVo.YJDZ = upVo.YJDZ;
+                                    if (string.IsNullOrEmpty(upVo.xjVo.YJDZ))
+                                        upVo.xjVo.YJDZ = "-";
+                                    upVo.xjVo.FTIMES = upVo.fpVo.FTIMES.ToString();
+                                    upVo.xjVo.FSUM1 = upVo.fpVo.FSUM1;
+                                    upVo.xjVo.FPHM = upVo.fpVo.FPHM;
+                                }
+                            }
+                        }
+                        #endregion
                     }
 
                 }
@@ -1219,7 +1354,7 @@ namespace AutoBa
                         {
                             EntityCyxj vo = new EntityCyxj();
                             #region 上传信息 出院小结
-                            
+
                             vo.emrinpatientDate = Function.Datetime(drXj["inpatientdate"]).ToString("yyyy-MM-dd HH:mm:ss");
                             vo.ZYH = drXj["inpatientid"].ToString();
                             vo.RYZD = drXj["inhospitaldiagnose"].ToString().Trim();
@@ -1262,6 +1397,799 @@ namespace AutoBa
                 svc = null;
             }
             return dataXj;
+        }
+        #endregion
+
+        #region 首页 嘉禾
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ipno"></param>
+        /// <param name="registerid"></param>
+        /// <param name="emrinpatientdate"></param>
+        /// <returns></returns>
+        public List<EntityFirstPage> GetPatBaFromJH(string registeridStr)
+        {
+            List<EntityFirstPage> data = null;
+            EntityFirstPage firstPageVo = null;
+            SqlHelper svc = null;
+            try
+            {
+                svc = new SqlHelper(EnumBiz.interfaceDB);
+
+                #region
+                string sql = @" select  a.PATIENT_ID,
+                                        a.ftimes as FTIMES,
+                                        a.fid,
+                                        a.fzyid,
+                                        a.fcydate,
+                                        '' as JZJLH,
+                                        '' as FWSJGDM,
+                                        '' as FBGLX,
+                                        a.fidcard,
+                                        a.FFBBHNEW,a.FFBNEW,
+                                        a.FASCARD1,
+                                        a.FPRN,
+                                        a.FNAME,a.FSEXBH,
+                                        a.FSEX,a.FBIRTHDAY,
+                                        a.FAGE,a.fcountrybh,
+                                        a.fcountry,a.fnationalitybh,
+                                        a.fnationality,a.FCSTZ,
+                                        a.FRYTZ,a.FBIRTHPLACE,
+                                        a.FNATIVE,a.FIDCard,
+                                        a.FJOB,a.FSTATUSBH,
+                                        a.FSTATUS,a.FCURRADDR,
+                                        a.FCURRTELE,a.FCURRPOST,
+                                        a.FHKADDR,a.FHKPOST,
+                                        a.FDWNAME,a.FDWADDR,
+                                        a.FDWTELE,a.FDWPOST,
+                                        a.FLXNAME,a.FRELATE,
+                                        a.FLXADDR,a.FLXTELE,
+                                        a.FRYTJBH,a.FRYTJ,
+                                        a.FRYDATE,a.FRYTIME,
+                                        a.FRYTYKH,a.FRYDEPT,
+                                        a.FRYBS,a.FZKTYKH,
+                                        a.FZKDEPT,a.FZKTIME,
+                                        a.FCYDATE,a.FCYTIME,
+                                        a.FCYTYKH,a.FCYDEPT,
+                                        a.FCYBS,a.FDAYS,
+                                        a.FMZZDBH,a.FMZZD,
+                                        a.FMZDOCTBH,a.FMZDOCT,
+                                        a.FJBFXBH,a.FJBFX,
+                                        a.FYCLJBH,a.FYCLJ,
+                                        a.FQJTIMES,a.FQJSUCTIMES,
+                                        a.FPHZD,a.FPHZDNUM,
+                                        a.FPHZDBH,a.FIFGMYWBH,
+                                        a.FIFGMYW,a.FGMYW,
+                                        a.FBODYBH,a.FBODY,
+                                        a.FBLOODBH,a.FBLOOD,
+                                        a.FRHBH,a.FRH,
+                                        a.FKZRBH,a.FKZR,
+                                        a.FZRDOCTBH,a.FZRDOCTOR,
+                                        a.FZZDOCTBH,a.FZZDOCT,
+                                        a.FZYDOCTBH,a.FZYDOCT,
+                                        a.FNURSEBH,a.FNURSE,
+                                        a.FJXDOCTBH,a.FJXDOCT,
+                                        a.FSXDOCTBH,a.FSXDOCT,
+                                        a.FBMYBH,
+                                        a.FBMY,a.FQUALITYBH,
+                                        a.FQUALITY,a.FZKDOCTBH,
+                                        a.FZKDOCT,a.FZKNURSEBH,
+                                        a.FZKNURSE,a.FZKRQ,
+                                        a.FLYFSBH,a.FLYFS,a.FYZOUTHOSTITAL,
+                                        a.FSQOUTHOSTITAL,a.FISAGAINRYBH,
+                                        a.FISAGAINRY,a.FISAGAINRYMD,
+                                        a.FRYQHMDAYS,a.FRYQHMHOURS,
+                                        a.FRYQHMMINS,a.FRYQHMCOUNTS,
+                                        a.FRYHMDAYS,a.FRYHMHOURS,
+                                        a.FRYHMMINS,a.FRYHMCOUNTS,a.FSUM1,
+                                        a.FZFJE,a.FZHFWLYLF,a.FZHFWLCZF,a.FZHFWLHLF,
+                                        a.FZHFWLQTF,a.FZDLBLF,a.FZDLSSSF,
+                                        a.FZDLYXF,a.FZDLLCF,a.FZLLFFSSF,a.FZLLFWLZWLF,
+                                        a.FZLLFSSF,a.FZLLFMZF,
+                                        a.FZLLFSSZLF,a.FKFLKFF,a.FZYLZF,
+                                        a.FXYF,a.FXYLGJF,a.FZCHYF,
+                                        a.FZCYF,a.FXYLXF,a.FXYLBQBF,
+                                        a.FXYLQDBF,a.FXYLYXYZF,a.FXYLXBYZF,
+                                        a.FHCLCJF,a.FHCLZLF,a.FHCLSSF,
+                                        a.FQTF,a.FZYF,a.FZKDATE,
+                                        a.FJOBBH,a.FZHFWLYLF01,a.FZHFWLYLF02,
+                                        a.FZYLZDF,a.FZYLZLF,a.FZYLZLF01,a.FZYLZLF02,
+                                        a.FZYLZLF03,a.FZYLZLF04,a.FZYLZLF05,a.FZYLZLF06,a.FZYLQTF,
+                                        a.FZCLJGZJF,a.FZYLQTF01,a.FZYLQTF02
+                                        from jhemr.jhemr_his_ba123 a where a.PATIENT_ID in ";
+                #endregion
+
+                if (string.IsNullOrEmpty(registeridStr))
+                    return null;
+
+                sql += "(" + registeridStr + ")";
+                DataTable dt = svc.GetDataTable(sql);
+
+                string sqlZk = @"select * from jhemr.jhemr_his_ba2 where Patient_Id in (" + registeridStr + ")";
+                DataTable dtZk = svc.GetDataTable(sqlZk);
+
+                sql = @"select * from jhemr.jhemr_his_ba3 where Patient_Id in (" + registeridStr + ")";
+                DataTable dtZd = svc.GetDataTable(sql);
+
+                sql = @"select * from jhemr.jhemr_his_ba7 where Patient_Id in (" + registeridStr + ")";
+                DataTable dtbTumor = svc.GetDataTable(sql);
+
+                sql = @"select * from jhemr.jhemr_his_ba4 where Patient_Id in (" + registeridStr + ")";
+                DataTable dtFop = svc.GetDataTable(sql);
+
+                sql = @"select * from jhemr.jhemr_his_ba5 where Patient_Id in (" + registeridStr + ")";
+                DataTable dtFy = svc.GetDataTable(sql);
+
+                sql = @"select * from jhemr.jhemr_his_ba6 where Patient_Id in (" + registeridStr + ")";
+                DataTable dtZl = svc.GetDataTable(sql);
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    data = new List<EntityFirstPage>();
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        firstPageVo = new EntityFirstPage();
+                        string registerId = dr["PATIENT_ID"].ToString();
+                        firstPageVo.registerId = registerId;
+
+                        #region 首页信息  
+                        firstPageVo.FWSJGDM = dr["FWSJGDM"].ToString();
+                        firstPageVo.FFBBHNEW = dr["FFBBHNEW"].ToString();
+                        firstPageVo.FFBNEW = dr["FFBNEW"].ToString();
+                        if (dr["FASCARD1"] != DBNull.Value)
+                            firstPageVo.FASCARD1 = dr["FASCARD1"].ToString();
+                        else
+                            firstPageVo.FASCARD1 = "1";
+                        firstPageVo.FTIMES = Function.Int(dr["FTIMES"].ToString());
+                        firstPageVo.FPRN = dr["FPRN"].ToString();
+                        firstPageVo.FNAME = dr["FNAME"].ToString();
+                        firstPageVo.FSEXBH = dr["FSEXBH"].ToString();
+                        firstPageVo.FSEX = dr["FSEX"].ToString();
+                        firstPageVo.FBIRTHDAY = Function.Datetime(dr["FBIRTHDAY"]).ToString("yyyyMMdd");
+                        firstPageVo.FAGE = dr["FAGE"].ToString();
+                        firstPageVo.fcountrybh = dr["fcountrybh"].ToString();
+                        if (firstPageVo.fcountrybh == "")
+                            firstPageVo.fcountrybh = "-";
+                        firstPageVo.fcountry = dr["fcountry"].ToString();
+                        if (firstPageVo.fcountry == "")
+                            firstPageVo.fcountry = "-";
+                        firstPageVo.fnationalitybh = dr["fnationalitybh"].ToString();
+                        if (firstPageVo.fnationalitybh == "")
+                            firstPageVo.fnationalitybh = "-";
+                        firstPageVo.fnationality = dr["fnationality"].ToString();
+                        firstPageVo.FCSTZ = dr["FCSTZ"].ToString();
+                        firstPageVo.FRYTZ = dr["FRYTZ"].ToString();
+                        firstPageVo.FBIRTHPLACE = dr["FBIRTHPLACE"].ToString();
+                        firstPageVo.FNATIVE = dr["FNATIVE"].ToString();
+                        firstPageVo.FIDCard = dr["FIDCard"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FIDCard))
+                            firstPageVo.FIDCard = "无";
+                        firstPageVo.FJOB = dr["FJOB"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FJOB))
+                            firstPageVo.FJOB = "其他";
+                        firstPageVo.FSTATUS = dr["FSTATUS"].ToString().Trim();
+                        if (firstPageVo.FSTATUS.Contains("已婚"))
+                            firstPageVo.FSTATUSBH = "2";
+                        else if (firstPageVo.FSTATUS == "未婚")
+                            firstPageVo.FSTATUSBH = "1";
+                        else if (firstPageVo.FSTATUS == "丧偶")
+                            firstPageVo.FSTATUSBH = "3";
+                        else if (firstPageVo.FSTATUS == "离婚")
+                            firstPageVo.FSTATUSBH = "4";
+                        else
+                            firstPageVo.FSTATUSBH = "9";
+                        firstPageVo.FCURRADDR = dr["FCURRADDR"].ToString();
+                        firstPageVo.FCURRTELE = dr["FCURRTELE"].ToString();
+                        firstPageVo.FCURRPOST = dr["FCURRPOST"].ToString();
+                        firstPageVo.FHKADDR = dr["FHKADDR"].ToString();
+                        firstPageVo.FHKPOST = dr["FHKPOST"].ToString();
+                        firstPageVo.FDWNAME = dr["FDWNAME"].ToString();
+                        firstPageVo.FDWADDR = dr["FDWADDR"].ToString();
+                        firstPageVo.FDWTELE = dr["FDWTELE"].ToString();
+                        firstPageVo.FDWPOST = dr["FDWPOST"].ToString();
+                        firstPageVo.FLXNAME = dr["FLXNAME"].ToString();
+                        firstPageVo.FRELATE = dr["FRELATE"].ToString();
+                        if (firstPageVo.FRELATE.Length > 10)
+                            firstPageVo.FRELATE = firstPageVo.FRELATE.Substring(0, 10);
+                        firstPageVo.FLXADDR = dr["FLXADDR"].ToString();
+                        firstPageVo.FLXTELE = dr["FLXTELE"].ToString();
+                        firstPageVo.FRYTJ = dr["FRYTJ"].ToString();
+                        if (firstPageVo.FRYTJ.Contains("急诊"))
+                            firstPageVo.FRYTJBH = "1";
+                        else if (firstPageVo.FRYTJ.Contains("门诊"))
+                            firstPageVo.FRYTJBH = "2";
+                        else if (firstPageVo.FRYTJ.Contains("其他医疗机构转入"))
+                            firstPageVo.FRYTJBH = "3";
+                        else
+                        {
+                            firstPageVo.FRYTJ = "其他";
+                            firstPageVo.FRYTJBH = "9";
+                        } 
+                        firstPageVo.FRYDATE = Function.Datetime(dr["FRYDATE"]).ToString("yyyy-MM-dd");
+                        firstPageVo.FRYTIME = dr["FRYTIME"].ToString();
+                        firstPageVo.FRYTIME = Function.Datetime(dr["FRYTIME"]).ToString("HH:mm:ss");
+                        firstPageVo.FRYTYKH = dr["FRYTYKH"].ToString();
+                        firstPageVo.FRYDEPT = dr["FRYDEPT"].ToString();
+                        firstPageVo.FRYBS = dr["FRYBS"].ToString().Trim();
+                        if (firstPageVo.FRYBS == "")
+                            firstPageVo.FRYBS = firstPageVo.FRYDEPT;
+                        firstPageVo.FZKTYKH = dr["FZKTYKH"].ToString();
+                        firstPageVo.FZKDEPT = dr["FZKDEPT"].ToString();
+                        firstPageVo.FZKTIME = dr["FZKTIME"].ToString();
+                        if (firstPageVo.FZKTIME.Length < 4)
+                            firstPageVo.FZKTIME = Function.Datetime(dr["FZKTIME"]).ToString("HH:mm:ss");
+                        firstPageVo.FCYDATE = Function.Datetime(dr["FCYDATE"]).ToString("yyyy-MM-dd");
+
+                        firstPageVo.FCYTIME = dr["FCYTIME"].ToString();
+                        if (firstPageVo.FCYTIME.Length < 4)
+                            firstPageVo.FCYTIME = Function.Datetime(dr["FCYTIME"]).ToString("HH:mm:ss");
+                        firstPageVo.FCYTYKH = dr["FCYTYKH"].ToString();
+                        firstPageVo.FCYDEPT = dr["FCYDEPT"].ToString();
+                        firstPageVo.FCYBS = dr["FCYBS"].ToString().Trim();
+                        if (firstPageVo.FCYBS == "")
+                            firstPageVo.FCYBS = firstPageVo.FCYDEPT;
+                        TimeSpan ts = Function.Datetime(firstPageVo.FCYDATE) - Function.Datetime(firstPageVo.FRYDATE);
+                        firstPageVo.FDAYS = ts.Days.ToString();
+                        if (firstPageVo.FDAYS == "0")
+                            firstPageVo.FDAYS = "1";
+
+                        firstPageVo.FMZZD = dr["FMZZD"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FMZZD))
+                            firstPageVo.FMZZD = "-";
+                        firstPageVo.FMZZDBH = dr["FMZZDBH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FMZZDBH))
+                            firstPageVo.FMZZDBH = "-";
+
+                            firstPageVo.FMZDOCTBH = dr["FMZDOCTBH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FMZDOCTBH))
+                            firstPageVo.FMZDOCTBH = "无";
+                        firstPageVo.FMZDOCT = dr["FMZDOCT"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FMZDOCT))
+                            firstPageVo.FMZDOCT = "无";
+                        firstPageVo.FJBFXBH = dr["FJBFXBH"].ToString();
+                        firstPageVo.FJBFX = dr["FJBFX"].ToString();
+                        firstPageVo.FYCLJBH = dr["FYCLJBH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FYCLJBH))
+                            firstPageVo.FYCLJBH = "2";
+                        firstPageVo.FYCLJ = dr["FYCLJ"].ToString();
+                        if (!string.IsNullOrEmpty(firstPageVo.FYCLJBH))
+                            firstPageVo.FYCLJ = "是";
+                        else
+                            firstPageVo.FYCLJ = "否";
+                        firstPageVo.FQJTIMES = dr["FQJTIMES"].ToString();
+                        firstPageVo.FQJSUCTIMES = dr["FQJSUCTIMES"].ToString();
+                        if (!string.IsNullOrEmpty(firstPageVo.FQJTIMES) && string.IsNullOrEmpty(firstPageVo.FQJSUCTIMES))
+                        {
+                            firstPageVo.FQJSUCTIMES = firstPageVo.FQJTIMES;
+                        }
+                        firstPageVo.FPHZD = dr["FPHZD"].ToString();
+                        if (firstPageVo.FPHZD.Length > 100)
+                            firstPageVo.FPHZD = firstPageVo.FPHZD.Substring(0, 100);
+
+                        if (dr["FPHZDNUM"].ToString().Trim() != "")
+                            firstPageVo.FPHZDNUM = dr["FPHZDNUM"].ToString();
+                        else
+                            firstPageVo.FPHZDNUM = "-";
+
+                        if (dr["FPHZDBH"].ToString().Trim() != "")
+                            firstPageVo.FPHZDBH = dr["FPHZDBH"].ToString();
+                        else
+                            firstPageVo.FPHZDBH = "0";
+
+                        firstPageVo.FIFGMYWBH = dr["FIFGMYWBH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FIFGMYWBH))
+                            firstPageVo.FIFGMYWBH = "1";
+                        if (dr["FIFGMYW"].ToString() != "")
+                            firstPageVo.FIFGMYW = dr["FIFGMYW"].ToString();
+                        else
+                            firstPageVo.FIFGMYW = "-";
+                        if (dr["FGMYW"].ToString() != "")
+                            firstPageVo.FGMYW = dr["FGMYW"].ToString();
+                        else
+                            firstPageVo.FGMYW = "-";
+                        if (dr["FBODYBH"].ToString().Trim() != "")
+                            firstPageVo.FBODYBH = dr["FBODYBH"].ToString();
+                        else
+                            firstPageVo.FBODYBH = "2";
+                        if (dr["FBODY"].ToString().Trim() != "")
+                            firstPageVo.FBODY = dr["FBODY"].ToString();
+                        else
+                            firstPageVo.FBODY = "否";
+                        firstPageVo.FBLOODBH = dr["FBLOODBH"].ToString();
+                        firstPageVo.FBLOOD = dr["FBLOOD"].ToString();
+                        firstPageVo.FRHBH = dr["FRHBH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FRHBH))
+                            firstPageVo.FRHBH = "4";
+                        firstPageVo.FRH = dr["FRH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FRH))
+                            firstPageVo.FRH = "未查";
+                        firstPageVo.FKZRBH = dr["FKZRBH"].ToString();
+                        firstPageVo.FKZR = dr["FKZR"].ToString();
+                        firstPageVo.FZRDOCTBH = dr["FZRDOCTBH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FZRDOCTBH))
+                            firstPageVo.FZRDOCTBH = "-";
+                        firstPageVo.FZRDOCTOR = dr["FZRDOCTOR"].ToString();
+                        firstPageVo.FZZDOCTBH = dr["FZZDOCTBH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FZZDOCTBH))
+                            firstPageVo.FZZDOCTBH = "-";
+                        firstPageVo.FZZDOCT = dr["FZZDOCT"].ToString();
+                        firstPageVo.FZYDOCTBH = dr["FZYDOCTBH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FZYDOCTBH))
+                            firstPageVo.FZYDOCTBH = "-";
+                        firstPageVo.FZYDOCT = dr["FZYDOCT"].ToString();
+                        firstPageVo.FNURSEBH = dr["FNURSEBH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FNURSEBH))
+                            firstPageVo.FNURSEBH = "-";
+                        firstPageVo.FNURSE = dr["FNURSE"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FNURSE))
+                            firstPageVo.FNURSE = "-";
+                        firstPageVo.FJXDOCTBH = dr["FJXDOCTBH"].ToString();
+                        firstPageVo.FJXDOCT = dr["FJXDOCT"].ToString();
+                        firstPageVo.FSXDOCTBH = dr["FSXDOCTBH"].ToString();
+                        firstPageVo.FSXDOCT = dr["FSXDOCT"].ToString();
+                        firstPageVo.FBMYBH = dr["FBMYBH"].ToString();
+                        firstPageVo.FBMY = dr["FBMY"].ToString();
+                        firstPageVo.FQUALITYBH = dr["FQUALITYBH"].ToString();
+                        firstPageVo.FQUALITY = dr["FQUALITY"].ToString();
+                        firstPageVo.FZKDOCTBH = dr["FZKDOCTBH"].ToString();
+                        if (firstPageVo.FZKDOCTBH == "")
+                            firstPageVo.FZKDOCTBH = "-";
+                        firstPageVo.FZKDOCT = dr["FZKDOCT"].ToString();
+                        firstPageVo.FZKNURSEBH = dr["FZKNURSEBH"].ToString().Trim();
+                        if (firstPageVo.FZKNURSEBH == "")
+                            firstPageVo.FZKNURSEBH = "-";
+                        firstPageVo.FZKNURSE = dr["FZKNURSE"].ToString();
+                        if (firstPageVo.FZKNURSE == "")
+                            firstPageVo.FZKNURSE = "-";
+                        firstPageVo.FZKRQ = Function.Datetime(dr["FZKRQ"]).ToString("yyyyMMdd");
+
+                        firstPageVo.FLYFSBH = dr["FLYFSBH"].ToString().Trim();
+                        if (firstPageVo.FLYFSBH != "1" || firstPageVo.FLYFSBH != "2" ||
+                            firstPageVo.FLYFSBH != "3" || firstPageVo.FLYFSBH != "4" || firstPageVo.FLYFSBH != "5")
+                            firstPageVo.FLYFSBH = "9";
+
+                        firstPageVo.FLYFS = dr["FLYFS"].ToString();
+                        if (firstPageVo.FLYFS.Length >= 26)
+                            firstPageVo.FLYFS = firstPageVo.FLYFS.Substring(0, 50);
+
+                        firstPageVo.FYZOUTHOSTITAL = dr["FYZOUTHOSTITAL"].ToString();
+                        firstPageVo.FSQOUTHOSTITAL = dr["FSQOUTHOSTITAL"].ToString();
+                        firstPageVo.FISAGAINRYBH = dr["FISAGAINRYBH"].ToString();
+                        if (firstPageVo.FISAGAINRYBH == "")
+                            firstPageVo.FISAGAINRYBH = "-";
+                        firstPageVo.FISAGAINRY = dr["FISAGAINRY"].ToString();
+                        if (firstPageVo.FISAGAINRY == "")
+                            firstPageVo.FISAGAINRY = "-";
+                        firstPageVo.FISAGAINRYMD = dr["FISAGAINRYMD"].ToString();
+                        if (firstPageVo.FISAGAINRYMD == "")
+                            firstPageVo.FISAGAINRYMD = "-";
+                        firstPageVo.FRYQHMDAYS = dr["FRYQHMDAYS"].ToString();
+                        firstPageVo.FRYQHMHOURS = dr["FRYQHMHOURS"].ToString();
+                        firstPageVo.FRYQHMMINS = dr["FRYQHMMINS"].ToString();
+                        firstPageVo.FRYQHMCOUNTS = dr["FRYQHMCOUNTS"].ToString();
+                        firstPageVo.FRYHMDAYS = dr["FRYHMDAYS"].ToString();
+                        firstPageVo.FRYHMHOURS = dr["FRYHMHOURS"].ToString();
+                        firstPageVo.FRYHMMINS = dr["FRYHMMINS"].ToString();
+                        firstPageVo.FRYHMCOUNTS = dr["FRYHMCOUNTS"].ToString();
+                        firstPageVo.FSUM1 = Function.Dec(dr["FSUM1"].ToString());
+                        firstPageVo.FZFJE = Function.Dec(dr["FZFJE"].ToString());
+                        firstPageVo.FZHFWLYLF = Function.Dec(dr["FZHFWLYLF"].ToString());
+                        firstPageVo.FZHFWLCZF = Function.Dec(dr["FZHFWLCZF"].ToString());
+                        firstPageVo.FZHFWLHLF = Function.Dec(dr["FZHFWLHLF"].ToString());
+                        firstPageVo.FZHFWLQTF = Function.Dec(dr["FZHFWLQTF"].ToString());
+                        firstPageVo.FZDLBLF = Function.Dec(dr["FZDLBLF"].ToString());
+                        firstPageVo.FZDLSSSF = Function.Dec(dr["FZDLSSSF"].ToString());
+                        firstPageVo.FZDLYXF = Function.Dec(dr["FZDLYXF"].ToString());
+                        firstPageVo.FZDLLCF = Function.Dec(dr["FZDLLCF"].ToString());
+                        firstPageVo.FZLLFFSSF = Function.Dec(dr["FZLLFFSSF"].ToString());
+                        firstPageVo.FZLLFWLZWLF = Function.Dec(dr["FZLLFWLZWLF"].ToString());
+                        firstPageVo.FZLLFSSF = Function.Dec(dr["FZLLFSSF"].ToString());
+                        firstPageVo.FZLLFMZF = Function.Dec(dr["FZLLFMZF"].ToString());
+                        firstPageVo.FZLLFSSZLF = Function.Dec(dr["FZLLFSSZLF"].ToString());
+                        firstPageVo.FKFLKFF = Function.Dec(dr["FKFLKFF"].ToString());
+                        firstPageVo.FZYLZF = Function.Dec(dr["FZYLZF"].ToString());
+                        firstPageVo.FXYF = Function.Dec(dr["FXYF"].ToString());
+                        firstPageVo.FXYLGJF = Function.Dec(dr["FXYLGJF"].ToString());
+                        firstPageVo.FZCHYF = Function.Dec(dr["FZCHYF"].ToString());
+                        firstPageVo.FZCYF = Function.Dec(dr["FZCYF"].ToString());
+                        firstPageVo.FXYLXF = Function.Dec(dr["FXYLXF"].ToString());
+                        firstPageVo.FXYLBQBF = Function.Dec(dr["FXYLBQBF"].ToString());
+                        firstPageVo.FXYLQDBF = Function.Dec(dr["FXYLQDBF"].ToString());
+                        firstPageVo.FXYLYXYZF = Function.Dec(dr["FXYLYXYZF"].ToString());
+                        firstPageVo.FXYLXBYZF = Function.Dec(dr["FXYLXBYZF"].ToString());
+                        firstPageVo.FHCLCJF = Function.Dec(dr["FHCLCJF"].ToString());
+                        firstPageVo.FHCLZLF = Function.Dec(dr["FHCLZLF"].ToString());
+                        firstPageVo.FHCLSSF = Function.Dec(dr["FHCLSSF"].ToString());
+                        firstPageVo.FQTF = Function.Dec(dr["FQTF"]);
+                        firstPageVo.FBGLX = dr["FBGLX"].ToString();
+
+                        if (dr["fidcard"].ToString() != "")
+                            firstPageVo.GMSFHM = dr["fidcard"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.GMSFHM))
+                            firstPageVo.GMSFHM = dr["FASCARD1"].ToString(); ;
+                        firstPageVo.FZYF = Function.Dec(dr["FZYF"].ToString());
+                        if (dr["FZKDATE"] != DBNull.Value)
+                            firstPageVo.FZKDATE = Function.Datetime(dr["FZKDATE"]).ToString("yyyy-MM-dd");
+                        else
+                            firstPageVo.FZKDATE = "";
+
+                        firstPageVo.FZKTIME = Function.Datetime(firstPageVo.FZKDATE + " " + firstPageVo.FZKTIME).ToString("yyyyMMddHHmmss");
+                        firstPageVo.FJOBBH = dr["FJOBBH"].ToString();
+                        if (string.IsNullOrEmpty(firstPageVo.FJOBBH))
+                            firstPageVo.FJOBBH = "90";
+                        firstPageVo.FZHFWLYLF01 = Function.Dec(dr["FZHFWLYLF01"]);
+                        firstPageVo.FZHFWLYLF02 = Function.Dec(dr["FZHFWLYLF02"]);
+                        firstPageVo.FZYLZDF = Function.Dec(dr["FZYLZDF"]);
+                        firstPageVo.FZYLZLF = Function.Dec(dr["FZYLZLF"]);
+                        firstPageVo.FZYLZLF01 = Function.Dec(dr["FZYLZLF01"]);
+                        firstPageVo.FZYLZLF02 = Function.Dec(dr["FZYLZLF02"]);
+                        firstPageVo.FZYLZLF03 = Function.Dec(dr["FZYLZLF03"]);
+                        firstPageVo.FZYLZLF04 = Function.Dec(dr["FZYLZLF04"]);
+                        firstPageVo.FZYLZLF05 = Function.Dec(dr["FZYLZLF05"]);
+                        firstPageVo.FZYLZLF06 = Function.Dec(dr["FZYLZLF06"]);
+                        firstPageVo.FZYLQTF = Function.Dec(dr["FZYLQTF"]);
+                        firstPageVo.FZCLJGZJF = Function.Dec(dr["FZYLQTF"]);
+                        firstPageVo.FZYLQTF01 = Function.Dec(dr["FZYLQTF"]);
+                        firstPageVo.FZYLQTF02 = Function.Dec(dr["FZYLQTF"]);
+                        firstPageVo.FZYID = dr["FZYID"].ToString();
+                        #endregion
+
+                        #region 转科情况（数据集dtZk）
+                        if(dtZk != null && dtZk.Rows.Count > 0)
+                        {
+                            DataRow[] drrZk = dtZk.Select("Patient_Id = '" + registerId + "'");
+                            if (drrZk.Length > 0)
+                            {
+                                EntityBrzkqk zkVo = null;
+                                firstPageVo.lstZkVo = new List<EntityBrzkqk>();
+
+                                for (int i = 0; i < drrZk.Length; i++)
+                                {
+                                    DataRow drZk = drrZk[i];
+                                    zkVo = new EntityBrzkqk();
+                                    if (string.IsNullOrEmpty(zkVo.FZKTYKH))
+                                        continue;
+                                    zkVo.FZKTYKH = drZk["FZKTYKH"].ToString();
+                                    zkVo.FZKDEPT = drZk["FZKDEPT"].ToString();
+                                    zkVo.FZKDATE = Function.Datetime(drZk["FZKDATE"]).ToString("yyyy-MM-dd");
+                                    zkVo.FZKTIME = Function.Datetime(drZk["FZKTIME"].ToString()).ToString("HH:mm:ss");
+                                    zkVo.FPRN = drZk["FPRN"].ToString();
+                                    firstPageVo.lstZkVo.Add(zkVo);
+                                }
+                            }
+                        }
+                        #endregion
+
+                        #region 数据集(病人诊断信息)
+                        if(dtZd != null && dtZd.Rows.Count > 0)
+                        {
+                            DataRow[] drrZd = dtZd.Select("Patient_Id = '" + registerId + "'");
+                            if (drrZd.Length > 0)
+                            {
+                                EntityBrzdxx zdVo = null;
+                                firstPageVo.lstZdVo = new List<EntityBrzdxx>();
+
+                                for (int i = 0; i < drrZd.Length; i++)
+                                {
+                                    DataRow drZd = drrZd[i];
+                                    zdVo = new EntityBrzdxx();
+
+                                    zdVo.FZDLX = drZd["FZDLX"].ToString();
+                                    zdVo.FICDVersion = drZd["FICDVersion"].ToString();
+                                    zdVo.FICDM = drZd["FICDM"].ToString();
+                                    if (drZd["FJBNAME"].ToString().Length > 10)
+                                        zdVo.FJBNAME = drZd["FJBNAME"].ToString().Substring(0, 10);
+                                    else
+                                        zdVo.FJBNAME = drZd["FJBNAME"].ToString();
+                                    zdVo.FRYBQBH = drZd["FRYBQBH"].ToString();
+                                    if (zdVo.FRYBQBH == "")
+                                        zdVo.FRYBQBH = "无";
+                                    zdVo.FRYBQ = drZd["FRYBQ"].ToString();
+                                    if (zdVo.FRYBQ == "")
+                                        zdVo.FRYBQ = "无";
+                                    zdVo.FPRN = drZd["FPRN"].ToString();
+                                    firstPageVo.lstZdVo.Add(zdVo);
+                                }
+                            }
+                        }
+                        #endregion
+
+                        #region 数据集（肿瘤化疗记录）
+                        if(dtbTumor != null && dtbTumor.Rows.Count > 0)
+                        {
+                            DataRow[] drrTumor = dtbTumor.Select("Patient_Id = '" + registerId + "'");
+                            if (drrTumor.Length > 0)
+                            {
+                                firstPageVo.lstHlVo = new List<EntityZlhljlsj>();
+
+                                for (int i = 0; i < drrTumor.Length; i++)
+                                {
+                                    DataRow drTemp = drrTumor[i];
+                                    EntityZlhljlsj vo = new EntityZlhljlsj();
+                                    vo.FHLRQ1 = Function.Datetime(drTemp["FHLRQ1"]).ToString("yyyyMMdd");
+                                    vo.FHLDRUG = drTemp["FHLDRUG"].ToString();
+                                    vo.FHLPROC = drTemp["FHLPROC"].ToString();
+                                    vo.FHLLXBH = drTemp["FHLLXBH"].ToString();
+                                    vo.FHLLX = drTemp["FHLLX"].ToString();
+                                    vo.FPRN = drTemp["FPRN"].ToString();
+
+                                    firstPageVo.lstHlVo.Add(vo);
+                                }
+                            }
+                        }
+                        
+                        #endregion
+
+                        #region 数据集(病人手术信息)
+
+                        if (dtFop != null && dtFop.Rows.Count > 0)
+                        {
+                            EntityBrssxx fopVo = null;
+                            firstPageVo.lstSsVo = new List<EntityBrssxx>();
+                            DataRow[] drrFop = dtFop.Select("Patient_Id = '" + registerId + "'");
+                            if (drrFop.Length > 0)
+                            {
+                                for (int i = 0; i < drrFop.Length; i++)
+                                {
+                                    DataRow drFop = drrFop[i];
+                                    fopVo = new EntityBrssxx();
+                                    fopVo.FNAME = drFop["FNAME"].ToString();
+                                    if (fopVo.FNAME == "")
+                                        continue;
+                                    fopVo.FOPTIMES = drFop["FOPTIMES"].ToString();
+                                    if (fopVo.FOPTIMES == "0")
+                                        fopVo.FOPTIMES = "1";
+                                    fopVo.FOPCODE = drFop["FOPCODE"].ToString();
+                                    fopVo.FOP = drFop["FOP"].ToString();
+                                    fopVo.FOPDATE = Function.Datetime(drFop["FOPDATE"]).ToString("yyyyMMdd");
+                                    fopVo.FQIEKOUBH = drFop["FQIEKOUBH"].ToString() == "" ? "无" : drFop["FQIEKOUBH"].ToString();
+                                    fopVo.FQIEKOU = drFop["FQIEKOU"].ToString() == "" ? "无" : drFop["FQIEKOU"].ToString();
+                                    fopVo.FYUHEBH = drFop["FYUHEBH"].ToString() == "" ? "无" : drFop["FYUHEBH"].ToString();
+                                    if (fopVo.FYUHEBH == "")
+                                        fopVo.FYUHEBH = "-";
+                                    fopVo.FYUHE = drFop["FYUHE"].ToString();
+                                    if (fopVo.FYUHE == "")
+                                        fopVo.FYUHE = "-";
+                                    fopVo.FDOCBH = drFop["FDOCBH"].ToString();
+                                    if (fopVo.FDOCBH == "")
+                                        fopVo.FDOCBH = "-";
+                                    fopVo.FDOCNAME = drFop["FDOCNAME"].ToString() == "" ? "无" : drFop["FDOCNAME"].ToString();
+                                    fopVo.FMAZUIBH = drFop["FMAZUIBH"].ToString();
+                                    if (fopVo.FMAZUIBH == "")
+                                        fopVo.FMAZUIBH = "无";
+                                    if (fopVo.FMZDOCTBH == "")
+                                        fopVo.FMZDOCTBH = "无";
+                                    fopVo.FMAZUI = drFop["FMAZUI"].ToString() == "" ? "无" : drFop["FMAZUI"].ToString();
+                                    fopVo.FIFFSOP = drFop["FIFFSOP"].ToString();
+                                    if (fopVo.FIFFSOP == "False")
+                                        fopVo.FIFFSOP = "0";
+                                    else if (fopVo.FIFFSOP == "True")
+                                        fopVo.FIFFSOP = "1";
+                                    fopVo.FOPDOCT1BH = drFop["FOPDOCT1BH"].ToString();
+                                    if (fopVo.FOPDOCT1BH == "")
+                                        fopVo.FOPDOCT1BH = "无";
+                                    fopVo.FOPDOCT1 = drFop["FOPDOCT1"].ToString();
+                                    if (fopVo.FOPDOCT1 == "")
+                                        fopVo.FOPDOCT1 = "-";
+                                    fopVo.FOPDOCT2BH = drFop["FOPDOCT2BH"].ToString();
+                                    if (fopVo.FOPDOCT2BH == "")
+                                        fopVo.FOPDOCT2BH = "无";
+                                    fopVo.FOPDOCT2 = drFop["FOPDOCT2"].ToString();
+                                    if (fopVo.FOPDOCT2 == "")
+                                        fopVo.FOPDOCT2 = "无";
+                                    fopVo.FMZDOCTBH = drFop["FMZDOCTBH"].ToString();
+                                    if (fopVo.FMZDOCTBH == "")
+                                        fopVo.FMZDOCTBH = "无";
+                                    fopVo.FMZDOCT = drFop["FMZDOCT"].ToString();
+                                    if (fopVo.FMZDOCT == "")
+                                        fopVo.FMZDOCT = "无";
+                                    fopVo.FZQSSBH = drFop["FZQSSBH"].ToString();
+                                    if (fopVo.FZQSSBH == "")
+                                        fopVo.FZQSSBH = "无";
+                                    fopVo.FZQSS = drFop["FZQSS"].ToString();
+                                    fopVo.FSSJBBH = drFop["FSSJBBH"].ToString();
+                                    if (fopVo.FSSJBBH == "")
+                                        fopVo.FSSJBBH = "无";
+                                    fopVo.FSSJB = drFop["FSSJB"].ToString();
+                                    fopVo.FOPKSNAME = drFop["FOPKSNAME"].ToString();
+                                    if (fopVo.FOPKSNAME == "")
+                                        fopVo.FOPKSNAME = "无";
+                                    fopVo.FOPTYKH = drFop["FOPTYKH"].ToString();
+                                    if (fopVo.FOPTYKH == "")
+                                        fopVo.FOPTYKH = "无";
+
+                                    fopVo.FPRN = drFop["FPRN"].ToString();
+                                    firstPageVo.lstSsVo.Add(fopVo);
+                                }
+
+                            }
+                        }
+                        #endregion
+
+                        #region 数据集（妇婴卡）
+
+                        if (dtFy != null && dtFy.Rows.Count > 0)
+                        {
+                            EntityFyksj fyVo = null;
+                            firstPageVo.lstFyVo = new List<EntityFyksj>();
+                            DataRow[] drrFy = dtFy.Select("Patient_Id = '" + registerId + "'");
+                            if (drrFy.Length > 0)
+                            {
+                                for (int i = 0; i < drrFy.Length; i++)
+                                {
+                                    DataRow drFy = drrFy[i];
+                                    fyVo = new EntityFyksj();
+                                    fyVo.FBABYNUM = drFy["FBABYNUM"].ToString() == "" ? "-" : drFy["FBABYNUM"].ToString();
+                                    fyVo.FNAME = drFy["FNAME"].ToString() == "" ? "-" : drFy["FNAME"].ToString();
+                                    fyVo.FBABYSEXBH = drFy["FBABYSEXBH"].ToString() == "" ? "-" : drFy["FBABYSEXBH"].ToString();
+                                    fyVo.FBABYSEX = drFy["FBABYSEX"].ToString() == "" ? "-" : drFy["FBABYSEX"].ToString();
+                                    fyVo.FTZ = drFy["FTZ"].ToString() == "" ? "-" : drFy["FTZ"].ToString();
+                                    fyVo.FRESULTBH = drFy["FRESULTBH"].ToString() == "" ? "-" : drFy["FRESULTBH"].ToString();
+                                    fyVo.FRESULT = drFy["FRESULT"].ToString() == "" ? "-" : drFy["FRESULT"].ToString();
+                                    fyVo.FZGBH = drFy["FZGBH"].ToString() == "" ? "-" : drFy["FZGBH"].ToString();
+                                    fyVo.FZG = drFy["FZG"].ToString() == "" ? "-" : drFy["FZG"].ToString();
+                                    fyVo.FBABYSUC = drFy["FBABYSUC"].ToString() == "" ? "0" : drFy["FBABYSUC"].ToString();
+                                    fyVo.FHXBH = drFy["FHXBH"].ToString() == "" ? "-" : drFy["FHXBH"].ToString();
+                                    fyVo.FHX = drFy["FHX"].ToString() == "" ? "-" : drFy["FHX"].ToString();
+                                    fyVo.FPRN = drFy["FPRN"].ToString();
+                                    firstPageVo.lstFyVo.Add(fyVo);
+                                }
+                            }
+                        }
+                        #endregion
+
+                        #region 数据集（肿瘤卡）
+
+                        if (dtZl != null && dtZl.Rows.Count > 0)
+                        {
+                            DataRow[] drrZl = dtZl.Select("Patient_Id = '" + registerId + "'");
+                            if (drrZl.Length > 0)
+                            {
+                                EntityZlksj zlVo = null;
+                                firstPageVo.lstZlVo = new List<EntityZlksj>();
+                                for (int i = 0; i < drrZl.Length; i++)
+                                {
+                                    DataRow drZl = drrZl[i];
+                                    zlVo = new EntityZlksj();
+                                    zlVo.FFLFSBH = drZl["FFLFSBH"].ToString();
+                                    zlVo.FFLFS = drZl["FFLFS"].ToString();
+                                    zlVo.FFLCXBH = drZl["FFLCXBH"].ToString();
+                                    zlVo.FFLCX = drZl["FFLCX"].ToString();
+                                    zlVo.FFLZZBH = drZl["FFLZZBH"].ToString();
+                                    zlVo.FFLZZ = drZl["FFLZZ"].ToString();
+                                    zlVo.FYJY = drZl["FYJY"].ToString();
+                                    zlVo.FYCS = drZl["FYCS"].ToString();
+                                    zlVo.FYTS = drZl["FYTS"].ToString();
+                                    zlVo.FYRQ1 = Function.Datetime(drZl["FYRQ1"]).ToString("yyyyMMdd");
+                                    zlVo.FYRQ2 = Function.Datetime(drZl["FYRQ2"]).ToString("yyyyMMdd");
+                                    zlVo.FQJY = drZl["FQJY"].ToString();
+                                    zlVo.FQCS = drZl["FQCS"].ToString();
+                                    zlVo.FQTS = drZl["FQTS"].ToString();
+                                    zlVo.FQRQ1 = Function.Datetime(drZl["FQRQ1"]).ToString("yyyyMMdd");
+                                    zlVo.FQRQ2 = Function.Datetime(drZl["FQRQ2"]).ToString("yyyyMMdd");
+                                    zlVo.FZNAME = drZl["FZNAME"].ToString();
+                                    zlVo.FZJY = drZl["FZJY"].ToString();
+                                    zlVo.FZCS = drZl["FZCS"].ToString();
+                                    zlVo.FZTS = drZl["FZTS"].ToString();
+                                    zlVo.FZRQ1 = Function.Datetime(drZl["FZRQ1"]).ToString("yyyyMMdd");
+                                    zlVo.FZRQ2 = Function.Datetime(drZl["FZRQ2"]).ToString("yyyyMMdd");
+                                    zlVo.FHLFSBH = drZl["FHLFSBH"].ToString();
+                                    zlVo.FHLFS = drZl["FHLFS"].ToString();
+                                    zlVo.FHLFFBH = drZl["FHLFFBH"].ToString();
+                                    zlVo.FHLFF = drZl["FHLFF"].ToString();
+                                    zlVo.FPRN = drZl["FPRN"].ToString();
+                                    if (string.IsNullOrEmpty(zlVo.FFLFSBH) || string.IsNullOrEmpty(zlVo.FHLFSBH))
+                                        continue;
+
+                                    firstPageVo.lstZlVo.Add(zlVo);
+                                }
+                            }
+                        }
+                        #endregion
+
+                        data.Add(firstPageVo);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ExceptionLog.OutPutException(ex);
+            }
+            finally
+            {
+                svc = null;
+            }
+
+
+            return data;
+        }
+        #endregion
+
+        #region 出院小结 嘉禾
+        public List<EntityCyxj> GetPatCyxjFromJH(string registerIdStr)
+        {
+            List<EntityCyxj> data = null;
+            EntityCyxj xjVo = null;
+            SqlHelper svc = null;
+            try
+            {
+                svc = new SqlHelper(EnumBiz.interfaceDB);
+                string sql = "select * from jhemr.sp3_3022  a where a.patient_id in (" + registerIdStr + ")";
+                DataTable dtXj = svc.GetDataTable(sql);
+
+                #region 上传信息 出院小结
+
+                if (dtXj != null && dtXj.Rows.Count > 0)
+                {
+                    data = new List<EntityCyxj>();
+                    foreach (DataRow dr in dtXj.Rows)
+                    {
+                        xjVo = new EntityCyxj();
+                        xjVo.registerId = dr["patient_id"].ToString();
+                        xjVo.ZYH = dr["ZYH"].ToString();
+                        xjVo.MZZD = dr["MZZD"].ToString();
+                        if (string.IsNullOrEmpty(xjVo.MZZD))
+                            xjVo.MZZD = "-";
+                        if (xjVo.MZZD.Length > 100)
+                            xjVo.MZZD = xjVo.MZZD.Substring(0, 100);
+                        xjVo.RYZD = dr["RYZD"].ToString().Trim();
+                        xjVo.CYZD = dr["CYZD"].ToString().Trim();
+                        if (dr["CYZD"] == DBNull.Value)
+                            xjVo.CYZD = "-";
+                        xjVo.XM = dr["XM"].ToString();
+                        xjVo.XB = dr["XB"].ToString();
+                        if (xjVo.XB == "男")
+                            xjVo.XB = "1";
+                        else if (xjVo.XB == "女")
+                            xjVo.XB = "2";
+                        else xjVo.XB = "9";
+                        xjVo.NL = dr["NL"].ToString();
+                        xjVo.GMSFHM = dr["GMSFHM"].ToString();
+                        xjVo.RYRQ = Function.Datetime(dr["RYRQ"]).ToString("yyyyMMdd");
+                        xjVo.CYRQ = Function.Datetime(dr["CYRQ"]).ToString("yyyyMMdd");
+                        xjVo.ZYTS = dr["ZYTS"].ToString();
+
+                        xjVo.JG = dr["JG"].ToString();
+                        if (string.IsNullOrEmpty(xjVo.JG))
+                            xjVo.JG = "无";
+                        xjVo.YJDZ = dr["YJDZ"].ToString();
+                        if (string.IsNullOrEmpty(xjVo.YJDZ))
+                            xjVo.YJDZ = "-";
+                        xjVo.CYYZ = dr["CYYZ"].ToString().Trim();
+                        if (string.IsNullOrEmpty(xjVo.CYYZ))
+                            xjVo.CYYZ = "-";
+                        xjVo.RYQK = dr["RYQK"].ToString().Trim();
+                        if (string.IsNullOrEmpty(xjVo.RYQK))
+                            xjVo.RYQK = "-";
+                        xjVo.YSQM = dr["YSQM"].ToString().Trim();
+                        if (string.IsNullOrEmpty(xjVo.YSQM))
+                            xjVo.YSQM = "-";
+                        xjVo.RYHCLGC = dr["ZLJG"].ToString().Trim();
+                        xjVo.CYSQK = dr["CYSQK"].ToString().Trim();
+                        if (string.IsNullOrEmpty(xjVo.CYSQK))
+                            xjVo.CYSQK = "-";
+                        xjVo.ZLJG = dr["ZLJG"].ToString().Trim();
+                        if (xjVo.ZLJG.Length > 1000)
+                            xjVo.ZLJG = xjVo.ZLJG.Substring(0, 1000);
+                        if (string.IsNullOrEmpty(xjVo.ZLJG))
+                            xjVo.ZLJG = "-";
+
+                        data.Add(xjVo);
+                    }
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                ExceptionLog.OutPutException(ex);
+            }
+            finally
+            {
+                svc = null;
+            }
+
+            return data;
         }
         #endregion
 
@@ -1431,7 +2359,18 @@ namespace AutoBa
                                     inrnsshour,inrnssmin,outrnssday,outrnsshour,outrnssmin,inhospitalway,
                                     medicalamt_new,treatmentamt_new,compositeeotheramt_new,pdamt_new,ldamt_new,idamt_new,cdamt_new,noopamt_new,opbytreatmentamt_new,physicalamt_new,
                                     rehabilitationamt_new,cmtamt_new,aaamt_new,albuminamt_new,globulinamt_new,cfamt_new,cytokinesamt_new,onetimebysupmt_new,onetimebytmamt_new,onttimebyopamt_new,
-                                    tumor,t,n,m,installments,metastasiscount,f_getempnamebyid(a.doctor)  doctorname,
+                                    tumor,t,n,m,installments,metastasiscount,
+  a.directordt, --科主任
+                    a.subdirectordt,--副主任
+                    a.dt,--主治医生
+                    a.inhospitaldt,--住院医师
+                    a.attendinforadvancesstudydt,
+                    a.graduatestudentintern,--责任护士
+                    a.intern,
+                    a.coder,--编码员
+                    a.qcdt,--质控医师
+                    a.qcnurse,--质控护士
+f_getempnamebyid(a.doctor)  doctorname,
 										                                    f_getempnamebyid(a.directordt) directordtname,
 										                                    f_getempnamebyid(a.subdirectordt) subdirectordtname,
 										                                    f_getempnamebyid(a.dt) dtname,
@@ -1463,7 +2402,17 @@ namespace AutoBa
                     if (dt1 != null && dt1.Rows.Count > 0)
                     {
                         DataRow dr = dt1.Rows[0];
-                        opendate = Function.Datetime(dr["opendate"]).ToString("yyyy-MM-dd HH:mm:ss");
+                        DateTime dteMax = Function.Datetime(dt1.Rows[0]["opendate"]);
+
+                        foreach (DataRow dr1 in dt1.Rows)
+                        {
+                            DateTime dteTmp = Function.Datetime(dr1["opendate"]);
+
+                            if (dteTmp > dteMax)
+                                dteMax = dteTmp;
+                        }
+
+                        opendate = dteMax.ToString("yyyy-MM-dd HH:mm:ss");
                     }
 
                     if (!string.IsNullOrEmpty(opendate))
@@ -1945,33 +2894,58 @@ namespace AutoBa
                             #endregion
 
                             #region 主任 医生 护士 
-                            upVo.fpVo.FKZRBH = drDS["DIRECTORDT"].ToString();
-                            upVo.fpVo.FKZR = GetEmpByID(drDS["DIRECTORDT"].ToString());
+                            upVo.fpVo.FKZRBH = dr["directordt"].ToString();
+                            if (string.IsNullOrEmpty(upVo.fpVo.FKZRBH))
+                                upVo.fpVo.FKZRBH = "-";
+                            upVo.fpVo.FKZR = dr["directordtname"].ToString();
+                            if (string.IsNullOrEmpty(upVo.fpVo.FKZR))
+                                upVo.fpVo.FKZR = "-";
 
-                            upVo.fpVo.FZRDOCTBH = drDS["SUBDIRECTORDT"].ToString();
-                            upVo.fpVo.FZRDOCTOR = GetEmpByID(drDS["SUBDIRECTORDT"].ToString());
+                            upVo.fpVo.FZRDOCTBH = dr["subdirectordt"].ToString();
+                            if (string.IsNullOrEmpty(upVo.fpVo.FZRDOCTBH))
+                                upVo.fpVo.FZRDOCTBH = "-";
+                            upVo.fpVo.FZRDOCTOR = dr["subdirectordtname"].ToString();
+                            if (string.IsNullOrEmpty(upVo.fpVo.FZRDOCTOR))
+                                upVo.fpVo.FZRDOCTOR = "-";
 
-                            upVo.fpVo.FZZDOCTBH = drDS["DT"].ToString();
-                            upVo.fpVo.FZZDOCT = GetEmpByID(drDS["DT"].ToString());
+                            upVo.fpVo.FZZDOCTBH = dr["dt"].ToString();
+                            if (string.IsNullOrEmpty(upVo.fpVo.FZZDOCTBH))
+                                upVo.fpVo.FZZDOCTBH = "-";
+                            upVo.fpVo.FZZDOCT = dr["dtname"].ToString();
+                            if (string.IsNullOrEmpty(upVo.fpVo.FZZDOCT))
+                                upVo.fpVo.FZZDOCT = "-";
 
-                            upVo.fpVo.FZYDOCTBH = drDS["INHOSPITALDT"].ToString();
-                            upVo.fpVo.FZYDOCT = GetEmpByID(drDS["INHOSPITALDT"].ToString());
+                            upVo.fpVo.FZYDOCTBH = dr["inhospitaldt"].ToString();
+                            upVo.fpVo.FZYDOCT = dr["inhospitaldtname"].ToString();
 
-                            upVo.fpVo.FNURSEBH = drDS["GRADUATESTUDENTINTERN"].ToString();
+                            upVo.fpVo.FNURSEBH = dr["graduatestudentintern"].ToString();
                             if (string.IsNullOrEmpty(upVo.fpVo.FNURSEBH))
                                 upVo.fpVo.FNURSEBH = "-";
-
-                            upVo.fpVo.FNURSE = GetEmpByID(drDS["GRADUATESTUDENTINTERN"].ToString());
+                            upVo.fpVo.FNURSE = dr["graduatestudentintern"].ToString();
                             if (string.IsNullOrEmpty(upVo.fpVo.FNURSE))
                                 upVo.fpVo.FNURSE = "-";
-                            upVo.fpVo.FJXDOCTBH = drDS["ATTENDINFORADVANCESSTUDYDT"].ToString();
-                            upVo.fpVo.FJXDOCT = GetEmpByID(drDS["ATTENDINFORADVANCESSTUDYDT"].ToString());
 
-                            upVo.fpVo.FSXDOCTBH = drDS["INTERN"].ToString();
-                            upVo.fpVo.FSXDOCT = GetEmpByID(drDS["INTERN"].ToString());
+                            upVo.fpVo.FJXDOCTBH = dr["attendinforadvancesstudydt"].ToString();
+                            upVo.fpVo.FJXDOCT = dr["attendinforadvancesstudydtname"].ToString();
 
-                            upVo.fpVo.FBMYBH = drDS["QCDT"].ToString();
-                            upVo.fpVo.FBMY = GetEmpByID(drDS["QCDT"].ToString());
+                            upVo.fpVo.FSXDOCTBH = dr["intern"].ToString();
+                            upVo.fpVo.FSXDOCT = dr["internname"].ToString();
+
+                            upVo.fpVo.FBMYBH = dr["coder"].ToString();
+                            upVo.fpVo.FBMY = dr["codername"].ToString();
+
+                            upVo.fpVo.FZKDOCTBH = dr["qcdt"].ToString();
+                            if (string.IsNullOrEmpty(upVo.fpVo.FZKDOCTBH))
+                                upVo.fpVo.FZKDOCTBH = "-";
+                            upVo.fpVo.FZKDOCT = dr["qcdtname"].ToString();
+                            if (string.IsNullOrEmpty(upVo.fpVo.FZKDOCT))
+                                upVo.fpVo.FZKDOCT = "-";
+
+                            upVo.fpVo.FZKNURSEBH = dr["qcnurse"].ToString();
+                            upVo.fpVo.FZKNURSE = dr["qcnursename"].ToString();
+
+                            upVo.fpVo.FZKRQ = Function.Datetime(dr["QCTIME"]).ToString("yyyyMMdd");
+
                             #endregion
 
                             #region 病案质量
@@ -1986,16 +2960,6 @@ namespace AutoBa
                                 upVo.fpVo.FQUALITY = "丙";
                             }
 
-                            #endregion
-
-                            #region 质控
-                            upVo.fpVo.FZKDOCTBH = drDS["QCDT"].ToString();
-                            upVo.fpVo.FZKDOCT = GetEmpByID(drDS["QCDT"].ToString());
-
-                            upVo.fpVo.FZKNURSEBH = drDS["QCNURSE"].ToString();
-                            upVo.fpVo.FZKNURSE = GetEmpByID(drDS["QCNURSE"].ToString());
-
-                            upVo.fpVo.FZKRQ = Function.Datetime(drDS["QCTIME"]).ToString("yyyyMMdd");
                             #endregion
 
                             #region 离院方式
@@ -2324,6 +3288,8 @@ namespace AutoBa
             voM.FJBNAME = outMainDiag;
             if (string.IsNullOrEmpty(voM.FJBNAME))
                 voM.FJBNAME = "-";
+            if (voM.FJBNAME.Length > 50)
+                voM.FJBNAME = voM.FJBNAME.Substring(0, 50);
             if (!string.IsNullOrEmpty(outMainDiagICD))
                 voM.FICDM = outMainDiagICD;
             else
@@ -2354,6 +3320,9 @@ namespace AutoBa
                 voP.FJBNAME = PoisoningReson;
                 if (string.IsNullOrEmpty(voP.FJBNAME))
                     voP.FJBNAME = "-";
+
+                if (voP.FJBNAME.Length > 50)
+                    voP.FJBNAME = voP.FJBNAME.Substring(0, 50);
                 if (!string.IsNullOrEmpty(PoisoningResonICD))
                     voP.FICDM = PoisoningResonICD;
                 else
@@ -2377,6 +3346,8 @@ namespace AutoBa
                     if (string.IsNullOrEmpty(vo.FICDM))
                         vo.FICDM = "-";
                     vo.FJBNAME = dr["name"].ToString().Trim();
+                    if (vo.FJBNAME.Length > 50)
+                        vo.FJBNAME = vo.FJBNAME.Substring(0, 50);
                     vo.FRYBQ = dr["outinfo"].ToString();
 
                     if (vo.FRYBQ == "有")
@@ -2817,11 +3788,14 @@ namespace AutoBa
                     {
                         vo.FZGBH = "2";
                     }
-                    else if (drTemp["InfantResult"].ToString() == "出院")
+                    else
                     {
                         vo.FZGBH = "3";
                     }
+
                     vo.FZG = drTemp["InfantResult"].ToString();
+                    if (string.IsNullOrEmpty(vo.FZG))
+                        vo.FZG = "出院";
                     vo.FBABYSUC = Function.Int(drTemp["rescuesucctimes"]).ToString();
                     if (drTemp["InfantBreath"].ToString() == "自然")
                     {
@@ -3237,6 +4211,8 @@ namespace AutoBa
                             zkVo = new EntityBrzkqk();
 
                             zkVo.FZKTYKH = dr["FZKTYKH"].ToString();
+                            if (string.IsNullOrEmpty(zkVo.FZKTYKH))
+                                continue;
                             zkVo.FZKDEPT = dr["FZKDEPT"].ToString();
                             zkVo.FZKDATE = Function.Datetime(dr["FZKDATE"]).ToString("yyyy-MM-dd");
                             zkVo.FZKTIME = Function.Datetime(dr["FZKTIME"].ToString()).ToString("HH:mm:ss");
@@ -3259,8 +4235,8 @@ namespace AutoBa
                             zdVo.FZDLX = dr["FZDLX"].ToString();
                             zdVo.FICDVersion = dr["FICDVersion"].ToString();
                             zdVo.FICDM = dr["FICDM"].ToString();
-                            if (dr["FJBNAME"].ToString().Length > 10)
-                                zdVo.FJBNAME = dr["FJBNAME"].ToString().Substring(0, 10);
+                            if (dr["FJBNAME"].ToString().Length > 100)
+                                zdVo.FJBNAME = dr["FJBNAME"].ToString().Substring(0, 100);
                             else
                                 zdVo.FJBNAME = dr["FJBNAME"].ToString();
                             zdVo.FRYBQBH = dr["FRYBQBH"].ToString();
@@ -3477,30 +4453,30 @@ namespace AutoBa
                     {
                         EntityZyybrfjxx zyVo = null;
                         lstUpVo[i].fpVo.lstZyVo = new List<EntityZyybrfjxx>();
-
+                        Log.Output("中医院病人附加信息-->" + lstUpVo[i].fpVo.ZYH);
                         foreach (DataRow dr in DtCh.Rows)
                         {
                             zyVo = new EntityZyybrfjxx();
-
-                            zyVo.FPRN = dr["FFLFSBH"].ToString();
-                            zyVo.FZLLBBH = dr["FFLFS"].ToString();
-                            zyVo.FZLLB = dr["FFLCXBH"].ToString();
-                            zyVo.FZZZYBH = dr["FFLCX"].ToString();
-                            zyVo.FZZZY = dr["FFLZZBH"].ToString();
-                            zyVo.FRYCYBH = dr["FFLZZ"].ToString();
-                            zyVo.FRYCY = dr["FYJY"].ToString();
-                            zyVo.FMZZYZDBH = dr["FYCS"].ToString();
-                            zyVo.FMZZYZD = dr["FYTS"].ToString();
-                            zyVo.FSSLCLJBH = dr["FYRQ1"].ToString();
-                            zyVo.FSSLCLJ = dr["FYRQ2"].ToString();
-                            zyVo.FSYJGZJBH = dr["FQJY"].ToString();
-                            zyVo.FSYJGZJ = dr["FQCS"].ToString();
-                            zyVo.FSYZYSBBH = dr["FQTS"].ToString();
-                            zyVo.FSYZYSB = dr["FQRQ1"].ToString();
-                            zyVo.FSYZYJSBH = dr["FQRQ2"].ToString();
-                            zyVo.FSYZYJS = dr["FZNAME"].ToString();
-                            zyVo.FBZSHBH = dr["FZJY"].ToString();
-                            zyVo.FBZSH = dr["FZCS"].ToString();
+                            zyVo.FPRN = dr["FPRN"].ToString();
+                            //zyVo.FPRN = dr["FFLFSBH"].ToString();
+                            zyVo.FZLLBBH = dr["FZLLBBH"].ToString();
+                            zyVo.FZLLB = dr["FZLLB"].ToString();
+                            zyVo.FZZZYBH = dr["FZZZYBH"].ToString();
+                            zyVo.FZZZY = dr["FZZZY"].ToString();
+                            zyVo.FRYCYBH = dr["FRYCYBH"].ToString();
+                            zyVo.FRYCY = dr["FRYCY"].ToString();
+                            zyVo.FMZZYZDBH = dr["FMZZYZDBH"].ToString();
+                            zyVo.FMZZYZD = dr["FMZZYZD"].ToString();
+                            zyVo.FSSLCLJBH = dr["FSSLCLJBH"].ToString();
+                            zyVo.FSSLCLJ = dr["FSSLCLJ"].ToString();
+                            zyVo.FSYJGZJBH = dr["FSYJGZJBH"].ToString();
+                            zyVo.FSYJGZJ = dr["FSYJGZJ"].ToString();
+                            zyVo.FSYZYSBBH = dr["FSYZYSBBH"].ToString();
+                            zyVo.FSYZYSB = dr["FSYZYSB"].ToString();
+                            zyVo.FSYZYJSBH = dr["FSYZYJSBH"].ToString();
+                            zyVo.FSYZYJS = dr["FSYZYJS"].ToString();
+                            zyVo.FBZSHBH = dr["FBZSHBH"].ToString();
+                            zyVo.FBZSH = dr["FBZSH"].ToString();
 
                             lstUpVo[i].fpVo.lstZyVo.Add(zyVo);
                         }
@@ -4246,25 +5222,27 @@ namespace AutoBa
                             if (dt != null && dt.Rows.Count > 0)
                             {
                                 item.UPLOADDATE = DateTime.Now;
-                                Sql = @"update t_upload set UPLOADDATE = ? ,xj = ?, xjMsg = ? where REGISTERID = ?";
+                                Sql = @"update t_upload set UPLOADDATE = ? ,xj = ?, xjMsg = ?,xjSource = ? where REGISTERID = ?";
                                 if (item.Issucess == 1)
                                 {
-                                    IDataParameter[] parm = svc.CreateParm(4);
+                                    IDataParameter[] parm = svc.CreateParm(5);
                                     parm[0].Value = item.UPLOADDATE;
                                     parm[1].Value = 0;
                                     parm[2].Value = "";
-                                    parm[3].Value = item.REGISTERID;
+                                    parm[3].Value = item.xjSource;
+                                    parm[4].Value = item.REGISTERID;
                                     lstParm.Add(svc.GetDacParm(EnumExecType.ExecSql, Sql, parm));
                                 }
                                 else if (item.Issucess == -1)
                                 {
                                     if (item.STATUS == 1 && item.xj == 1)
                                         continue;
-                                    IDataParameter[] parm = svc.CreateParm(4);
+                                    IDataParameter[] parm = svc.CreateParm(5);
                                     parm[0].Value = item.UPLOADDATE;
                                     parm[1].Value = -1;
                                     parm[2].Value = item.FailMsg;
-                                    parm[3].Value = item.REGISTERID;
+                                    parm[3].Value = item.xjSource;
+                                    parm[4].Value = item.REGISTERID;
                                     lstParm.Add(svc.GetDacParm(EnumExecType.ExecSql, Sql, parm));
                                 }
                             }

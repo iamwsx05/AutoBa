@@ -36,6 +36,8 @@ namespace AutoBa
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmAutoBa));
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
+            this.chkShowYb = new DevExpress.XtraEditors.CheckEdit();
+            this.simpleButton1 = new DevExpress.XtraEditors.SimpleButton();
             this.txtJZJLH = new DevExpress.XtraEditors.TextEdit();
             this.label1 = new System.Windows.Forms.Label();
             this.txtCardNo = new DevExpress.XtraEditors.TextEdit();
@@ -70,6 +72,9 @@ namespace AutoBa
             this.gridColumn21 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn22 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn5 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn40 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn39 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn38 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn23 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn25 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemTimeEdit3 = new DevExpress.XtraEditors.Repository.RepositoryItemTimeEdit();
@@ -93,6 +98,7 @@ namespace AutoBa
             this.gridColumn42 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn7 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn8 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn37 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn2 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.gridColumn3 = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -170,12 +176,13 @@ namespace AutoBa
             this.txtJzjlh2 = new DevExpress.XtraEditors.TextEdit();
             this.label2 = new System.Windows.Forms.Label();
             this.btnQueryBa = new DevExpress.XtraEditors.SimpleButton();
-            this.gridColumn37 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.chkFromIcare = new DevExpress.XtraEditors.CheckEdit();
             ((System.ComponentModel.ISupportInitialize)(this.pcBackGround)).BeginInit();
             this.pcBackGround.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.marqueeProgressBarControl.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
             this.panelControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chkShowYb.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtJZJLH.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtCardNo.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkSZ.Properties)).BeginInit();
@@ -269,6 +276,7 @@ namespace AutoBa
             this.panelControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtIPno.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtJzjlh2.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chkFromIcare.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // pcBackGround
@@ -290,6 +298,9 @@ namespace AutoBa
             // 
             // panelControl1
             // 
+            this.panelControl1.Controls.Add(this.chkFromIcare);
+            this.panelControl1.Controls.Add(this.chkShowYb);
+            this.panelControl1.Controls.Add(this.simpleButton1);
             this.panelControl1.Controls.Add(this.txtJZJLH);
             this.panelControl1.Controls.Add(this.label1);
             this.panelControl1.Controls.Add(this.txtCardNo);
@@ -312,9 +323,28 @@ namespace AutoBa
             this.panelControl1.Size = new System.Drawing.Size(1370, 68);
             this.panelControl1.TabIndex = 11;
             // 
+            // chkShowYb
+            // 
+            this.chkShowYb.Location = new System.Drawing.Point(387, 9);
+            this.chkShowYb.Name = "chkShowYb";
+            this.chkShowYb.Properties.Caption = "显示医保患者";
+            this.chkShowYb.Size = new System.Drawing.Size(109, 19);
+            this.chkShowYb.TabIndex = 953;
+            // 
+            // simpleButton1
+            // 
+            this.simpleButton1.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.simpleButton1.Appearance.Options.UseFont = true;
+            this.simpleButton1.Location = new System.Drawing.Point(1231, 7);
+            this.simpleButton1.Name = "simpleButton1";
+            this.simpleButton1.Size = new System.Drawing.Size(75, 23);
+            this.simpleButton1.TabIndex = 952;
+            this.simpleButton1.Text = "查询sssss";
+            this.simpleButton1.Click += new System.EventHandler(this.simpleButton1_Click);
+            // 
             // txtJZJLH
             // 
-            this.txtJZJLH.Location = new System.Drawing.Point(637, 9);
+            this.txtJZJLH.Location = new System.Drawing.Point(869, 8);
             this.txtJZJLH.Name = "txtJZJLH";
             this.txtJZJLH.Properties.Appearance.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txtJZJLH.Properties.Appearance.ForeColor = System.Drawing.Color.Crimson;
@@ -326,7 +356,7 @@ namespace AutoBa
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(551, 16);
+            this.label1.Location = new System.Drawing.Point(783, 15);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(80, 12);
             this.label1.TabIndex = 950;
@@ -335,7 +365,7 @@ namespace AutoBa
             // 
             // txtCardNo
             // 
-            this.txtCardNo.Location = new System.Drawing.Point(441, 10);
+            this.txtCardNo.Location = new System.Drawing.Point(673, 9);
             this.txtCardNo.Name = "txtCardNo";
             this.txtCardNo.Properties.Appearance.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txtCardNo.Properties.Appearance.ForeColor = System.Drawing.Color.Crimson;
@@ -347,7 +377,7 @@ namespace AutoBa
             // label9
             // 
             this.label9.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label9.Location = new System.Drawing.Point(382, 15);
+            this.label9.Location = new System.Drawing.Point(614, 14);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(53, 12);
             this.label9.TabIndex = 948;
@@ -366,7 +396,7 @@ namespace AutoBa
             // 
             this.btnUpload.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUpload.Appearance.Options.UseFont = true;
-            this.btnUpload.Location = new System.Drawing.Point(849, 9);
+            this.btnUpload.Location = new System.Drawing.Point(1081, 8);
             this.btnUpload.Name = "btnUpload";
             this.btnUpload.Size = new System.Drawing.Size(88, 23);
             this.btnUpload.TabIndex = 121;
@@ -426,7 +456,7 @@ namespace AutoBa
             // 
             this.btnQuery.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnQuery.Appearance.Options.UseFont = true;
-            this.btnQuery.Location = new System.Drawing.Point(761, 10);
+            this.btnQuery.Location = new System.Drawing.Point(993, 9);
             this.btnQuery.Name = "btnQuery";
             this.btnQuery.Size = new System.Drawing.Size(75, 23);
             this.btnQuery.TabIndex = 112;
@@ -520,7 +550,7 @@ namespace AutoBa
             this.tabPage2.Location = new System.Drawing.Point(4, 23);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1358, 448);
+            this.tabPage2.Size = new System.Drawing.Size(646, 323);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "病案信息上传";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -545,7 +575,7 @@ namespace AutoBa
             this.repositoryItemDateEdit3,
             this.repositoryItemDateEdit4,
             this.repositoryItemCheckEdit4});
-            this.gcData.Size = new System.Drawing.Size(1352, 442);
+            this.gcData.Size = new System.Drawing.Size(640, 317);
             this.gcData.TabIndex = 70;
             this.gcData.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvData});
@@ -573,6 +603,9 @@ namespace AutoBa
             this.gridColumn21,
             this.gridColumn22,
             this.gridColumn5,
+            this.gridColumn40,
+            this.gridColumn39,
+            this.gridColumn38,
             this.gridColumn23,
             this.gridColumn25});
             this.gvData.GridControl = this.gcData;
@@ -661,7 +694,7 @@ namespace AutoBa
             this.gridColumn16.OptionsFilter.AllowAutoFilter = false;
             this.gridColumn16.OptionsFilter.AllowFilter = false;
             this.gridColumn16.Visible = true;
-            this.gridColumn16.VisibleIndex = 5;
+            this.gridColumn16.VisibleIndex = 4;
             this.gridColumn16.Width = 35;
             // 
             // gridColumn13
@@ -684,7 +717,7 @@ namespace AutoBa
             this.gridColumn13.OptionsFilter.AllowAutoFilter = false;
             this.gridColumn13.OptionsFilter.AllowFilter = false;
             this.gridColumn13.Visible = true;
-            this.gridColumn13.VisibleIndex = 6;
+            this.gridColumn13.VisibleIndex = 5;
             this.gridColumn13.Width = 68;
             // 
             // gridColumn11
@@ -698,7 +731,7 @@ namespace AutoBa
             this.gridColumn11.FieldName = "FTIMES";
             this.gridColumn11.Name = "gridColumn11";
             this.gridColumn11.Visible = true;
-            this.gridColumn11.VisibleIndex = 4;
+            this.gridColumn11.VisibleIndex = 6;
             this.gridColumn11.Width = 35;
             // 
             // gridColumn19
@@ -803,6 +836,54 @@ namespace AutoBa
             this.gridColumn5.VisibleIndex = 11;
             this.gridColumn5.Width = 109;
             // 
+            // gridColumn40
+            // 
+            this.gridColumn40.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn40.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn40.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn40.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn40.Caption = "小结来源";
+            this.gridColumn40.FieldName = "xjSourceStr";
+            this.gridColumn40.Name = "gridColumn40";
+            this.gridColumn40.OptionsColumn.AllowEdit = false;
+            this.gridColumn40.OptionsColumn.AllowFocus = false;
+            this.gridColumn40.OptionsFilter.AllowAutoFilter = false;
+            this.gridColumn40.OptionsFilter.AllowFilter = false;
+            this.gridColumn40.Visible = true;
+            this.gridColumn40.VisibleIndex = 12;
+            // 
+            // gridColumn39
+            // 
+            this.gridColumn39.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn39.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn39.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn39.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn39.Caption = "首页上传";
+            this.gridColumn39.FieldName = "firstSz";
+            this.gridColumn39.Name = "gridColumn39";
+            this.gridColumn39.OptionsColumn.AllowEdit = false;
+            this.gridColumn39.OptionsColumn.AllowFocus = false;
+            this.gridColumn39.OptionsFilter.AllowAutoFilter = false;
+            this.gridColumn39.OptionsFilter.AllowFilter = false;
+            this.gridColumn39.Visible = true;
+            this.gridColumn39.VisibleIndex = 13;
+            // 
+            // gridColumn38
+            // 
+            this.gridColumn38.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn38.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn38.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn38.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn38.Caption = "小结上传";
+            this.gridColumn38.FieldName = "xjSz";
+            this.gridColumn38.Name = "gridColumn38";
+            this.gridColumn38.OptionsColumn.AllowEdit = false;
+            this.gridColumn38.OptionsColumn.AllowFocus = false;
+            this.gridColumn38.OptionsFilter.AllowAutoFilter = false;
+            this.gridColumn38.OptionsFilter.AllowFilter = false;
+            this.gridColumn38.Visible = true;
+            this.gridColumn38.VisibleIndex = 14;
+            // 
             // gridColumn23
             // 
             this.gridColumn23.AppearanceCell.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -819,7 +900,7 @@ namespace AutoBa
             this.gridColumn23.OptionsColumn.AllowEdit = false;
             this.gridColumn23.OptionsColumn.AllowFocus = false;
             this.gridColumn23.Visible = true;
-            this.gridColumn23.VisibleIndex = 12;
+            this.gridColumn23.VisibleIndex = 15;
             // 
             // gridColumn25
             // 
@@ -837,7 +918,7 @@ namespace AutoBa
             this.gridColumn25.OptionsColumn.AllowEdit = false;
             this.gridColumn25.OptionsColumn.AllowFocus = false;
             this.gridColumn25.Visible = true;
-            this.gridColumn25.VisibleIndex = 13;
+            this.gridColumn25.VisibleIndex = 16;
             this.gridColumn25.Width = 120;
             // 
             // repositoryItemTimeEdit3
@@ -1170,6 +1251,22 @@ namespace AutoBa
             this.gridColumn8.Visible = true;
             this.gridColumn8.VisibleIndex = 5;
             this.gridColumn8.Width = 120;
+            // 
+            // gridColumn37
+            // 
+            this.gridColumn37.AppearanceCell.Options.UseTextOptions = true;
+            this.gridColumn37.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn37.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridColumn37.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridColumn37.Caption = "首页来源";
+            this.gridColumn37.FieldName = "firstSourceStr";
+            this.gridColumn37.Name = "gridColumn37";
+            this.gridColumn37.OptionsColumn.AllowEdit = false;
+            this.gridColumn37.OptionsColumn.AllowFocus = false;
+            this.gridColumn37.OptionsFilter.AllowAutoFilter = false;
+            this.gridColumn37.OptionsFilter.AllowFilter = false;
+            this.gridColumn37.Visible = true;
+            this.gridColumn37.VisibleIndex = 6;
             // 
             // gridColumn2
             // 
@@ -2186,21 +2283,13 @@ namespace AutoBa
             this.btnQueryBa.Text = "查询";
             this.btnQueryBa.Click += new System.EventHandler(this.btnQueryBa_Click);
             // 
-            // gridColumn37
+            // chkFromIcare
             // 
-            this.gridColumn37.AppearanceCell.Options.UseTextOptions = true;
-            this.gridColumn37.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gridColumn37.AppearanceHeader.Options.UseTextOptions = true;
-            this.gridColumn37.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gridColumn37.Caption = "首页来源";
-            this.gridColumn37.FieldName = "firstSourceStr";
-            this.gridColumn37.Name = "gridColumn37";
-            this.gridColumn37.OptionsColumn.AllowEdit = false;
-            this.gridColumn37.OptionsColumn.AllowFocus = false;
-            this.gridColumn37.OptionsFilter.AllowAutoFilter = false;
-            this.gridColumn37.OptionsFilter.AllowFilter = false;
-            this.gridColumn37.Visible = true;
-            this.gridColumn37.VisibleIndex = 6;
+            this.chkFromIcare.Location = new System.Drawing.Point(499, 12);
+            this.chkFromIcare.Name = "chkFromIcare";
+            this.chkFromIcare.Properties.Caption = "首页来源icare";
+            this.chkFromIcare.Size = new System.Drawing.Size(109, 19);
+            this.chkFromIcare.TabIndex = 954;
             // 
             // frmAutoBa
             // 
@@ -2224,6 +2313,7 @@ namespace AutoBa
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
             this.panelControl1.ResumeLayout(false);
             this.panelControl1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chkShowYb.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtJZJLH.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtCardNo.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkSZ.Properties)).EndInit();
@@ -2317,6 +2407,7 @@ namespace AutoBa
             this.panelControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.txtIPno.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtJzjlh2.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chkFromIcare.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -2458,6 +2549,12 @@ namespace AutoBa
         private SimpleButton btnQueryBa;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn36;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn37;
+        private SimpleButton simpleButton1;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn39;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn38;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn40;
+        public CheckEdit chkShowYb;
+        public CheckEdit chkFromIcare;
     }
 }
 

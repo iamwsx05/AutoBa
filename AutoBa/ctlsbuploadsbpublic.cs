@@ -133,7 +133,7 @@ namespace AutoBa
                             item.firstMsg = "无首页信息";
                             continue;
                         }
-                        if (item.firstSource == 1 || item.firstSource == 2)
+                        if (item.firstSource == 1 || item.firstSource == 2 || item.firstSource == 3)
                         {
 
                         }
@@ -142,12 +142,12 @@ namespace AutoBa
                             continue;
                         }
 
-                        ///首页来源icare 已传 不再传
-                        if (item.firstSource == 2 && item.STATUS == 1)
-                        {
-                            item.Issucess = 0;
-                            continue;
-                        }
+                        /////首页来源icare 已传 不再传
+                        //if (item.firstSource == 2 && item.STATUS == 1)
+                        //{
+                        //    item.Issucess = 0;
+                        //    continue;
+                        //}
                            
                         jzjlh = item.JZJLH;
                         #endregion
@@ -163,7 +163,7 @@ namespace AutoBa
                         logStr += "FPRN:" + item.fpVo.FPRN.ToString().Trim() + Environment.NewLine;//
                         logStr += "FNAME:" + item.fpVo.FNAME.ToString().Trim() + Environment.NewLine;//
                         logStr += "FSEXBH:" + item.fpVo.FSEXBH.ToString().Trim() + Environment.NewLine;//
-                        logStr += "nFSEX:" + item.fpVo.FSEX.ToString().Trim() + Environment.NewLine;//
+                        logStr += "FSEX:" + item.fpVo.FSEX.ToString().Trim() + Environment.NewLine;//
                         logStr += "FBIRTHDAY:" + item.fpVo.FBIRTHDAY.ToString() + Environment.NewLine;//
                         logStr += "FAGE:" + item.fpVo.FAGE.ToString() + Environment.NewLine;//
                         logStr += "fcountrybh:" + item.fpVo.fcountrybh.ToString() + Environment.NewLine;//
@@ -806,7 +806,7 @@ namespace AutoBa
                         else
                         {
                             intRet = GetParam(intH, "MSG", strValue, 1024);
-                            ExceptionLog.OutPutException(item.JZJLH + "-" + item.INPATIENTID + ":" + strValue.ToString());
+                            ExceptionLog.OutPutException(item.REGISTERID + "-" + item.JZJLH + "-" + item.INPATIENTID + ":" + strValue.ToString());
                             if (strValue.ToString().Contains("已存在对应就诊记录号"))
                                 item.Issucess = 1;
                             else
@@ -818,7 +818,7 @@ namespace AutoBa
                     }
                     catch (Exception ex)
                     {
-                        ExceptionLog.OutPutException("jzjlh-->" + ex);
+                        ExceptionLog.OutPutException("首页：ZYH-->" + item.fpVo.ZYH.ToString() +" " + ex);
                         lngRes = -1;
                     }
                 }  
@@ -833,6 +833,7 @@ namespace AutoBa
             long lngRes = -1;
             int intRet;
             int intH = -1;
+            string zyh = string.Empty;
             string logStr = string.Empty;
             for (int i = 0; i < lstVo.Count;i++ )
             {
@@ -849,7 +850,7 @@ namespace AutoBa
                             lstVo[i].FailMsg = "就诊记录号:" + lstVo[i].JZJLH + " 住院号：" + lstVo[i].INPATIENTID + "小结为空！";
                             continue;
                         }
-                        if (lstVo[i].firstSource == 0)
+                        if (lstVo[i].firstSource == 0 || lstVo[i].firstSource == -1)
                         {
                             lstVo[i].Issucess = -1; //-1 上传失败
                             lstVo[i].FailMsg = "无首页信息";
@@ -857,13 +858,13 @@ namespace AutoBa
                         }
                         lstVo[i].Issucess = -1;
 
-                        //首页来源icare 并已上传不再传
-                        if (lstVo[i].firstSource == 2 && lstVo[i].STATUS == 1)
-                        {
-                            lstVo[i].Issucess = 0;
-                            continue;
-                        }
-
+                        ////首页来源icare 并已上传不再传
+                        //if (lstVo[i].firstSource == 2 && lstVo[i].STATUS == 1)
+                        //{
+                        //    lstVo[i].Issucess = 0;
+                        //    continue;
+                        //}
+                        zyh = lstVo[i].xjVo.ZYH;
                         #region log
                         logStr = string.Empty;
                         logStr += "出院小结数据上传：" + Environment.NewLine;
@@ -954,7 +955,7 @@ namespace AutoBa
                     {
                         lngRes = -1;
                         intRet = GetParam(intH, "MSG", strValue, 1024);
-                        ExceptionLog.OutPutException(lstVo[i].JZJLH + "-" + lstVo[i].INPATIENTID + ":" + strValue.ToString());
+                        ExceptionLog.OutPutException(lstVo[i].REGISTERID + "-" +lstVo[i].JZJLH + "-" + lstVo[i].INPATIENTID + ":" + strValue.ToString());
                         lstVo[i].Issucess = -1; //-1 上传失败
                         lstVo[i].FailMsg = strValue.ToString();
                     }
@@ -963,7 +964,7 @@ namespace AutoBa
                 }
                 catch (Exception ex)
                 {
-                    ExceptionLog.OutPutException(ex);
+                    ExceptionLog.OutPutException("小结：zyh-->" + zyh + " " + ex);
                 }
             }
             return lngRes;

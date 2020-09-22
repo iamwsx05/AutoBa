@@ -29,6 +29,13 @@ namespace AutoBa
         public string JBRXM { get; set; }
         [DataMember]
         public string SZ { get; set; }
+
+        [DataMember]
+        public string xjSz { get; set; }
+        [DataMember]
+        public string firstSz { get; set; }
+
+
         [DataMember]
         public string RYSJ { get; set; }
         [DataMember]
@@ -114,6 +121,10 @@ namespace AutoBa
         [Entity(FieldName = "firstSource", DbType = DbType.Int16, IsPK = false, IsSeq = false, SerNo = 23)]
         public int firstSource { get; set; }
         [DataMember]
+        [Entity(FieldName = "xjSource", DbType = DbType.Int16, IsPK = false, IsSeq = false, SerNo = 24)]
+        public int xjSource { get; set; }
+
+        [DataMember]
         public string uploadDateStr { get; set; }
 
         public string firstSourceStr {
@@ -125,10 +136,30 @@ namespace AutoBa
                 {
                     return "ICARE";
                 }
+                else if(firstSource == 3)
+                {
+                    return "JH";
+                }
                 else
                     return "无首页信息";
              }
         }
+
+        public string xjSourceStr
+        {
+            get
+            {
+                if (xjSource == 1)
+                    return "ICARE";
+                else if (xjSource == 2)
+                {
+                    return "JH";
+                }
+                else
+                    return "无小结信息";
+            }
+        }
+
 
         public string emrinpatientDate { get; set; }
         public string emrinpatientId { get; set; }
@@ -532,6 +563,8 @@ namespace AutoBa
         //住院号	
         [DataMember]
         public string ZYH { get; set; }
+        [DataMember]
+        public string registerId { get; set; }
     }
     #endregion
 
@@ -892,6 +925,9 @@ namespace AutoBa
         //发票号码
         [DataMember]
         public string FPHM { get; set; }
+
+        [DataMember]
+        public string registerId { get; set; }
 
         /// <summary>
         /// 
