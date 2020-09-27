@@ -36,8 +36,8 @@ namespace AutoBa
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmAutoBa));
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
+            this.chkFromIcare = new DevExpress.XtraEditors.CheckEdit();
             this.chkShowYb = new DevExpress.XtraEditors.CheckEdit();
-            this.simpleButton1 = new DevExpress.XtraEditors.SimpleButton();
             this.txtJZJLH = new DevExpress.XtraEditors.TextEdit();
             this.label1 = new System.Windows.Forms.Label();
             this.txtCardNo = new DevExpress.XtraEditors.TextEdit();
@@ -176,12 +176,12 @@ namespace AutoBa
             this.txtJzjlh2 = new DevExpress.XtraEditors.TextEdit();
             this.label2 = new System.Windows.Forms.Label();
             this.btnQueryBa = new DevExpress.XtraEditors.SimpleButton();
-            this.chkFromIcare = new DevExpress.XtraEditors.CheckEdit();
             ((System.ComponentModel.ISupportInitialize)(this.pcBackGround)).BeginInit();
             this.pcBackGround.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.marqueeProgressBarControl.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
             this.panelControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chkFromIcare.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkShowYb.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtJZJLH.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtCardNo.Properties)).BeginInit();
@@ -276,7 +276,6 @@ namespace AutoBa
             this.panelControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtIPno.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtJzjlh2.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chkFromIcare.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // pcBackGround
@@ -300,7 +299,6 @@ namespace AutoBa
             // 
             this.panelControl1.Controls.Add(this.chkFromIcare);
             this.panelControl1.Controls.Add(this.chkShowYb);
-            this.panelControl1.Controls.Add(this.simpleButton1);
             this.panelControl1.Controls.Add(this.txtJZJLH);
             this.panelControl1.Controls.Add(this.label1);
             this.panelControl1.Controls.Add(this.txtCardNo);
@@ -323,24 +321,21 @@ namespace AutoBa
             this.panelControl1.Size = new System.Drawing.Size(1370, 68);
             this.panelControl1.TabIndex = 11;
             // 
+            // chkFromIcare
+            // 
+            this.chkFromIcare.Location = new System.Drawing.Point(499, 10);
+            this.chkFromIcare.Name = "chkFromIcare";
+            this.chkFromIcare.Properties.Caption = "首页来源icare";
+            this.chkFromIcare.Size = new System.Drawing.Size(109, 19);
+            this.chkFromIcare.TabIndex = 954;
+            // 
             // chkShowYb
             // 
-            this.chkShowYb.Location = new System.Drawing.Point(387, 9);
+            this.chkShowYb.Location = new System.Drawing.Point(387, 8);
             this.chkShowYb.Name = "chkShowYb";
             this.chkShowYb.Properties.Caption = "显示医保患者";
             this.chkShowYb.Size = new System.Drawing.Size(109, 19);
             this.chkShowYb.TabIndex = 953;
-            // 
-            // simpleButton1
-            // 
-            this.simpleButton1.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.simpleButton1.Appearance.Options.UseFont = true;
-            this.simpleButton1.Location = new System.Drawing.Point(1231, 7);
-            this.simpleButton1.Name = "simpleButton1";
-            this.simpleButton1.Size = new System.Drawing.Size(75, 23);
-            this.simpleButton1.TabIndex = 952;
-            this.simpleButton1.Text = "查询sssss";
-            this.simpleButton1.Click += new System.EventHandler(this.simpleButton1_Click);
             // 
             // txtJZJLH
             // 
@@ -386,7 +381,7 @@ namespace AutoBa
             // 
             // chkSZ
             // 
-            this.chkSZ.Location = new System.Drawing.Point(313, 9);
+            this.chkSZ.Location = new System.Drawing.Point(313, 8);
             this.chkSZ.Name = "chkSZ";
             this.chkSZ.Properties.Caption = "未上传";
             this.chkSZ.Size = new System.Drawing.Size(64, 19);
@@ -2283,14 +2278,6 @@ namespace AutoBa
             this.btnQueryBa.Text = "查询";
             this.btnQueryBa.Click += new System.EventHandler(this.btnQueryBa_Click);
             // 
-            // chkFromIcare
-            // 
-            this.chkFromIcare.Location = new System.Drawing.Point(499, 12);
-            this.chkFromIcare.Name = "chkFromIcare";
-            this.chkFromIcare.Properties.Caption = "首页来源icare";
-            this.chkFromIcare.Size = new System.Drawing.Size(109, 19);
-            this.chkFromIcare.TabIndex = 954;
-            // 
             // frmAutoBa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
@@ -2313,6 +2300,7 @@ namespace AutoBa
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
             this.panelControl1.ResumeLayout(false);
             this.panelControl1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chkFromIcare.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chkShowYb.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtJZJLH.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtCardNo.Properties)).EndInit();
@@ -2407,7 +2395,6 @@ namespace AutoBa
             this.panelControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.txtIPno.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtJzjlh2.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chkFromIcare.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -2549,7 +2536,6 @@ namespace AutoBa
         private SimpleButton btnQueryBa;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn36;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn37;
-        private SimpleButton simpleButton1;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn39;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn38;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn40;

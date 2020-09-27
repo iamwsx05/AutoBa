@@ -706,9 +706,13 @@ namespace AutoBa
                                 if (lstFpJh != null)
                                 {
                                     firstVo = lstFpJh.Find(r => r.registerId == registerid);
-                                    //首页信息不全
-                                    if (string.IsNullOrEmpty(firstVo.FKZR))
-                                        firstVo = null;
+                                    if(firstVo!=null)
+                                    {
+                                        //首页信息不全
+                                        if (string.IsNullOrEmpty(firstVo.FKZR))
+                                            firstVo = null;
+                                    }
+                                    
                                     //勾选 首页来源icare
                                     if (isFromIcare)
                                         firstVo = null;
@@ -2162,6 +2166,10 @@ namespace AutoBa
                         xjVo.RYQK = dr["RYQK"].ToString().Trim();
                         if (string.IsNullOrEmpty(xjVo.RYQK))
                             xjVo.RYQK = "-";
+                        if(xjVo.RYQK.Length > 1000)
+                        {
+                            xjVo.RYQK = xjVo.RYQK.Substring(0, 1000);
+                        }
                         xjVo.YSQM = dr["YSQM"].ToString().Trim();
                         if (string.IsNullOrEmpty(xjVo.YSQM))
                             xjVo.YSQM = "-";
