@@ -1,5 +1,4 @@
 ﻿using Common.Controls;
-using Common.Entity;
 using DevExpress.XtraReports.UI;
 using System;
 using System.Xml;
@@ -108,7 +107,7 @@ namespace AutoBa
             long lngRes = -1;
             int intRet;
             int j = 0;
-            int intH = 0 ;
+            int intH = 0;
             string jzjlh = string.Empty;
             if (lstVo.Count > 0)
             {
@@ -141,14 +140,6 @@ namespace AutoBa
                         {
                             continue;
                         }
-
-                        /////首页来源icare 已传 不再传
-                        //if (item.firstSource == 2 && item.STATUS == 1)
-                        //{
-                        //    item.Issucess = 0;
-                        //    continue;
-                        //}
-                           
                         jzjlh = item.JZJLH;
                         #endregion
 
@@ -496,7 +487,7 @@ namespace AutoBa
                         #endregion
 
                         ++j;
-                       
+
                         #region 数据集(病人转科情况)：BRZKQKSJJ
                         if (item.fpVo.lstZkVo != null && item.fpVo.lstZkVo.Count > 0)
                         {
@@ -558,36 +549,67 @@ namespace AutoBa
                         if (item.fpVo.lstSsVo != null && item.fpVo.lstSsVo.Count > 0)
                         {
                             intRet = InsertDataSet(intH);
+                            logStr = "BRSSXXSJJ-->" + Environment.NewLine;
                             for (int i = 0; i < item.fpVo.lstSsVo.Count; i++)
                             {
                                 intRet = InsertRow(intH);
                                 intRet = SetField(intH, "FNAME", item.fpVo.lstSsVo[i].FNAME);//
+                                logStr += "FNAME:" + item.fpVo.lstSsVo[i].FNAME + Environment.NewLine;//
                                 intRet = SetField(intH, "FOPTIMES", item.fpVo.lstSsVo[i].FOPTIMES);//
+                                logStr += "FOPTIMES" + item.fpVo.lstSsVo[i].FOPTIMES + Environment.NewLine;//
                                 intRet = SetField(intH, "FOPCODE", item.fpVo.lstSsVo[i].FOPCODE);//
+                                logStr += "FOPCODE" + item.fpVo.lstSsVo[i].FOPCODE + Environment.NewLine;//
                                 intRet = SetField(intH, "FOP", item.fpVo.lstSsVo[i].FOP);//
+                                logStr += "FOP" + item.fpVo.lstSsVo[i].FOP + Environment.NewLine;//
                                 intRet = SetField(intH, "FOPDATE", item.fpVo.lstSsVo[i].FOPDATE);//
+                                logStr += "FOPDATE" + item.fpVo.lstSsVo[i].FOPDATE + Environment.NewLine;//
                                 intRet = SetField(intH, "FQIEKOUBH", item.fpVo.lstSsVo[i].FQIEKOUBH);//
+                                logStr += "FQIEKOUBH" + item.fpVo.lstSsVo[i].FQIEKOUBH + Environment.NewLine;//
                                 intRet = SetField(intH, "FQIEKOU", item.fpVo.lstSsVo[i].FQIEKOU);//
+                                logStr += "FQIEKOU" + item.fpVo.lstSsVo[i].FQIEKOU + Environment.NewLine;//
                                 intRet = SetField(intH, "FYUHEBH", item.fpVo.lstSsVo[i].FYUHEBH);//
+                                logStr += "FYUHEBH" + item.fpVo.lstSsVo[i].FYUHEBH + Environment.NewLine;//
                                 intRet = SetField(intH, "FYUHE", item.fpVo.lstSsVo[i].FYUHE);//
+                                logStr += "FYUHE" + item.fpVo.lstSsVo[i].FYUHE + Environment.NewLine;//
                                 intRet = SetField(intH, "FDOCBH", item.fpVo.lstSsVo[i].FDOCBH);//
+                                logStr += "FDOCBH" + item.fpVo.lstSsVo[i].FDOCBH + Environment.NewLine;//
                                 intRet = SetField(intH, "FDOCNAME", item.fpVo.lstSsVo[i].FDOCNAME);//
+                                logStr += "FDOCNAME" + item.fpVo.lstSsVo[i].FDOCNAME + Environment.NewLine;//
                                 intRet = SetField(intH, "FMAZUIBH", item.fpVo.lstSsVo[i].FMAZUIBH);//
+                                logStr += "FMAZUIBH" + item.fpVo.lstSsVo[i].FMAZUIBH + Environment.NewLine;//
                                 intRet = SetField(intH, "FMAZUI", item.fpVo.lstSsVo[i].FMAZUI);//
+                                logStr += "FMAZUI" + item.fpVo.lstSsVo[i].FMAZUI + Environment.NewLine;//
                                 intRet = SetField(intH, "FIFFSOP", item.fpVo.lstSsVo[i].FIFFSOP);//
+                                logStr += "FIFFSOP" + item.fpVo.lstSsVo[i].FIFFSOP + Environment.NewLine;//
                                 intRet = SetField(intH, "FOPDOCT1BH", item.fpVo.lstSsVo[i].FOPDOCT1BH);//
+                                logStr += "FOPDOCT1BH" + item.fpVo.lstSsVo[i].FOPDOCT1BH + Environment.NewLine;//
                                 intRet = SetField(intH, "FOPDOCT1", item.fpVo.lstSsVo[i].FOPDOCT1);//
+                                logStr += "FOPDOCT1" + item.fpVo.lstSsVo[i].FOPDOCT1 + Environment.NewLine;//
                                 intRet = SetField(intH, "FOPDOCT2BH", item.fpVo.lstSsVo[i].FOPDOCT2BH);//
+                                logStr += "FOPDOCT2BH" + item.fpVo.lstSsVo[i].FOPDOCT2BH + Environment.NewLine;//
                                 intRet = SetField(intH, "FOPDOCT2", item.fpVo.lstSsVo[i].FOPDOCT2);//
+                                logStr += "FOPDOCT2" + item.fpVo.lstSsVo[i].FOPDOCT2 + Environment.NewLine;//
                                 intRet = SetField(intH, "FMZDOCTBH", item.fpVo.lstSsVo[i].FMZDOCTBH);//
+                                logStr += "FMZDOCTBH" + item.fpVo.lstSsVo[i].FMZDOCTBH + Environment.NewLine;//
                                 intRet = SetField(intH, "FMZDOCT", item.fpVo.lstSsVo[i].FMZDOCT);//
+                                logStr += "FMZDOCT" + item.fpVo.lstSsVo[i].FMZDOCT + Environment.NewLine;//
                                 intRet = SetField(intH, "FZQSSBH", item.fpVo.lstSsVo[i].FZQSSBH);//
+                                logStr += "FZQSSBH" + item.fpVo.lstSsVo[i].FZQSSBH + Environment.NewLine;//
                                 intRet = SetField(intH, "FZQSS", item.fpVo.lstSsVo[i].FZQSS);//
+                                logStr += "FZQSS" + item.fpVo.lstSsVo[i].FZQSS + Environment.NewLine;//
                                 intRet = SetField(intH, "FSSJBBH", item.fpVo.lstSsVo[i].FSSJBBH);//
+                                logStr += "FSSJBBH" + item.fpVo.lstSsVo[i].FSSJBBH + Environment.NewLine;//
                                 intRet = SetField(intH, "FSSJB", item.fpVo.lstSsVo[i].FSSJB);//
+                                logStr += "FSSJB" + item.fpVo.lstSsVo[i].FSSJB + Environment.NewLine;//
                                 intRet = SetField(intH, "FOPKSNAME", item.fpVo.lstSsVo[i].FOPKSNAME);//
+                                logStr += "FOPKSNAME" + item.fpVo.lstSsVo[i].FOPKSNAME + Environment.NewLine;//
                                 intRet = SetField(intH, "FOPTYKH", item.fpVo.lstSsVo[i].FOPTYKH);//
+                                logStr += "FOPTYKH" + item.fpVo.lstSsVo[i].FOPTYKH + Environment.NewLine;//
                                 intRet = SetField(intH, "FPRN", item.fpVo.lstSsVo[i].FPRN);//
+                                logStr += "FPRN" + item.fpVo.lstSsVo[i].FPRN + Environment.NewLine;//
+                                intRet = SetField(intH, "FPXH", item.fpVo.lstSsVo[i].FPXH.ToString());//
+                                logStr += "FPXH" + item.fpVo.lstSsVo[i].FPXH.ToString() + Environment.NewLine;//
+                                Log.Output(logStr);
                                 EndRow(intH, i);
                             }
                             intRet = EndDataSet(intH, "BRSSXXSJJ");
@@ -818,10 +840,11 @@ namespace AutoBa
                     }
                     catch (Exception ex)
                     {
-                        ExceptionLog.OutPutException("首页：ZYH-->" + item.fpVo.ZYH.ToString() +" " + ex);
+                        ExceptionLog.OutPutException("首页：ZYH-->" + item.fpVo.ZYH.ToString() + " " + ex);
                         lngRes = -1;
+                        DestroyInstance(intH);
                     }
-                }  
+                }
             }
             return lngRes;
         }
@@ -835,7 +858,8 @@ namespace AutoBa
             int intH = -1;
             string zyh = string.Empty;
             string logStr = string.Empty;
-            for (int i = 0; i < lstVo.Count;i++ )
+
+            for (int i = 0; i < lstVo.Count; i++)
             {
                 try
                 {
@@ -955,7 +979,7 @@ namespace AutoBa
                     {
                         lngRes = -1;
                         intRet = GetParam(intH, "MSG", strValue, 1024);
-                        ExceptionLog.OutPutException(lstVo[i].REGISTERID + "-" +lstVo[i].JZJLH + "-" + lstVo[i].INPATIENTID + ":" + strValue.ToString());
+                        ExceptionLog.OutPutException(lstVo[i].REGISTERID + "-" + lstVo[i].JZJLH + "-" + lstVo[i].INPATIENTID + ":" + strValue.ToString());
                         lstVo[i].Issucess = -1; //-1 上传失败
                         lstVo[i].FailMsg = strValue.ToString();
                     }
@@ -965,6 +989,7 @@ namespace AutoBa
                 catch (Exception ex)
                 {
                     ExceptionLog.OutPutException("小结：zyh-->" + zyh + " " + ex);
+                    DestroyInstance(intH);
                 }
             }
             return lngRes;
@@ -989,7 +1014,7 @@ namespace AutoBa
                 }
                 else
                     continue;
-                
+
                 for (int j = 0; j < lstVo[i].lstCfMsg.Count; j++)
                 {
                     intRet = InsertRow(intH);
@@ -1048,7 +1073,7 @@ namespace AutoBa
                 }
                 DestroyInstance(intH);
             }
-           
+
             return lngRes;
         }
         #endregion
@@ -1057,7 +1082,7 @@ namespace AutoBa
         public static long lngFunSP3_2003(List<EntityMzcf> lstVo, EntityDGExtra exVo, ref StringBuilder strValue)
         {
             long lngRes = -1;
-            
+
             int intRet;
             for (int i = 0; i < lstVo.Count; i++)
             {
@@ -1066,7 +1091,7 @@ namespace AutoBa
                     continue;
                 intRet = SetParam(intH, "FN", "SP3_2003");
                 intRet = SetParam(intH, "YYBH", exVo.YYBH);
-                intRet = SetParam(intH,"ZYH", lstVo[i].ZYH);
+                intRet = SetParam(intH, "ZYH", lstVo[i].ZYH);
                 intRet = SetParam(intH, "CFH", lstVo[i].CFH);
                 intRet = SetParam(intH, "JBR", exVo.JBR);
                 lstVo[i].JBR = exVo.JBR;
@@ -1215,7 +1240,7 @@ namespace AutoBa
                     return -1;
                 }
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
                 ExceptionLog.OutPutException(ex);
             }
@@ -1253,7 +1278,7 @@ namespace AutoBa
                     MessageBox.Show("初始化失败！", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
                     return -1;
                 }
-                
+
             }
             catch (Exception ex)
             {

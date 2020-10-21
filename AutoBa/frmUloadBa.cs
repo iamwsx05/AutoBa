@@ -259,15 +259,5 @@ namespace AutoBa
             return data;
         }
         #endregion
-
-        private void simpleButton1_Click(object sender, EventArgs e)
-        {
-            uiHelper.ExportToXls(gvData);
-        }
-
-        private void simpleButton2_Click(object sender, EventArgs e)
-        {
-            
-        }
     }
 }

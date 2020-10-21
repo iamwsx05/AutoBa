@@ -671,6 +671,8 @@ namespace AutoBa
         public string FOPTYKH { get; set; }
         [DataMember]
         public string FPRN { get; set; }
+        [DataMember]
+        public decimal FPXH { get; set; }
     }
     #endregion
 
