@@ -123,6 +123,8 @@ namespace AutoBa
                             intRet = SetParam(intH, "JBR", exVo.JBR);
                             intRet = SetParam(intH, "YYBH", exVo.YYBH);
                         }
+                        else
+                            return lngRes;
 
                         item.JBR = exVo.JBR;
                         item.Issucess = -1; //-1 上传失败
@@ -957,6 +959,8 @@ namespace AutoBa
                         intRet = Run(intH);
                         #endregion
                     }
+                    else
+                        return lngRes;
 
                     #region 上传
                     lstVo[i].FailMsg = "";

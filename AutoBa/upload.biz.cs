@@ -4235,7 +4235,7 @@ f_getempnamebyid(a.doctor)  doctorname,
                     {
                         EntityBrzdxx zdVo = null;
                         lstUpVo[i].fpVo.lstZdVo = new List<EntityBrzdxx>();
-
+                        
                         foreach (DataRow dr in DtZd.Rows)
                         {
                             zdVo = new EntityBrzdxx();
@@ -4254,6 +4254,7 @@ f_getempnamebyid(a.doctor)  doctorname,
                             if (zdVo.FRYBQ == "")
                                 zdVo.FRYBQ = "无";
                             zdVo.FPRN = dr["FPRN"].ToString();
+                           
                             lstUpVo[i].fpVo.lstZdVo.Add(zdVo);
                         }
                     }
@@ -4264,7 +4265,7 @@ f_getempnamebyid(a.doctor)  doctorname,
                     {
                         EntityBrssxx fopVo = null;
                         lstUpVo[i].fpVo.lstSsVo = new List<EntityBrssxx>();
-
+                        int n = 0;
                         foreach (DataRow dr in DtFop.Rows)
                         {
                             fopVo = new EntityBrssxx();
@@ -4334,6 +4335,7 @@ f_getempnamebyid(a.doctor)  doctorname,
                                 fopVo.FOPTYKH = "无";
 
                             fopVo.FPRN = dr["FPRN"].ToString();
+                            fopVo.FPXH = ++n;
                             lstUpVo[i].fpVo.lstSsVo.Add(fopVo);
                         }
                     }
