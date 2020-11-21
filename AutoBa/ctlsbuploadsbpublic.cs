@@ -831,7 +831,7 @@ namespace AutoBa
                         {
                             intRet = GetParam(intH, "MSG", strValue, 1024);
                             ExceptionLog.OutPutException(item.REGISTERID + "-" + item.JZJLH + "-" + item.INPATIENTID + ":" + strValue.ToString());
-                            if (strValue.ToString().Contains("已存在对应就诊记录号"))
+                            if (strValue.ToString().Contains("已存在对应"))
                                 item.Issucess = 1;
                             else
                                 item.Issucess = -1; //-1 上传失败

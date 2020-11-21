@@ -276,12 +276,6 @@ namespace AutoBa
                         string ipno = drJs["inpatientid_chr"].ToString();
                         int uploadStatus = Function.Int(drJs["status"]);
                         int firstSource = Function.Int(drJs["firstSource"]);
-                        //未上传，来源icare也属于未上传
-                        if (isUploadparm)
-                        {
-                            if (uploadStatus == 1 && firstSource == 1)//uploadStatus 1 已上传 1 病案 
-                                continue;
-                        }
 
                         if (lstReg.Contains(registerid))
                             continue;
@@ -802,6 +796,13 @@ namespace AutoBa
                             else
                             {
                                 upVo.SZ = "未上传";
+                            }
+
+                            //未上传，来源icare JH 也属于未上传
+                            if (isUploadparm)
+                            {
+                                if (upVo.SZ == "已上传" && upVo.firstSource == 1)// 已上传 1 病案 
+                                    continue;
                             }
 
                             if (drReg["jbr"] != DBNull.Value)
@@ -1374,7 +1375,7 @@ namespace AutoBa
                             vo.YSQM = drXj["doctorname"].ToString().Trim();
                             if (string.IsNullOrEmpty(vo.YSQM))
                                 vo.YSQM = "-";
-                            vo.RYHCLGC = "-";
+                            
                             vo.CYSQK = drXj["outhospitalcase_right"].ToString().Trim();
                             if (string.IsNullOrEmpty(vo.CYSQK))
                                 vo.CYSQK = "-";
@@ -1383,6 +1384,8 @@ namespace AutoBa
                                 vo.ZLJG = vo.ZLJG.Substring(0, 1000);
                             if (string.IsNullOrEmpty(vo.ZLJG))
                                 vo.ZLJG = "-";
+
+                            vo.RYHCLGC = vo.ZLJG;
 
                             dataXj.Add(vo);
                             #endregion
@@ -1932,6 +1935,7 @@ namespace AutoBa
                             EntityBrssxx fopVo = null;
                             firstPageVo.lstSsVo = new List<EntityBrssxx>();
                             DataRow[] drrFop = dtFop.Select("Patient_Id = '" + registerId + "'");
+                            int n = 0;
                             if (drrFop.Length > 0)
                             {
                                 for (int i = 0; i < drrFop.Length; i++)
@@ -1970,6 +1974,8 @@ namespace AutoBa
                                         fopVo.FIFFSOP = "0";
                                     else if (fopVo.FIFFSOP == "True")
                                         fopVo.FIFFSOP = "1";
+                                    if (string.IsNullOrEmpty(fopVo.FIFFSOP))
+                                        fopVo.FIFFSOP = "0";
                                     fopVo.FOPDOCT1BH = drFop["FOPDOCT1BH"].ToString();
                                     if (fopVo.FOPDOCT1BH == "")
                                         fopVo.FOPDOCT1BH = "无";
@@ -2004,6 +2010,7 @@ namespace AutoBa
                                         fopVo.FOPTYKH = "无";
 
                                     fopVo.FPRN = drFop["FPRN"].ToString();
+                                    fopVo.FPXH = ++n;
                                     firstPageVo.lstSsVo.Add(fopVo);
                                 }
 
@@ -2152,7 +2159,12 @@ namespace AutoBa
                         xjVo.GMSFHM = dr["GMSFHM"].ToString();
                         xjVo.RYRQ = Function.Datetime(dr["RYRQ"]).ToString("yyyyMMdd");
                         xjVo.CYRQ = Function.Datetime(dr["CYRQ"]).ToString("yyyyMMdd");
-                        xjVo.ZYTS = dr["ZYTS"].ToString();
+                        TimeSpan ts = Function.Datetime(dr["CYRQ"]) - Function.Datetime(dr["RYRQ"]);
+                        xjVo.ZYTS = ts.Days.ToString();
+                        //if (xjVo.ZYTS == "0")
+                        //    xjVo.ZYTS = "1";
+                        if (Function.Int(xjVo.ZYTS)<= 0)
+                            xjVo.ZYTS = "1";
 
                         xjVo.JG = dr["JG"].ToString();
                         if (string.IsNullOrEmpty(xjVo.JG))
@@ -2173,7 +2185,6 @@ namespace AutoBa
                         xjVo.YSQM = dr["YSQM"].ToString().Trim();
                         if (string.IsNullOrEmpty(xjVo.YSQM))
                             xjVo.YSQM = "-";
-                        xjVo.RYHCLGC = dr["ZLJG"].ToString().Trim();
                         xjVo.CYSQK = dr["CYSQK"].ToString().Trim();
                         if (string.IsNullOrEmpty(xjVo.CYSQK))
                             xjVo.CYSQK = "-";
@@ -2182,6 +2193,7 @@ namespace AutoBa
                             xjVo.ZLJG = xjVo.ZLJG.Substring(0, 1000);
                         if (string.IsNullOrEmpty(xjVo.ZLJG))
                             xjVo.ZLJG = "-";
+                        xjVo.RYHCLGC = xjVo.ZLJG;
 
                         data.Add(xjVo);
                     }
@@ -3605,6 +3617,7 @@ f_getempnamebyid(a.doctor)  doctorname,
                 if (dtbOP != null && dtbOP.Rows.Count > 0)
                 {
                     int intOpTimes = 0;
+                    int n = 0;
                     foreach (DataRow drTemp in dtbOP.Rows)
                     {
                         EntityBrssxx vo = new EntityBrssxx();
@@ -3736,6 +3749,7 @@ f_getempnamebyid(a.doctor)  doctorname,
 
                         vo.FOPKSNAME = "-";
                         vo.FOPTYKH = "-";
+                        vo.FPXH = ++n;
                         data.Add(vo);
                     }
                 }
