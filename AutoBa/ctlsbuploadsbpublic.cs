@@ -124,7 +124,10 @@ namespace AutoBa
                             intRet = SetParam(intH, "YYBH", exVo.YYBH);
                         }
                         else
+                        {
+                            DestroyInstance(intH);
                             return lngRes;
+                        }   
 
                         item.JBR = exVo.JBR;
                         item.Issucess = -1; //-1 上传失败
@@ -812,13 +815,13 @@ namespace AutoBa
                         #region 上传
 
                         intRet = Run(intH);
-                        strValue = new StringBuilder(1024);
-                        intRet = GetParam(intH, "FHZ", strValue, 1024);
+                        strValue = new StringBuilder(32);
+                        intRet = GetParam(intH, "FHZ", strValue, 32);
                         item.FailMsg = "";
                         if (strValue.ToString() == "1")
                         {
-                            StringBuilder sbValue = new StringBuilder(1024);
-                            intRet = GetParam(intH, "MSG", sbValue, 1024);
+                            StringBuilder sbValue = new StringBuilder(512);
+                            intRet = GetParam(intH, "MSG", sbValue, 512);
                             string strCGBZ = sbValue.ToString().Trim();//原因
                             if (strCGBZ == "执行成功！" || strCGBZ == "1")
                             {
@@ -826,17 +829,21 @@ namespace AutoBa
                                 item.Issucess = 1;//1  上传成功
                                 item.FailMsg = "";
                             }
+                            GC.Collect(GC.GetGeneration(sbValue));
                         }
                         else
                         {
-                            intRet = GetParam(intH, "MSG", strValue, 1024);
-                            ExceptionLog.OutPutException(item.REGISTERID + "-" + item.JZJLH + "-" + item.INPATIENTID + ":" + strValue.ToString());
-                            if (strValue.ToString().Contains("已存在对应"))
+                            StringBuilder sbValue = new StringBuilder(512);
+                            intRet = GetParam(intH, "MSG", sbValue, 512);
+                            ExceptionLog.OutPutException(item.REGISTERID + "-" + item.JZJLH + "-" + item.INPATIENTID + ":" + sbValue.ToString());
+                            if (sbValue.ToString().Contains("已存在对应"))
                                 item.Issucess = 1;
                             else
                                 item.Issucess = -1; //-1 上传失败
-                            item.FailMsg = strValue.ToString();
+                            item.FailMsg = sbValue.ToString();
+                            GC.Collect(GC.GetGeneration(sbValue));
                         }
+                        GC.Collect(GC.GetGeneration(strValue));
                         DestroyInstance(intH);
                         #endregion
                     }
@@ -960,16 +967,20 @@ namespace AutoBa
                         #endregion
                     }
                     else
+                    {
+                        DestroyInstance(intH);
                         return lngRes;
+                    }
+                        
 
                     #region 上传
                     lstVo[i].FailMsg = "";
-                    strValue = new StringBuilder(1024);
-                    intRet = GetParam(intH, "FHZ", strValue, 1024);
+                    strValue = new StringBuilder(32);
+                    intRet = GetParam(intH, "FHZ", strValue, 32);
                     if (strValue.ToString() == "1")
                     {
-                        StringBuilder sbValue = new StringBuilder(1024);
-                        intRet = GetParam(intH, "MSG", sbValue, 1024);
+                        StringBuilder sbValue = new StringBuilder(512);
+                        intRet = GetParam(intH, "MSG", sbValue, 512);
                         string strCGBZ = sbValue.ToString().Trim();//原因
                         if (strCGBZ == "执行成功！" || strCGBZ == "1")
                         {
@@ -978,15 +989,20 @@ namespace AutoBa
                             lstVo[i].Issucess = 1;//1  上传成功
                             lstVo[i].FailMsg = "";
                         }
+
+                        GC.Collect(GC.GetGeneration(sbValue));
                     }
                     else
                     {
                         lngRes = -1;
-                        intRet = GetParam(intH, "MSG", strValue, 1024);
-                        ExceptionLog.OutPutException(lstVo[i].REGISTERID + "-" + lstVo[i].JZJLH + "-" + lstVo[i].INPATIENTID + ":" + strValue.ToString());
+                        StringBuilder sbValue = new StringBuilder(512);
+                        intRet = GetParam(intH, "MSG", sbValue, 512);
+                        ExceptionLog.OutPutException(lstVo[i].REGISTERID + "-" + lstVo[i].JZJLH + "-" + lstVo[i].INPATIENTID + ":" + sbValue.ToString());
                         lstVo[i].Issucess = -1; //-1 上传失败
-                        lstVo[i].FailMsg = strValue.ToString();
+                        lstVo[i].FailMsg = sbValue.ToString();
+                        GC.Collect(GC.GetGeneration(sbValue));
                     }
+                    GC.Collect(GC.GetGeneration(strValue));
                     DestroyInstance(intH);
                     #endregion
                 }
@@ -1000,133 +1016,6 @@ namespace AutoBa
         }
         #endregion
 
-        #region 门诊处方项目明细上传
-        public static long lngFunSP3_2002(ref List<EntityMzcf> lstVo, EntityDGExtra exVo, ref StringBuilder strValue)
-        {
-            long lngRes = -1;
-            int intRet;
-            for (int i = 0; i < lstVo.Count; i++)
-            {
-                int intH = CreateInstace();
-                if (intH > 0)
-                {
-                    intRet = SetParam(intH, "FN", "SP3_2002");
-                    intRet = SetParam(intH, "JBR", exVo.JBR);
-                    lstVo[i].JBR = exVo.JBR;
-                    intRet = SetParam(intH, "YYBH", exVo.YYBH);
-                    intRet = InsertDataSet(intH);
-                }
-                else
-                    continue;
-
-                for (int j = 0; j < lstVo[i].lstCfMsg.Count; j++)
-                {
-                    intRet = InsertRow(intH);
-                    intRet = SetField(intH, "ZYH", lstVo[i].ZYH);//
-                    intRet = SetField(intH, "CFH", lstVo[i].CFH);//
-                    intRet = SetField(intH, "GMSFHM", lstVo[i].GMSFHM);//
-                    intRet = SetField(intH, "JZLB", lstVo[i].JZLB);//
-                    intRet = SetField(intH, "FYRQ", lstVo[i].FYRQ);//8位
-                    intRet = SetField(intH, "XMXH", lstVo[i].lstCfMsg[j].XMXH);//
-                    intRet = SetField(intH, "XMBH", lstVo[i].lstCfMsg[j].XMBH);//
-                    intRet = SetField(intH, "XMMC", lstVo[i].lstCfMsg[j].XMMC);//
-                    intRet = SetField(intH, "JG", lstVo[i].lstCfMsg[j].JG);
-                    intRet = SetField(intH, "MCYL", lstVo[i].lstCfMsg[j].MCYL);//
-                    intRet = SetField(intH, "JE", lstVo[i].lstCfMsg[j].JE);
-                    intRet = SetField(intH, "ZFBL", lstVo[i].lstCfMsg[j].ZFBL);//0<= X <= 1 无比例时，默认传0
-                    intRet = SetField(intH, "YSGH", lstVo[i].YSGH);
-                    intRet = SetField(intH, "BZ", lstVo[i].lstCfMsg[j].BZ);
-                    EndRow(intH, i + 1);
-
-                    //Log.Output("\r\n ZYH:" + lstVo[i].ZYH + "\r\n CFH:" + lstVo[i].CFH + " \r\n GMSFHM:" +
-                    //    lstVo[i].GMSFHM + "\r\n JZLB:" + lstVo[i].JZLB + "\r\n FYRQ:" + lstVo[i].FYRQ + "\r\n XMXH:" +
-                    //    lstVo[i].lstCfMsg[j].XMXH + "\r\n XMBH:" + lstVo[i].lstCfMsg[j].XMBH + "\r\n XMMC:" + 
-                    //    lstVo[i].lstCfMsg[j].XMMC + "\r\n JG:" +
-                    //    lstVo[i].lstCfMsg[j].JG + "\r\n MCYL:" + lstVo[i].lstCfMsg[j].MCYL + "\r\n JE:" +
-                    //    lstVo[i].lstCfMsg[j].JE + "\r\n ZFBL:" + lstVo[i].lstCfMsg[j].ZFBL + "\r\n YSGH:" +
-                    //    lstVo[i].YSGH + "\r\n BZ:" + lstVo[i].lstCfMsg[j].BZ);
-                }
-                intRet = EndDataSet(intH, "MZCFXMDR");
-                intRet = Run(intH);
-
-                strValue = new StringBuilder(1024);
-                intRet = GetParam(intH, "FHZ", strValue, 1024);
-                if (strValue.ToString() == "1")
-                {
-                    StringBuilder sbValue = new StringBuilder(1024);
-                    intRet = GetParam(intH, "MSG", sbValue, 1024);
-                    string strCGBZ = sbValue.ToString().Trim();//原因
-                    if (strCGBZ == "执行成功！" || strCGBZ == "1")
-                    {
-                        intRet = GetParam(intH, "PH", strValue, 1024);//批号，	批号（PH）：由医保系统产生，作为本次传送的标识。
-                        string strPH = strValue.ToString();
-                        lstVo[i].PH = strPH;
-                        intRet = GetParam(intH, "ZJE", strValue, 1024);//	总金额：本次传送的记帐处方项目汇总的医疗费用总额。每条传入的处方项目的“金额”字段合计出的总金额。
-                        string strZJE = strValue.ToString();
-                        lstVo[i].ZJE = strZJE;
-                        lngRes = 1;
-                        lstVo[i].IsSuccess = 1;
-                    }
-                }
-                else
-                {
-                    intRet = GetParam(intH, "MSG", strValue, 1024);
-                    ExceptionLog.OutPutException(strValue.ToString());
-                    lstVo[i].IsSuccess = -1;
-                    lstVo[i].failMsg = strValue.ToString();
-                }
-                DestroyInstance(intH);
-            }
-
-            return lngRes;
-        }
-        #endregion
-
-        #region 门诊记帐处方项目删除
-        public static long lngFunSP3_2003(List<EntityMzcf> lstVo, EntityDGExtra exVo, ref StringBuilder strValue)
-        {
-            long lngRes = -1;
-
-            int intRet;
-            for (int i = 0; i < lstVo.Count; i++)
-            {
-                int intH = CreateInstace();
-                if (intH < 0)
-                    continue;
-                intRet = SetParam(intH, "FN", "SP3_2003");
-                intRet = SetParam(intH, "YYBH", exVo.YYBH);
-                intRet = SetParam(intH, "ZYH", lstVo[i].ZYH);
-                intRet = SetParam(intH, "CFH", lstVo[i].CFH);
-                intRet = SetParam(intH, "JBR", exVo.JBR);
-                lstVo[i].JBR = exVo.JBR;
-                intRet = Run(intH);
-                strValue = new StringBuilder(1024);
-                intRet = GetParam(intH, "FHZ", strValue, 1024);
-                if (strValue.ToString() == "1")
-                {
-                    StringBuilder sbValue = new StringBuilder(1024);
-                    intRet = GetParam(intH, "MSG", sbValue, 1024);
-                    string strCGBZ = sbValue.ToString().Trim();//原因
-                    if (strCGBZ == "执行成功！" || strCGBZ == "1")
-                    {
-                        lstVo[i].STATUS = 2;
-                        lngRes = 1;
-                        lstVo[i].IsSuccess = 1;
-                    }
-                }
-                else
-                {
-                    intRet = GetParam(intH, "MSG", strValue, 1024);
-                    ExceptionLog.OutPutException(strValue.ToString());
-                    lstVo[i].IsSuccess = -1;
-                    lstVo[i].failMsg = strValue.ToString();
-                }
-                DestroyInstance(intH);
-            }
-
-            return lngRes;
-        }
-        #endregion
 
         #region
         #region HISYB.XML读写操作
@@ -1217,12 +1106,13 @@ namespace AutoBa
                         intRet = GetSysMessage(intPtr, strRetValue1, 66);
                         MessageBox.Show(strRetValue1.ToString(), "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
                         DestroyInstance(intPtr);
+                        GC.Collect(GC.GetGeneration(strRetValue1));
                         return -1;
                     }
                     StringBuilder strRetValue = new StringBuilder(32);
-                    StringBuilder strRetMessage = new StringBuilder(1024);
+                    StringBuilder strRetMessage = new StringBuilder(512);
                     intRet = GetParam(intPtr, "FHZ", strRetValue, 32);
-                    intRet = GetParam(intPtr, "MSG", strRetMessage, 1024);
+                    intRet = GetParam(intPtr, "MSG", strRetMessage, 512);
                     if (strRetValue.ToString() == "EHIS9700")
                     {
                         ExceptionLog.OutPutException("返回值：EHIS9700 \r\n" + "社保系统登录故障，请稍后重新登录.");
@@ -1236,6 +1126,8 @@ namespace AutoBa
                         MessageBox.Show(strRetMessage.ToString(), "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
                         DestroyInstance(intPtr);
                     }
+                    GC.Collect(GC.GetGeneration(strRetValue));
+                    GC.Collect(GC.GetGeneration(strRetMessage));
                 }
                 else
                 {
