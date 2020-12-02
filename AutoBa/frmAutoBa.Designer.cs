@@ -402,6 +402,8 @@ namespace AutoBa
             // 
             this.lblCountDown.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblCountDown.Appearance.ForeColor = System.Drawing.Color.Crimson;
+            this.lblCountDown.Appearance.Options.UseFont = true;
+            this.lblCountDown.Appearance.Options.UseForeColor = true;
             this.lblCountDown.Location = new System.Drawing.Point(384, 46);
             this.lblCountDown.Name = "lblCountDown";
             this.lblCountDown.Size = new System.Drawing.Size(67, 12);
@@ -411,6 +413,7 @@ namespace AutoBa
             // labelControl6
             // 
             this.labelControl6.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl6.Appearance.Options.UseFont = true;
             this.labelControl6.Location = new System.Drawing.Point(281, 46);
             this.labelControl6.Name = "labelControl6";
             this.labelControl6.Size = new System.Drawing.Size(96, 12);
@@ -421,6 +424,8 @@ namespace AutoBa
             // 
             this.lblExecTime.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblExecTime.Appearance.ForeColor = System.Drawing.Color.Crimson;
+            this.lblExecTime.Appearance.Options.UseFont = true;
+            this.lblExecTime.Appearance.Options.UseForeColor = true;
             this.lblExecTime.Location = new System.Drawing.Point(128, 46);
             this.lblExecTime.Name = "lblExecTime";
             this.lblExecTime.Size = new System.Drawing.Size(112, 12);
@@ -430,6 +435,7 @@ namespace AutoBa
             // labelControl4
             // 
             this.labelControl4.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl4.Appearance.Options.UseFont = true;
             this.labelControl4.Location = new System.Drawing.Point(12, 46);
             this.labelControl4.Name = "labelControl4";
             this.labelControl4.Size = new System.Drawing.Size(108, 12);
@@ -493,6 +499,7 @@ namespace AutoBa
             // labelControl2
             // 
             this.labelControl2.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Location = new System.Drawing.Point(195, 12);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(12, 12);
@@ -502,6 +509,7 @@ namespace AutoBa
             // labelControl1
             // 
             this.labelControl1.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl1.Appearance.Options.UseFont = true;
             this.labelControl1.Location = new System.Drawing.Point(12, 12);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(78, 12);
@@ -526,6 +534,10 @@ namespace AutoBa
             this.lblInfo.Appearance.BackColor = System.Drawing.Color.DarkOrange;
             this.lblInfo.Appearance.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblInfo.Appearance.ForeColor = System.Drawing.Color.LavenderBlush;
+            this.lblInfo.Appearance.Options.UseBackColor = true;
+            this.lblInfo.Appearance.Options.UseFont = true;
+            this.lblInfo.Appearance.Options.UseForeColor = true;
+            this.lblInfo.Appearance.Options.UseTextOptions = true;
             this.lblInfo.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.lblInfo.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.lblInfo.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -2288,6 +2300,7 @@ namespace AutoBa
             this.Name = "frmAutoBa";
             this.ShowInTaskbar = false;
             this.Text = "病案信息上传";
+            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
@@ -2396,6 +2409,7 @@ namespace AutoBa
             ((System.ComponentModel.ISupportInitialize)(this.txtIPno.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtJzjlh2.Properties)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

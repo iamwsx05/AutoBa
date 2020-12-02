@@ -25,6 +25,7 @@ namespace AutoBa
         static bool isExecing { get; set; }
         EntityDGExtra exVo = null;
         List<EntityPatUpload> dataSource = null;
+        bool isClosed = false;
         #endregion
 
         #region 方法
@@ -610,9 +611,10 @@ namespace AutoBa
         {
             long lngRes = -1;
             List<EntityPatUpload> data = new List<EntityPatUpload>();
-
+            ctlUploadSbPublic ctlSb = null;
             try
             {
+                ctlSb = new ctlUploadSbPublic();
                 string strUser = ctlUploadSbPublic.strReadXML("DGCSZYYB", "YYBHZY", "AnyOne");
                 string strPwd = ctlUploadSbPublic.strReadXML("DGCSZYYB", "PASSWORDZY", "AnyOne");
                 lngRes = ctlUploadSbPublic.lngUserLoin(strUser, strPwd, false);
@@ -627,7 +629,7 @@ namespace AutoBa
                     UploadBiz biz = new UploadBiz();
                     dataSource = biz.GetPatFirstInfo(dataSource);
 
-                    lngRes = ctlUploadSbPublic.lngFunSP3_3021(ref dataSource, extraVo, ref strValue);
+                    lngRes = ctlSb.lngFunSP3_3021(ref dataSource, extraVo, ref strValue);
                     if (biz.SavePatFirstPage(dataSource,0) >= 0)
                     {
                         lngRes = 1;
@@ -640,6 +642,7 @@ namespace AutoBa
             }
             finally
             {
+                ctlSb.Dispose();
             }
         }
         #endregion
@@ -650,10 +653,11 @@ namespace AutoBa
         /// </summary>
         public void MthCyxjUpload()
         {
+            ctlUploadSbPublic ctlSb = null;
+            long lngRes = 1;
             try
             {
-                long lngRes = 1;
-
+                ctlSb = new ctlUploadSbPublic();
                 string strUser = ctlUploadSbPublic.strReadXML("DGCSZYYB", "YYBHZY", "AnyOne");
                 string strPwd = ctlUploadSbPublic.strReadXML("DGCSZYYB", "PASSWORDZY", "AnyOne");
                 lngRes = ctlUploadSbPublic.lngUserLoin(strUser, strPwd, false);
@@ -663,7 +667,7 @@ namespace AutoBa
                     extraVo.YYBH = ctlUploadSbPublic.strReadXML("DGCSZYYB", "YYBHZY", "AnyOne");
                     extraVo.JBR = ctlUploadSbPublic.strReadXML("DGCSZYYB", "JBR", "AnyOne");// 操作员工号
                     System.Text.StringBuilder strValue = null;
-                    lngRes = ctlUploadSbPublic.lngFunSP3_3022(ref dataSource, extraVo, ref strValue);
+                    lngRes = ctlSb.lngFunSP3_3022(ref dataSource, extraVo, ref strValue);
 
                     UploadBiz biz = new UploadBiz();
                     if (biz.SavePatFirstPage(dataSource,1) >= 0)
@@ -678,6 +682,7 @@ namespace AutoBa
             }
             finally
             {
+                ctlSb.Dispose();
             }
         }
         #endregion
@@ -695,6 +700,12 @@ namespace AutoBa
         private void timer_Tick(object sender, EventArgs e)
         {
             DateTime dateTime = DateTime.Now;
+
+            if(DateTime.Now.ToString("HH:mm") == "19:00")
+            {
+                isClosed = true;
+                this.Close();
+            }
 
             if (timePointList.Contains(DateTime.Now.ToString("HH:mm")))
             {
@@ -719,9 +730,13 @@ namespace AutoBa
             }
             else
             {
-                dateTime = Convert.ToDateTime(this.lblExecTime.Text);
-                TimeSpan timeSpan = dateTime.Subtract(DateTime.Now);
-                this.lblCountDown.Text = timeSpan.Hours + "时" + timeSpan.Minutes + "分" + timeSpan.Seconds + "秒";
+                if(!string.IsNullOrEmpty(this.lblExecTime.Text))
+                {
+                    dateTime = Convert.ToDateTime(this.lblExecTime.Text);
+                    TimeSpan timeSpan = dateTime.Subtract(DateTime.Now);
+                    this.lblCountDown.Text = timeSpan.Hours + "时" + timeSpan.Minutes + "分" + timeSpan.Seconds + "秒";
+                }
+                
             }
         }
         #endregion
@@ -760,15 +775,18 @@ namespace AutoBa
         #region Form1_FormClosing
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.None)
+            if (!isClosed)
             {
-                e.Cancel = true;
-            }
-            else
-            {
-                if (MessageBox.Show("确定退出任务？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (e.CloseReason == CloseReason.None)
                 {
                     e.Cancel = true;
+                }
+                else
+                {
+                    if (MessageBox.Show("确定退出任务？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    {
+                        e.Cancel = true;
+                    }
                 }
             }
         }

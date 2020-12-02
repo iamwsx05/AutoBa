@@ -15,7 +15,7 @@ using System.Text;
 
 namespace AutoBa
 {
-    public class ctlUploadSbPublic : BaseController
+    public class ctlUploadSbPublic :IDisposable  
     {
 
         #region 接口函数
@@ -102,7 +102,7 @@ namespace AutoBa
         /// <param name="exVo"></param>
         /// <param name="strValue"></param>
         /// <returns></returns>
-        public static long lngFunSP3_3021(ref List<EntityPatUpload> lstVo, EntityDGExtra exVo, ref StringBuilder strValue)
+        public  long lngFunSP3_3021(ref List<EntityPatUpload> lstVo, EntityDGExtra exVo, ref StringBuilder strValue)
         {
             long lngRes = -1;
             int intRet;
@@ -462,10 +462,10 @@ namespace AutoBa
                         intRet = SetParam(intH, "FHCLZLF", item.fpVo.FHCLZLF.ToString("0.00"));
                         intRet = SetParam(intH, "FHCLSSF", item.fpVo.FHCLSSF.ToString("0.00"));
                         intRet = SetParam(intH, "FQTF", item.fpVo.FQTF.ToString("0.00"));
-                        if (item.STATUS != 1)
-                            item.fpVo.FBGLX = "1";
-                        else
+                        if (item.firstSz == "已上传")
                             item.fpVo.FBGLX = "2";
+                        else
+                            item.fpVo.FBGLX = "1";
                         intRet = SetParam(intH, "FBGLX", item.fpVo.FBGLX.ToString());
                         intRet = SetParam(intH, "GMSFHM", item.fpVo.GMSFHM);
                         intRet = SetParam(intH, "YYBH", exVo.YYBH);
@@ -817,10 +817,10 @@ namespace AutoBa
                         intRet = Run(intH);
                         strValue = new StringBuilder(32);
                         intRet = GetParam(intH, "FHZ", strValue, 32);
+                        StringBuilder sbValue = new StringBuilder(512);
                         item.FailMsg = "";
                         if (strValue.ToString() == "1")
                         {
-                            StringBuilder sbValue = new StringBuilder(512);
                             intRet = GetParam(intH, "MSG", sbValue, 512);
                             string strCGBZ = sbValue.ToString().Trim();//原因
                             if (strCGBZ == "执行成功！" || strCGBZ == "1")
@@ -829,11 +829,9 @@ namespace AutoBa
                                 item.Issucess = 1;//1  上传成功
                                 item.FailMsg = "";
                             }
-                            GC.Collect(GC.GetGeneration(sbValue));
                         }
                         else
                         {
-                            StringBuilder sbValue = new StringBuilder(512);
                             intRet = GetParam(intH, "MSG", sbValue, 512);
                             ExceptionLog.OutPutException(item.REGISTERID + "-" + item.JZJLH + "-" + item.INPATIENTID + ":" + sbValue.ToString());
                             if (sbValue.ToString().Contains("已存在对应"))
@@ -841,9 +839,11 @@ namespace AutoBa
                             else
                                 item.Issucess = -1; //-1 上传失败
                             item.FailMsg = sbValue.ToString();
-                            GC.Collect(GC.GetGeneration(sbValue));
                         }
-                        GC.Collect(GC.GetGeneration(strValue));
+
+                        GC.Collect(GC.GetGeneration(sbValue));
+                        strValue = null ;
+                        sbValue = null;
                         DestroyInstance(intH);
                         #endregion
                     }
@@ -860,7 +860,7 @@ namespace AutoBa
         #endregion
 
         #region 出院小结上传
-        public static long lngFunSP3_3022(ref List<EntityPatUpload> lstVo, EntityDGExtra exVo, ref StringBuilder strValue)
+        public  long lngFunSP3_3022(ref List<EntityPatUpload> lstVo, EntityDGExtra exVo, ref StringBuilder strValue)
         {
             long lngRes = -1;
             int intRet;
@@ -977,9 +977,10 @@ namespace AutoBa
                     lstVo[i].FailMsg = "";
                     strValue = new StringBuilder(32);
                     intRet = GetParam(intH, "FHZ", strValue, 32);
+                    StringBuilder sbValue = new StringBuilder(512);
                     if (strValue.ToString() == "1")
                     {
-                        StringBuilder sbValue = new StringBuilder(512);
+                        
                         intRet = GetParam(intH, "MSG", sbValue, 512);
                         string strCGBZ = sbValue.ToString().Trim();//原因
                         if (strCGBZ == "执行成功！" || strCGBZ == "1")
@@ -989,20 +990,19 @@ namespace AutoBa
                             lstVo[i].Issucess = 1;//1  上传成功
                             lstVo[i].FailMsg = "";
                         }
-
-                        GC.Collect(GC.GetGeneration(sbValue));
                     }
                     else
                     {
                         lngRes = -1;
-                        StringBuilder sbValue = new StringBuilder(512);
                         intRet = GetParam(intH, "MSG", sbValue, 512);
                         ExceptionLog.OutPutException(lstVo[i].REGISTERID + "-" + lstVo[i].JZJLH + "-" + lstVo[i].INPATIENTID + ":" + sbValue.ToString());
                         lstVo[i].Issucess = -1; //-1 上传失败
                         lstVo[i].FailMsg = sbValue.ToString();
-                        GC.Collect(GC.GetGeneration(sbValue));
+                       
                     }
-                    GC.Collect(GC.GetGeneration(strValue));
+                    GC.Collect(GC.GetGeneration(sbValue));
+                    sbValue = null;
+                    strValue = null;
                     DestroyInstance(intH);
                     #endregion
                 }
@@ -1015,7 +1015,6 @@ namespace AutoBa
             return lngRes;
         }
         #endregion
-
 
         #region
         #region HISYB.XML读写操作
@@ -1126,7 +1125,6 @@ namespace AutoBa
                         MessageBox.Show(strRetMessage.ToString(), "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
                         DestroyInstance(intPtr);
                     }
-                    GC.Collect(GC.GetGeneration(strRetValue));
                     GC.Collect(GC.GetGeneration(strRetMessage));
                 }
                 else
@@ -1185,5 +1183,18 @@ namespace AutoBa
         #endregion
 
         #endregion
+
+        //销毁类时，会调用析构函数
+        ~ctlUploadSbPublic()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            GC.Collect();
+            GC.SuppressFinalize(this);
+        }
     }
 }
+
