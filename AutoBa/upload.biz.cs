@@ -136,7 +136,7 @@ namespace AutoBa
                                 to_char(t1.inpatient_dat, 'yyyymmdd') as RYRQ1,
                                 to_char(c.outhospital_dat, 'yyyymmdd') as CYRQ1,
                                 t1.inpatient_dat as RYSJ,
-                                c.modify_dat as CYSJ,
+                                c.outhospital_dat as CYSJ,
                                 rehis.emrinpatientid,
                                 rehis.emrinpatientdate,
                                 ee.lastname_vchr as jbr,
@@ -920,10 +920,8 @@ namespace AutoBa
                         }
                         #endregion
                     }
-
+                    #endregion  
                 }
-                #endregion  
-
                 #endregion
             }
             catch (Exception e)
